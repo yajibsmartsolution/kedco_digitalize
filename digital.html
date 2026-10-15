@@ -1,0 +1,3297 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEDCO Network Register — Digital Asset Dashboard</title>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- SheetJS (XLSX) for Excel export -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<!-- jsPDF + AutoTable for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== GLOBAL DESIGN SYSTEM ===== */
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1524;
+  --bg-card: #151e31;
+  --bg-card-hover: #1b2740;
+  --bg-elevated: #1c2842;
+  --border: #253148;
+  --border-light: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #3b82f6;
+  --accent-blue-glow: rgba(59, 130, 246, 0.12);
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-purple: #8b5cf6;
+  --accent-pink: #ec4899;
+  --gradient-1: linear-gradient(135deg, #3b82f6, #06b6d4);
+  --gradient-2: linear-gradient(135deg, #8b5cf6, #ec4899);
+  --gradient-3: linear-gradient(135deg, #10b981, #06b6d4);
+  --gradient-4: linear-gradient(135deg, #f59e0b, #ef4444);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.6);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --sidebar-width: 268px;
+  --header-height: 72px;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.sidebar-header {
+  padding: 22px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 44px; height: 44px;
+  background: var(--gradient-1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 14px rgba(59,130,246,0.35);
+  flex-shrink: 0;
+}
+
+.logo-text h1 {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.logo-text span {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.unit-badge {
+  margin-top: 14px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(6,182,212,0.08));
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  text-align: center;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+
+.nav-section {
+  margin-bottom: 22px;
+}
+
+.nav-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: var(--text-muted);
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: var(--accent-blue-glow);
+  color: var(--accent-blue);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--accent-blue);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+}
+
+.nav-item.active .nav-badge {
+  background: rgba(59,130,246,0.2);
+  color: var(--accent-blue);
+}
+
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-footer-info {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.sidebar-footer-info strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: sticky;
+  top: 0;
+  height: var(--header-height);
+  background: rgba(10, 14, 26, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  z-index: 50;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.page-title-wrap {
+  min-width: 0;
+}
+
+.page-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-subtitle {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header-search {
+  position: relative;
+}
+
+.header-search input {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px 9px 36px;
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.header-search input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px var(--accent-blue-glow);
+  width: 280px;
+}
+
+.header-search input::placeholder { color: var(--text-muted); }
+
+.header-search .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.header-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.header-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+.logout-link {
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.logout-link:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-light); }
+
+.status-dot {
+  width: 9px; height: 9px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(16,185,129,0.6);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ===== EXPORT TOOLBAR ===== */
+.export-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.export-group {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-secondary);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.export-btn.excel {
+  background: rgba(16,185,129,0.15);
+  color: #34d399;
+}
+
+.export-btn.excel:hover {
+  background: rgba(16,185,129,0.28);
+  transform: translateY(-1px);
+}
+
+.export-btn.pdf {
+  background: rgba(239,68,68,0.15);
+  color: #f87171;
+}
+
+.export-btn.pdf:hover {
+  background: rgba(239,68,68,0.28);
+  transform: translateY(-1px);
+}
+
+.export-btn.print {
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+}
+
+.export-btn.print:hover {
+  background: rgba(59,130,246,0.28);
+  transform: translateY(-1px);
+}
+
+/* ===== CONTENT AREA ===== */
+.content {
+  padding: 28px 32px 48px;
+}
+
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== STAT CARDS ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.stat-card:nth-child(1)::before { background: var(--gradient-1); }
+.stat-card:nth-child(2)::before { background: var(--gradient-2); }
+.stat-card:nth-child(3)::before { background: var(--gradient-3); }
+.stat-card:nth-child(4)::before { background: var(--gradient-4); }
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.stat-card-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+}
+
+.stat-card:nth-child(1) .stat-card-icon { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+.stat-card:nth-child(2) .stat-card-icon { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+.stat-card:nth-child(3) .stat-card-icon { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+.stat-card:nth-child(4) .stat-card-icon { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
+
+.stat-card-trend {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.trend-up { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+.trend-neutral { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+}
+
+.stat-label {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ===== PANELS ===== */
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: rgba(15,21,36,0.4);
+}
+
+.panel-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.2px;
+}
+
+.panel-title-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.panel-body {
+  padding: 22px;
+}
+
+.panel-body.no-pad {
+  padding: 0;
+}
+
+/* ===== CHARTS GRID ===== */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.chart-container {
+  position: relative;
+  height: 280px;
+}
+
+/* ===== TABLES ===== */
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.table-search {
+  position: relative;
+}
+
+.table-search input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px 7px 32px;
+  color: var(--text-primary);
+  font-size: 12.5px;
+  width: 190px;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.table-search input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px var(--accent-blue-glow);
+}
+
+.table-search input::placeholder { color: var(--text-muted); }
+
+.table-search .search-icon {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.filter-select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 28px 7px 10px;
+  color: var(--text-primary);
+  font-size: 12.5px;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+.filter-select:focus {
+  border-color: var(--accent-blue);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+thead th {
+  background: var(--bg-secondary);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  user-select: none;
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(37,49,72,0.5);
+  transition: background 0.15s;
+}
+
+tbody tr:hover {
+  background: rgba(59,130,246,0.04);
+}
+
+tbody td {
+  padding: 11px 16px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+td.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.badge-green { background: rgba(16,185,129,0.15); color: #34d399; }
+.badge-amber { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.badge-red { background: rgba(239,68,68,0.15); color: #f87171; }
+.badge-purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.badge-cyan { background: rgba(6,182,212,0.15); color: #22d3ee; }
+.badge-gray { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.badge-pink { background: rgba(236,72,153,0.15); color: #f472b6; }
+
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-blue .badge-dot { background: #60a5fa; }
+.badge-green .badge-dot { background: #34d399; }
+.badge-amber .badge-dot { background: #fbbf24; }
+.badge-red .badge-dot { background: #f87171; }
+.badge-purple .badge-dot { background: #a78bfa; }
+.badge-cyan .badge-dot { background: #22d3ee; }
+
+/* ===== STATE CARDS ===== */
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.state-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.state-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.state-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.state-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.state-flag {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.state-card:nth-child(1) .state-flag { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+.state-card:nth-child(2) .state-flag { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+.state-card:nth-child(3) .state-flag { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+
+.state-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.state-stat {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.state-stat-value {
+  font-size: 19px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.state-stat-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.state-capacity-bar {
+  margin-top: 16px;
+}
+
+.capacity-bar-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.capacity-bar-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.capacity-bar-value {
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.capacity-bar-track {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.capacity-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+
+.state-card:nth-child(1) .capacity-bar-fill { background: var(--gradient-1); }
+.state-card:nth-child(2) .capacity-bar-fill { background: var(--gradient-2); }
+.state-card:nth-child(3) .capacity-bar-fill { background: var(--gradient-3); }
+
+/* ===== ISSUE CARDS ===== */
+.issues-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.issue-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  transition: all 0.2s;
+}
+
+.issue-card:hover {
+  border-color: var(--border-light);
+}
+
+.issue-card-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.issue-card-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.issue-card-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.issue-card-count {
+  font-size: 22px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  margin-top: 6px;
+}
+
+/* ===== TABLE FOOTER ===== */
+.table-footer {
+  padding: 13px 22px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.table-footer-info {
+  font-family: var(--font-mono);
+}
+
+/* ===== SECTION HEADER ===== */
+.section-header {
+  margin-bottom: 22px;
+}
+
+.section-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.section-header p {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 780px;
+  line-height: 1.5;
+}
+
+/* ===== COVERAGE TABLE ===== */
+.coverage-table {
+  width: 100%;
+}
+
+.coverage-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.coverage-table td {
+  padding: 12px 16px;
+  font-size: 12.5px;
+  border-bottom: 1px solid rgba(37,49,72,0.3);
+}
+
+.coverage-table tr:hover td {
+  background: rgba(59,130,246,0.04);
+}
+
+.coverage-table .state-name-cell {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.coverage-table .num-cell {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .state-grid { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .mobile-toggle { display: block; }
+  .content { padding: 20px 16px; }
+  .header { padding: 0 16px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .issues-grid { grid-template-columns: 1fr; }
+  .header-search input { width: 150px; }
+  .header-search input:focus { width: 180px; }
+  .export-toolbar { width: 100%; }
+  .export-group { flex: 1; justify-content: center; }
+}
+
+/* ===== OVERLAY ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99;
+}
+
+.sidebar-overlay.show { display: block; }
+
+/* ===== ANIMATIONS ===== */
+.animate-in {
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">
+        <h1>KEDCO</h1>
+        <span>Network Register</span>
+      </div>
+    </div>
+    <div class="unit-badge">Digitization, Asset Management<br>& Quality Assurance Unit</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Overview</div>
+      <div class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">📊</span>
+        Dashboard
+      </div>
+      <div class="nav-item" data-page="states">
+        <span class="nav-icon">🗺️</span>
+        State Coverage
+        <span class="nav-badge">3</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Registers</div>
+      <div class="nav-item" data-page="substations">
+        <span class="nav-icon">🏭</span>
+        Substations
+        <span class="nav-badge">44</span>
+      </div>
+      <div class="nav-item" data-page="transformers">
+        <span class="nav-icon">🔌</span>
+        Transformers
+        <span class="nav-badge">66</span>
+      </div>
+      <div class="nav-item" data-page="feeders">
+        <span class="nav-icon">⚡</span>
+        11 kV Feeders
+        <span class="nav-badge">127</span>
+      </div>
+      <div class="nav-item" data-page="circuits">
+        <span class="nav-icon">🔗</span>
+        33 kV & TITO
+        <span class="nav-badge">93</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Analysis</div>
+      <div class="nav-item" data-page="issues">
+        <span class="nav-icon">⚠️</span>
+        Review Priorities
+        <span class="nav-badge">8</span>
+      </div>
+      <div class="nav-item" data-page="sources">
+        <span class="nav-icon">📁</span>
+        Source Records
+        <span class="nav-badge">7</span>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-info">
+      <strong>Technical Digitalization</strong><br>
+      Asset Management & QA<br>
+      <span style="color: var(--accent-blue);">Updated Oct 15, 2026</span>
+    </div>
+  </div>
+</aside>
+
+<!-- OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- MAIN -->
+<main class="main-content">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <button class="mobile-toggle" id="mobileToggle">☰</button>
+      <div class="page-title-wrap">
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="page-subtitle" id="pageSubtitle">KEDCO Injection Substation Network Overview</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search substations, feeders..." id="globalSearch">
+      </div>
+      <div class="status-dot" title="System Active"></div>
+      <a class="logout-link" href="index.html">Log out</a>
+      <button class="header-btn" title="Print current view" onclick="window.print()">🖨️</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <section class="page-section active" id="page-dashboard">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>Network Overview</h2>
+          <p>Complete digital register of KEDCO injection substations, transformers, and feeder networks across Kano, Katsina, and Jigawa states.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportDashboardExcel()">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportDashboardPDF()">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card animate-in delay-1">
+          <div class="stat-card-header">
+            <div class="stat-card-icon">🏭</div>
+            <span class="stat-card-trend trend-up">44 retained</span>
+          </div>
+          <div class="stat-value">44</div>
+          <div class="stat-label">Injection Substations</div>
+          <div class="stat-sub">KEDCO publishes 43 — 1 reconciliation pending</div>
+        </div>
+        <div class="stat-card animate-in delay-2">
+          <div class="stat-card-header">
+            <div class="stat-card-icon">🔌</div>
+            <span class="stat-card-trend trend-neutral">66 records</span>
+          </div>
+          <div class="stat-value">66</div>
+          <div class="stat-label">Power Transformers</div>
+          <div class="stat-sub">735 MVA total stated capacity</div>
+        </div>
+        <div class="stat-card animate-in delay-3">
+          <div class="stat-card-header">
+            <div class="stat-card-icon">⚡</div>
+            <span class="stat-card-trend trend-up">127 feeders</span>
+          </div>
+          <div class="stat-value">127</div>
+          <div class="stat-label">11 kV Feeders</div>
+          <div class="stat-sub">All pending field verification</div>
+        </div>
+        <div class="stat-card animate-in delay-4">
+          <div class="stat-card-header">
+            <div class="stat-card-icon">🔗</div>
+            <span class="stat-card-trend trend-neutral">93 circuits</span>
+          </div>
+          <div class="stat-value">93</div>
+          <div class="stat-label">33 kV / TITO Links</div>
+          <div class="stat-sub">TITO arrangements unconfirmed</div>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-icon" style="background:rgba(59,130,246,0.15);color:var(--accent-blue);">📊</div>
+              Capacity by State (MVA)
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-container">
+              <canvas id="chartCapacity"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-icon" style="background:rgba(139,92,246,0.15);color:var(--accent-purple);">🍩</div>
+              Asset Distribution
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-container">
+              <canvas id="chartDistribution"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COVERAGE TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(16,185,129,0.15);color:var(--accent-green);">📋</div>
+            Coverage by Physical State
+          </div>
+          <div class="export-toolbar">
+            <div class="export-group">
+              <button class="export-btn excel" onclick="exportCoverageExcel()">📊 Excel</button>
+              <button class="export-btn pdf" onclick="exportCoveragePDF()">📄 PDF</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table class="coverage-table">
+              <thead>
+                <tr>
+                  <th>State</th>
+                  <th>Stations</th>
+                  <th>Transformers</th>
+                  <th>Stated Capacity</th>
+                  <th>11 kV Feeders</th>
+                  <th>33 kV / Links</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="state-name-cell">Kano</td>
+                  <td class="num-cell">25</td>
+                  <td class="num-cell">40</td>
+                  <td class="num-cell">502.5 MVA</td>
+                  <td class="num-cell">82</td>
+                  <td class="num-cell">56</td>
+                </tr>
+                <tr>
+                  <td class="state-name-cell">Katsina</td>
+                  <td class="num-cell">10</td>
+                  <td class="num-cell">15</td>
+                  <td class="num-cell">150.0 MVA</td>
+                  <td class="num-cell">30</td>
+                  <td class="num-cell">20</td>
+                </tr>
+                <tr>
+                  <td class="state-name-cell">Jigawa</td>
+                  <td class="num-cell">9</td>
+                  <td class="num-cell">11</td>
+                  <td class="num-cell">82.5 MVA</td>
+                  <td class="num-cell">15</td>
+                  <td class="num-cell">17</td>
+                </tr>
+                <tr style="background:rgba(59,130,246,0.04);font-weight:600;">
+                  <td class="state-name-cell" style="color:var(--accent-blue);">Total</td>
+                  <td class="num-cell" style="color:var(--accent-blue);">44</td>
+                  <td class="num-cell" style="color:var(--accent-blue);">66</td>
+                  <td class="num-cell" style="color:var(--accent-blue);">735.0 MVA</td>
+                  <td class="num-cell" style="color:var(--accent-blue);">127</td>
+                  <td class="num-cell" style="color:var(--accent-blue);">93</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERIFICATION ISSUES -->
+      <div class="panel" style="margin-top:22px;">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(239,68,68,0.15);color:var(--accent-red);">⚠️</div>
+            Verification Summary
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="issues-grid">
+            <div class="issue-card">
+              <div class="issue-card-icon" style="background:rgba(245,158,11,0.15);color:var(--accent-amber);">🔄</div>
+              <div class="issue-card-title">Unconfirmed TITO / Links</div>
+              <div class="issue-card-desc">TITO arrangements not explicitly verified</div>
+              <div class="issue-card-count" style="color:var(--accent-amber);">93</div>
+            </div>
+            <div class="issue-card">
+              <div class="issue-card-icon" style="background:rgba(239,68,68,0.15);color:var(--accent-red);">⚡</div>
+              <div class="issue-card-title">Voltage Conflicts</div>
+              <div class="issue-card-desc">Circuits labelled both 33 kV and 11 kV</div>
+              <div class="issue-card-count" style="color:var(--accent-red);">8</div>
+            </div>
+            <div class="issue-card">
+              <div class="issue-card-icon" style="background:rgba(139,92,246,0.15);color:var(--accent-purple);">📍</div>
+              <div class="issue-card-title">Locations Not Supplied</div>
+              <div class="issue-card-desc">Street addresses and GPS absent</div>
+              <div class="issue-card-count" style="color:var(--accent-purple);">44</div>
+            </div>
+            <div class="issue-card">
+              <div class="issue-card-icon" style="background:rgba(6,182,212,0.15);color:var(--accent-cyan);">📛</div>
+              <div class="issue-card-title">Nameplate Ratios Missing</div>
+              <div class="issue-card-desc">Voltage ratios require nameplate confirmation</div>
+              <div class="issue-card-count" style="color:var(--accent-cyan);">66</div>
+            </div>
+            <div class="issue-card">
+              <div class="issue-card-icon" style="background:rgba(236,72,153,0.15);color:var(--accent-pink);">🏷️</div>
+              <div class="issue-card-title">Station Identity Conflicts</div>
+              <div class="issue-card-desc">Kafin Hausa vs Hadejia; Power House vs IBB</div>
+              <div class="issue-card-count" style="color:var(--accent-pink);">6</div>
+            </div>
+            <div class="issue-card">
+              <div class="issue-card-icon" style="background:rgba(59,130,246,0.15);color:var(--accent-blue);">📝</div>
+              <div class="issue-card-title">Missing Details</div>
+              <div class="issue-card-desc">Feeder records with incomplete source data</div>
+              <div class="issue-card-count" style="color:var(--accent-blue);">80+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATES PAGE ===== -->
+    <section class="page-section" id="page-states">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>State Coverage</h2>
+          <p>Detailed breakdown of network assets by physical state and operating region.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportStatesExcel()">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportStatesPDF()">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-grid">
+        <div class="state-card animate-in delay-1">
+          <div class="state-card-header">
+            <div class="state-name">Kano</div>
+            <div class="state-flag">KN</div>
+          </div>
+          <div class="state-stats">
+            <div class="state-stat">
+              <div class="state-stat-value">25</div>
+              <div class="state-stat-label">Substations</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">40</div>
+              <div class="state-stat-label">Transformers</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">82</div>
+              <div class="state-stat-label">11 kV Feeders</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">56</div>
+              <div class="state-stat-label">33 kV Links</div>
+            </div>
+          </div>
+          <div class="state-capacity-bar">
+            <div class="capacity-bar-header">
+              <span class="capacity-bar-label">Total Capacity</span>
+              <span class="capacity-bar-value">502.5 MVA</span>
+            </div>
+            <div class="capacity-bar-track">
+              <div class="capacity-bar-fill" style="width: 68.3%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="state-card animate-in delay-2">
+          <div class="state-card-header">
+            <div class="state-name">Katsina</div>
+            <div class="state-flag">KT</div>
+          </div>
+          <div class="state-stats">
+            <div class="state-stat">
+              <div class="state-stat-value">10</div>
+              <div class="state-stat-label">Substations</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">15</div>
+              <div class="state-stat-label">Transformers</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">30</div>
+              <div class="state-stat-label">11 kV Feeders</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">20</div>
+              <div class="state-stat-label">33 kV Links</div>
+            </div>
+          </div>
+          <div class="state-capacity-bar">
+            <div class="capacity-bar-header">
+              <span class="capacity-bar-label">Total Capacity</span>
+              <span class="capacity-bar-value">150.0 MVA</span>
+            </div>
+            <div class="capacity-bar-track">
+              <div class="capacity-bar-fill" style="width: 20.4%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="state-card animate-in delay-3">
+          <div class="state-card-header">
+            <div class="state-name">Jigawa</div>
+            <div class="state-flag">JG</div>
+          </div>
+          <div class="state-stats">
+            <div class="state-stat">
+              <div class="state-stat-value">9</div>
+              <div class="state-stat-label">Substations</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">11</div>
+              <div class="state-stat-label">Transformers</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">15</div>
+              <div class="state-stat-label">11 kV Feeders</div>
+            </div>
+            <div class="state-stat">
+              <div class="state-stat-value">17</div>
+              <div class="state-stat-label">33 kV Links</div>
+            </div>
+          </div>
+          <div class="state-capacity-bar">
+            <div class="capacity-bar-header">
+              <span class="capacity-bar-label">Total Capacity</span>
+              <span class="capacity-bar-value">82.5 MVA</span>
+            </div>
+            <div class="capacity-bar-track">
+              <div class="capacity-bar-fill" style="width: 11.2%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-icon" style="background:rgba(59,130,246,0.15);color:var(--accent-blue);">📈</div>
+              Feeders by State
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-container">
+              <canvas id="chartStateFeeders"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-title-icon" style="background:rgba(16,185,129,0.15);color:var(--accent-green);">🏭</div>
+              Stations per State
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-container">
+              <canvas id="chartStateStations"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SUBSTATIONS PAGE ===== -->
+    <section class="page-section" id="page-substations">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>Injection Substations</h2>
+          <p>44 named station records retained for reconciliation. Physical station names preserved from source data.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportTableExcel('substations')">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportTablePDF('substations')">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(59,130,246,0.15);color:var(--accent-blue);">🏭</div>
+            All Substations Register
+          </div>
+          <div class="table-controls">
+            <div class="table-search">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Search stations..." id="substationSearch">
+            </div>
+            <select class="filter-select" id="substationStateFilter">
+              <option value="">All States</option>
+              <option value="Kano">Kano</option>
+              <option value="Katsina">Katsina</option>
+              <option value="Jigawa">Jigawa</option>
+            </select>
+            <select class="filter-select" id="substationStatusFilter">
+              <option value="">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Review source">Review Source</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table id="substationTable">
+              <thead>
+                <tr>
+                  <th>Station ID</th>
+                  <th>State</th>
+                  <th>Operating Region</th>
+                  <th>Injection Substation</th>
+                  <th>Transformers</th>
+                  <th>Capacity (MVA)</th>
+                  <th>11 kV Feeders</th>
+                  <th>Location</th>
+                  <th>TITO Status</th>
+                  <th>Review</th>
+                </tr>
+              </thead>
+              <tbody id="substationBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer">
+          <span class="table-footer-info" id="substationCount">44 records</span>
+          <span>Physical station names retained for reconciliation</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TRANSFORMERS PAGE ===== -->
+    <section class="page-section" id="page-transformers">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>Power Transformers</h2>
+          <p>66 injection power transformer records. One record per station and stated transformer ID. Voltage ratios require nameplate confirmation.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportTableExcel('transformers')">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportTablePDF('transformers')">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(139,92,246,0.15);color:var(--accent-purple);">🔌</div>
+            Transformer Register
+          </div>
+          <div class="table-controls">
+            <div class="table-search">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Search transformers..." id="transformerSearch">
+            </div>
+            <select class="filter-select" id="transformerStateFilter">
+              <option value="">All States</option>
+              <option value="Kano">Kano</option>
+              <option value="Katsina">Katsina</option>
+              <option value="Jigawa">Jigawa</option>
+            </select>
+            <select class="filter-select" id="transformerCapacityFilter">
+              <option value="">All Capacities</option>
+              <option value="7.5">7.5 MVA</option>
+              <option value="15">15 MVA</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table id="transformerTable">
+              <thead>
+                <tr>
+                  <th>TR Key</th>
+                  <th>State</th>
+                  <th>Substation</th>
+                  <th>TR ID</th>
+                  <th>Capacity</th>
+                  <th>Incoming 33 kV</th>
+                  <th>Source Substation</th>
+                  <th>11 kV Feeders</th>
+                  <th>Review</th>
+                </tr>
+              </thead>
+              <tbody id="transformerBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer">
+          <span class="table-footer-info" id="transformerCount">66 records</span>
+          <span>Nameplate voltage ratios require confirmation</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FEEDERS PAGE ===== -->
+    <section class="page-section" id="page-feeders">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>11 kV Feeder Register</h2>
+          <p>127 outgoing 11 kV feeder records. Transformer keys link each outgoing feeder to its injection transformer and incoming source.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportTableExcel('feeders')">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportTablePDF('feeders')">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(16,185,129,0.15);color:var(--accent-green);">⚡</div>
+            All 11 kV Feeders
+          </div>
+          <div class="table-controls">
+            <div class="table-search">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Search feeders..." id="feederSearch">
+            </div>
+            <select class="filter-select" id="feederStateFilter">
+              <option value="">All States</option>
+              <option value="Kano">Kano</option>
+              <option value="Katsina">Katsina</option>
+              <option value="Jigawa">Jigawa</option>
+            </select>
+            <select class="filter-select" id="feederBandFilter">
+              <option value="">All Bands</option>
+              <option value="A">Band A</option>
+              <option value="B">Band B</option>
+              <option value="C">Band C</option>
+              <option value="D">Band D</option>
+              <option value="E">Band E</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table id="feederTable">
+              <thead>
+                <tr>
+                  <th>Feeder ID</th>
+                  <th>State</th>
+                  <th>Region</th>
+                  <th>Substation</th>
+                  <th>TR ID</th>
+                  <th>Capacity</th>
+                  <th>Incoming 33 kV</th>
+                  <th>Outgoing 11 kV</th>
+                  <th>Source</th>
+                  <th>Band</th>
+                  <th>TITO</th>
+                </tr>
+              </thead>
+              <tbody id="feederBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer">
+          <span class="table-footer-info" id="feederCount">127 records</span>
+          <span>Filter any column using controls above</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CIRCUITS PAGE ===== -->
+    <section class="page-section" id="page-circuits">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>33 kV Feeders & TITO Connections</h2>
+          <p>93 transmission circuits and TITO arrangements. TITO status is unconfirmed unless explicitly verified.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportTableExcel('circuits')">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportTablePDF('circuits')">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(245,158,11,0.15);color:var(--accent-amber);">🔗</div>
+            33 kV Circuit Register
+          </div>
+          <div class="table-controls">
+            <div class="table-search">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Search circuits..." id="circuitSearch">
+            </div>
+            <select class="filter-select" id="circuitStateFilter">
+              <option value="">All States</option>
+              <option value="Kano">Kano</option>
+              <option value="Katsina">Katsina</option>
+              <option value="Jigawa">Jigawa</option>
+            </select>
+            <select class="filter-select" id="circuitTypeFilter">
+              <option value="">All Types</option>
+              <option value="Source feeder">Source Feeder</option>
+              <option value="Dual source">Dual Source</option>
+              <option value="Connection listed">Connection at Injection</option>
+              <option value="Responsibility">Responsibility Only</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table id="circuitTable">
+              <thead>
+                <tr>
+                  <th>Circuit ID</th>
+                  <th>State</th>
+                  <th>Source Substation</th>
+                  <th>Source TR</th>
+                  <th>33 kV Feeder</th>
+                  <th>Connected ISS</th>
+                  <th>Connection Type</th>
+                  <th>TITO Status</th>
+                  <th>Voltage</th>
+                </tr>
+              </thead>
+              <tbody id="circuitBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer">
+          <span class="table-footer-info" id="circuitCount">93 records</span>
+          <span>TITO status unconfirmed unless explicitly verified</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ISSUES PAGE ===== -->
+    <section class="page-section" id="page-issues">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>Review Priorities</h2>
+          <p>Key data quality issues and reconciliation items requiring field verification or source review.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportIssuesExcel()">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportIssuesPDF()">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(239,68,68,0.15);color:var(--accent-red);">⚠️</div>
+            Priority Issues Register
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table id="issuesTable">
+              <thead>
+                <tr>
+                  <th>Priority</th>
+                  <th>Issue</th>
+                  <th>Detail</th>
+                  <th>Action Required</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-red"><span class="badge-dot"></span>Critical</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Network Completeness</td>
+                  <td>44 named station records vs published total 43</td>
+                  <td>Reconcile Kafin Hausa, Hadejia Old/NIPP and IBB Way/NIPP station boundaries</td>
+                  <td class="mono">1</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-red"><span class="badge-dot"></span>Critical</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">TITO Arrangements</td>
+                  <td>No explicit 33 kV TITO sequence supplied</td>
+                  <td>Confirm turn-in feeder, turn-out feeder, station and switch positions using approved SLDs</td>
+                  <td class="mono">93</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-amber"><span class="badge-dot"></span>High</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Station Locations</td>
+                  <td>Street addresses and GPS absent</td>
+                  <td>Enter verified station addresses in Substations register</td>
+                  <td class="mono">44</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-amber"><span class="badge-dot"></span>High</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Transformer Ratios</td>
+                  <td>Nameplate voltage ratios absent</td>
+                  <td>Record actual nameplate ratios. Source describes 33/11 kV service only</td>
+                  <td class="mono">66</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-amber"><span class="badge-dot"></span>High</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Voltage Conflicts</td>
+                  <td>Eight local circuits labelled both 33 kV and 11 kV</td>
+                  <td>Review 33 kV & TITO rows marked 33/11 kV conflict before adding to 11 kV inventory</td>
+                  <td class="mono">8</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-purple"><span class="badge-dot"></span>Medium</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Station Identity</td>
+                  <td>Kafin Hausa vs Hadejia Old/NIPP; Power House vs IBB names</td>
+                  <td>Retain source names and confirm physical station boundaries</td>
+                  <td class="mono">6</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-purple"><span class="badge-dot"></span>Medium</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Na'ibawa / Tamburawa</td>
+                  <td>YANLEMO and MASARAUTA differ between masters</td>
+                  <td>Clean and user masters retained. Confirm normal electrical supply</td>
+                  <td class="mono">2</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-blue"><span class="badge-dot"></span>Low</span></td>
+                  <td style="font-weight:600;color:var(--text-primary);">Kazaure Geography</td>
+                  <td>Chart places Kazaure in Katsina; geographic state is Jigawa</td>
+                  <td>Geographic state corrected. Operating region remains for confirmation</td>
+                  <td class="mono">1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SOURCES PAGE ===== -->
+    <section class="page-section" id="page-sources">
+      <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <div>
+          <h2>Source Records & Evidence</h2>
+          <p>Original data sources and evidence references. Evidence IDs in the registers refer to these sources.</p>
+        </div>
+        <div class="export-toolbar">
+          <div class="export-group">
+            <button class="export-btn excel" onclick="exportSourcesExcel()">📊 Excel</button>
+            <button class="export-btn pdf" onclick="exportSourcesPDF()">📄 PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon" style="background:rgba(6,182,212,0.15);color:var(--accent-cyan);">📁</div>
+            Evidence Register
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrapper">
+            <table id="sourcesTable">
+              <thead>
+                <tr>
+                  <th>Evidence ID</th>
+                  <th>Source File / Publisher</th>
+                  <th>File Section / URL</th>
+                  <th>Record Set</th>
+                  <th>Use & Limitation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-blue">S1</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/operations-maintenance/re_te.html</td>
+                  <td>RETE_HEADPI_DATA; INJECTION_STATIONS</td>
+                  <td>209 feeder topology rows. Station transformer text sometimes aggregated.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-blue">S1S</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/operations-maintenance/re_te.html</td>
+                  <td>INJECTION_STATIONS</td>
+                  <td>44 supply path records, including Dan Agundi split and Club alternate path.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-green">S2</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/system-operations/dispatch.html</td>
+                  <td>KEDCO_11KV_CLEAN_MASTER</td>
+                  <td>128 named feeder rows, 43 station names. Primary detailed mapping.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-purple">S3</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/system-operations/dispatch.html</td>
+                  <td>kedco11VerifiedMaster()</td>
+                  <td>132 rows. Runtime mapping can disagree with clean/user masters.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-amber">S4</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/system-operations/dispatch.html</td>
+                  <td>kedco11UserMaster()</td>
+                  <td>130 rows. Used for corroboration and missing transformer details only.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-cyan">S5</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/operations-maintenance/re_te.html</td>
+                  <td>TRANSMISSION_FEEDERS</td>
+                  <td>81 source circuits. Funtua corrections retained.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-pink">S6</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">teams-main.zip</td>
+                  <td>pages/system-operations/dispatch.html</td>
+                  <td>KEDCO_33KV_STATE_GROUPS</td>
+                  <td>Geographic state assignments for named source circuits.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-gray">W1</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">KEDCO official website</td>
+                  <td>https://kedco.ng/who-we-are/</td>
+                  <td>Accessed 15 October 2026</td>
+                  <td>Published total 43 injection substations. Not a named asset schedule.</td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-gray">W2</span></td>
+                  <td style="font-weight:500;color:var(--text-primary);">Jigawa State Government</td>
+                  <td>https://jigawastate.gov.ng/kazaureemirate</td>
+                  <td>Accessed 15 October 2026</td>
+                  <td>Kazaure is in Jigawa State. Physical state ≠ KEDCO operating region.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+// ===== DATA =====
+const substations = [
+  {id:"ISS-001",state:"Kano",region:"Kano Industrial / Kano West",name:"Abattoir",tr:1,cap:15.0,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-002",state:"Kano",region:"Kano City",name:"Ado Bayero",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-003",state:"Kano",region:"Kano North",name:"BUK",tr:1,cap:15.0,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-004",state:"Kano",region:"Kano Industrial",name:"Bata (Sharada)",tr:2,cap:30.0,fdr:4,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Bata matches Sharada feeder group in chart"},
+  {id:"ISS-005",state:"Kano",region:"Kano Northwest",name:"Bichi",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-006",state:"Kano",region:"Kano Central",name:"Briscoe",tr:3,cap:45.0,fdr:6,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-007",state:"Kano",region:"Kano Central / Kano Northwest",name:"Bukavu",tr:2,cap:30.0,fdr:5,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-008",state:"Kano",region:"Kano West",name:"Challawa",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-009",state:"Kano",region:"Kano Central",name:"Club",tr:3,cap:45.0,fdr:7,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-010",state:"Kano",region:"Kano City / Kano Industrial",name:"Dan Agundi",tr:2,cap:30.0,fdr:5,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-011",state:"Kano",region:"Kano Central / Kano East",name:"Farm Center",tr:2,cap:15.0,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-012",state:"Kano",region:"Kano Industrial",name:"Gongoni",tr:2,cap:22.5,fdr:4,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-013",state:"Kano",region:"Kano City / Kano North",name:"Goron Dutse",tr:2,cap:30.0,fdr:5,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-014",state:"Kano",region:"Kano Central / Kano City",name:"I.D.H",tr:3,cap:45.0,fdr:5,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-015",state:"Kano",region:"Kano East",name:"Jogana",tr:1,cap:15.0,fdr:5,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-016",state:"Kano",region:"Kano Central / Kano East",name:"Kawaji",tr:1,cap:15.0,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-017",state:"Kano",region:"Kano Southwest",name:"Law School",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-018",state:"Kano",region:"Kano South",name:"Mariri",tr:2,cap:15.0,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-019",state:"Kano",region:"Kano West",name:"Na'ibawa",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Hourly master disagrees on YANLEMO/MASARAUTA"},
+  {id:"ISS-020",state:"Kano",region:"Kano Central",name:"PRP",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-021",state:"Kano",region:"Kano City",name:"Radio House",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-022",state:"Kano",region:"Kano Central",name:"Small Scale",tr:1,cap:15.0,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-023",state:"Kano",region:"Kano West",name:"Tamburawa",tr:1,cap:15.0,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-024",state:"Kano",region:"Kano South",name:"Wudil",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-025",state:"Kano",region:"Kano East / Kano Industrial / Kano West",name:"Zaria Road",tr:3,cap:45.0,fdr:7,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-026",state:"Katsina",region:"Katsina West",name:"Daura",tr:2,cap:15.0,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-027",state:"Katsina",region:"Katsina North",name:"Fadama",tr:2,cap:15.0,fdr:4,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-028",state:"Katsina",region:"Katsina South",name:"Funtua",tr:1,cap:15.0,fdr:4,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-029",state:"Katsina",region:"Katsina North",name:"IBB NIPP",tr:2,cap:22.5,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Chart groups under Power House"},
+  {id:"ISS-030",state:"Katsina",region:"Katsina North",name:"IBB Way",tr:2,cap:30.0,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Chart groups under Power House"},
+  {id:"ISS-031",state:"Katsina",region:"Katsina North",name:"Kofar Guga",tr:2,cap:15.0,fdr:4,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-032",state:"Katsina",region:"Katsina North",name:"Kofar Sauri",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-033",state:"Katsina",region:"Katsina South",name:"Malumfashi",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-034",state:"Katsina",region:"Katsina Central",name:"Musawa",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-035",state:"Katsina",region:"Katsina South",name:"Textile",tr:1,cap:15.0,fdr:4,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-036",state:"Jigawa",region:"Jigawa South",name:"Birnin Kudu",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-037",state:"Jigawa",region:"Jigawa South",name:"Dutse NIPP",tr:2,cap:15.0,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-038",state:"Jigawa",region:"Jigawa South",name:"Dutse Old",tr:1,cap:7.5,fdr:3,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-039",state:"Jigawa",region:"Jigawa West",name:"Gumel",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""},
+  {id:"ISS-040",state:"Jigawa",region:"Jigawa North",name:"Hadejia NIPP",tr:2,cap:15.0,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Split station; chart groups differently"},
+  {id:"ISS-041",state:"Jigawa",region:"Jigawa North",name:"Hadejia Old",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Split station; chart groups differently"},
+  {id:"ISS-042",state:"Jigawa",region:"Jigawa North",name:"Kafin Hausa",tr:1,cap:7.5,fdr:0,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Chart-only station; MAJE/FANTAI conflict"},
+  {id:"ISS-043",state:"Jigawa",region:"Katsina West",name:"Kazaure",tr:1,cap:7.5,fdr:2,loc:"Not supplied",tito:"Not confirmed",review:"Review source",issue:"Physical state Jigawa; chart records Katsina"},
+  {id:"ISS-044",state:"Jigawa",region:"Jigawa North",name:"M/Madori",tr:1,cap:7.5,fdr:1,loc:"Not supplied",tito:"Not confirmed",review:"Pending",issue:""}
+];
+
+const transformers = [
+  {key:"TR-001",state:"Kano",sub:"Dan Agundi",trid:"TR1",cap:15.0,incoming:"DAN AGUNDI 1",source:"Dan'Agundi 132 kV",fdr:3,review:"Pending"},
+  {key:"TR-002",state:"Kano",sub:"Dan Agundi",trid:"TR2",cap:15.0,incoming:"DAN AGUNDI 2",source:"Dan'Agundi 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-003",state:"Kano",sub:"Goron Dutse",trid:"TR1",cap:15.0,incoming:"BUK",source:"Dan'Agundi 132 kV",fdr:4,review:"Review source"},
+  {key:"TR-004",state:"Kano",sub:"Radio House",trid:"TR1",cap:7.5,incoming:"KURNA",source:"Dan'Agundi 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-005",state:"Kano",sub:"Ado Bayero",trid:"TR1",cap:7.5,incoming:"KURNA",source:"Dan'Agundi 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-006",state:"Kano",sub:"Bukavu",trid:"TR1",cap:15.0,incoming:"KURNA",source:"Dan'Agundi 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-007",state:"Kano",sub:"Bukavu",trid:"TR2",cap:15.0,incoming:"KURNA",source:"Dan'Agundi 132 kV",fdr:3,review:"Review source"},
+  {key:"TR-008",state:"Kano",sub:"I.D.H",trid:"TR1",cap:15.0,incoming:"IDH",source:"Dakata 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-009",state:"Kano",sub:"I.D.H",trid:"TR2",cap:15.0,incoming:"IDH",source:"Dakata 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-010",state:"Kano",sub:"I.D.H",trid:"TR3",cap:15.0,incoming:"IDH",source:"Dakata 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-011",state:"Kano",sub:"Small Scale",trid:"TR1",cap:15.0,incoming:"SMALL SCALE",source:"Dakata 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-012",state:"Kano",sub:"Bata (Sharada)",trid:"TR1",cap:15.0,incoming:"SHARADA-BATA",source:"Kumbotso 330/132/33 kV",fdr:2,review:"Pending"},
+  {key:"TR-013",state:"Kano",sub:"Bata (Sharada)",trid:"TR2",cap:15.0,incoming:"SHARADA-BATA",source:"Kumbotso 330/132/33 kV",fdr:2,review:"Pending"},
+  {key:"TR-014",state:"Kano",sub:"Gongoni",trid:"TR1",cap:15.0,incoming:"SHARADA-BATA",source:"Kumbotso 330/132/33 kV",fdr:3,review:"Pending"},
+  {key:"TR-015",state:"Kano",sub:"Gongoni",trid:"TR2",cap:7.5,incoming:"SHARADA-BATA",source:"Kumbotso 330/132/33 kV",fdr:1,review:"Pending"},
+  {key:"TR-016",state:"Kano",sub:"Zaria Road",trid:"TR1",cap:15.0,incoming:"ZARIA ROAD",source:"Dan'Agundi 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-017",state:"Kano",sub:"Zaria Road",trid:"TR2",cap:15.0,incoming:"ZARIA ROAD",source:"Dan'Agundi 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-018",state:"Kano",sub:"Zaria Road",trid:"TR3",cap:15.0,incoming:"ZARIA ROAD",source:"Dan'Agundi 132 kV",fdr:3,review:"Pending"},
+  {key:"TR-019",state:"Kano",sub:"Abattoir",trid:"TR1",cap:15.0,incoming:"ATM",source:"Kumbotso 330/132/33 kV",fdr:3,review:"Review source"},
+  {key:"TR-020",state:"Kano",sub:"Challawa",trid:"TR1",cap:7.5,incoming:"CHALLAWA",source:"Tamburawa 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-021",state:"Kano",sub:"Tamburawa",trid:"TR1",cap:15.0,incoming:"TAMBURAWA",source:"Tamburawa 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-022",state:"Kano",sub:"Na'ibawa",trid:"TR1",cap:7.5,incoming:"ZARIA ROAD",source:"Dan'Agundi 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-023",state:"Kano",sub:"Law School",trid:"TR1",cap:7.5,incoming:"LAW SCHOOL",source:"Kwanar Dangora 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-024",state:"Kano",sub:"Club",trid:"TR1",cap:15.0,incoming:"CLUB",source:"Dan'Agundi 132 kV",fdr:3,review:"Pending"},
+  {key:"TR-025",state:"Kano",sub:"Club",trid:"TR2",cap:15.0,incoming:"CLUB",source:"Dan'Agundi 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-026",state:"Kano",sub:"Club",trid:"TR3",cap:15.0,incoming:"CLUB",source:"Dan'Agundi 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-027",state:"Kano",sub:"Farm Center",trid:"TR1",cap:7.5,incoming:"CBN",source:"Dan'Agundi 132 kV",fdr:1,review:"Review source"},
+  {key:"TR-028",state:"Kano",sub:"Farm Center",trid:"TR2",cap:7.5,incoming:"CBN",source:"Dan'Agundi 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-029",state:"Kano",sub:"Mariri",trid:"TR2",cap:7.5,incoming:"WUDIL",source:"Wudil 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-030",state:"Kano",sub:"Mariri",trid:"TR1",cap:7.5,incoming:"WUDIL",source:"Wudil 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-031",state:"Kano",sub:"Jogana",trid:"TR1",cap:15.0,incoming:"NNPC",source:"Dakata 132 kV",fdr:5,review:"Pending"},
+  {key:"TR-032",state:"Kano",sub:"Wudil",trid:"TR1",cap:7.5,incoming:"WUDIL",source:"Wudil 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-033",state:"Kano",sub:"Kawaji",trid:"TR1",cap:15.0,incoming:"GASKIYA",source:"Dakata 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-034",state:"Kano",sub:"Briscoe",trid:"TR1",cap:15.0,incoming:"BRISCOE",source:"Dakata 132 kV",fdr:3,review:"Pending"},
+  {key:"TR-035",state:"Kano",sub:"Briscoe",trid:"TR2",cap:15.0,incoming:"BRISCOE",source:"Dakata 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-036",state:"Kano",sub:"Briscoe",trid:"TR3",cap:15.0,incoming:"BRISCOE",source:"Dakata 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-037",state:"Kano",sub:"PRP",trid:"TR1",cap:7.5,incoming:"IDH",source:"Dakata 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-038",state:"Kano",sub:"Bichi",trid:"TR1",cap:7.5,incoming:"BICHI",source:"Bichi 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-039",state:"Kano",sub:"BUK",trid:"TR2*",cap:15.0,incoming:"RICE FIELD",source:"Tamburawa 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-040",state:"Kano",sub:"Goron Dutse",trid:"TR2*",cap:15.0,incoming:"—",source:"—",fdr:1,review:"Review source"},
+  {key:"TR-041",state:"Jigawa",sub:"Hadejia Old",trid:"TR1",cap:7.5,incoming:"—",source:"Hadejia 132 kV",fdr:1,review:"Review source"},
+  {key:"TR-042",state:"Jigawa",sub:"Hadejia NIPP",trid:"TR2",cap:7.5,incoming:"HADEJIA",source:"Hadejia 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-043",state:"Jigawa",sub:"Hadejia NIPP",trid:"TR1",cap:7.5,incoming:"—",source:"Hadejia 132 kV",fdr:1,review:"Review source"},
+  {key:"TR-044",state:"Jigawa",sub:"M/Madori",trid:"TR1",cap:7.5,incoming:"GUMEL",source:"Hadejia 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-045",state:"Jigawa",sub:"Gumel",trid:"TR1",cap:7.5,incoming:"GUMEL",source:"Hadejia 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-046",state:"Jigawa",sub:"Dutse Old",trid:"TR1",cap:7.5,incoming:"DUTSE",source:"Dutse 132 kV",fdr:3,review:"Pending"},
+  {key:"TR-047",state:"Jigawa",sub:"Dutse NIPP",trid:"TR1",cap:7.5,incoming:"DUTSE",source:"Dutse 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-048",state:"Jigawa",sub:"Dutse NIPP",trid:"TR2",cap:7.5,incoming:"DUTSE",source:"Dutse 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-049",state:"Jigawa",sub:"Birnin Kudu",trid:"TR1",cap:7.5,incoming:"BIRNIN KUDU",source:"Dutse 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-050",state:"Katsina",sub:"IBB Way",trid:"TR1",cap:15.0,incoming:"POWER HOUSE",source:"Katsina 132 kV",fdr:1,review:"Review source"},
+  {key:"TR-051",state:"Katsina",sub:"IBB NIPP",trid:"TR1",cap:15.0,incoming:"POWER HOUSE",source:"Katsina 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-052",state:"Katsina",sub:"IBB NIPP",trid:"TR2",cap:7.5,incoming:"POWER HOUSE",source:"Katsina 132 kV",fdr:1,review:"Review source"},
+  {key:"TR-053",state:"Katsina",sub:"IBB Way",trid:"TR3",cap:15.0,incoming:"POWER HOUSE",source:"Katsina 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-054",state:"Katsina",sub:"Kofar Guga",trid:"TR1",cap:7.5,incoming:"KOFAR GUGA",source:"Katsina 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-055",state:"Katsina",sub:"Kofar Guga",trid:"TR2",cap:7.5,incoming:"KOFAR GUGA",source:"Katsina 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-056",state:"Katsina",sub:"Fadama",trid:"TR1",cap:7.5,incoming:"AJIWA",source:"Katsina 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-057",state:"Katsina",sub:"Fadama",trid:"TR2",cap:7.5,incoming:"AJIWA",source:"Katsina 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-058",state:"Katsina",sub:"Kofar Sauri",trid:"TR1",cap:7.5,incoming:"KAITA",source:"Katsina 132 kV",fdr:1,review:"Pending"},
+  {key:"TR-059",state:"Katsina",sub:"Musawa",trid:"TR1",cap:7.5,incoming:"MUSAWA",source:"Kankia 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-060",state:"Jigawa",sub:"Kazaure",trid:"TR1",cap:7.5,incoming:"KAZAURE",source:"Daura 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-061",state:"Katsina",sub:"Daura",trid:"TR1",cap:7.5,incoming:"DAURA",source:"Daura 132 kV",fdr:1,review:"Review source"},
+  {key:"TR-062",state:"Katsina",sub:"Daura",trid:"TR2",cap:7.5,incoming:"DAURA",source:"Daura 132 kV",fdr:2,review:"Review source"},
+  {key:"TR-063",state:"Katsina",sub:"Funtua",trid:"TR1",cap:15.0,incoming:"KATSINA ROAD",source:"Funtua 132 kV",fdr:4,review:"Pending"},
+  {key:"TR-064",state:"Katsina",sub:"Textile",trid:"TR1",cap:15.0,incoming:"TEXTILE",source:"Funtua 132 kV",fdr:4,review:"Pending"},
+  {key:"TR-065",state:"Katsina",sub:"Malumfashi",trid:"TR1",cap:7.5,incoming:"MALUMFASHI",source:"Funtua 132 kV",fdr:2,review:"Pending"},
+  {key:"TR-066",state:"Jigawa",sub:"Kafin Hausa",trid:"TR1",cap:7.5,incoming:"KAFIN HAUSA",source:"Hadejia 132 kV",fdr:0,review:"Review source"}
+];
+
+const feeders = [
+  {id:"F11-001",state:"Kano",region:"Kano City",sub:"Dan Agundi",tr:"TR1",cap:15.0,incoming:"DAN AGUNDI 1",outgoing:"KOFAR NASSARAWA",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-002",state:"Kano",region:"Kano Industrial",sub:"Dan Agundi",tr:"TR1",cap:15.0,incoming:"DAN AGUNDI 1",outgoing:"AJASA",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-003",state:"Kano",region:"Kano City",sub:"Dan Agundi",tr:"TR1",cap:15.0,incoming:"DAN AGUNDI 1",outgoing:"IBRAHIM TAIWO",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-004",state:"Kano",region:"Kano City",sub:"Dan Agundi",tr:"TR2",cap:15.0,incoming:"DAN AGUNDI 2",outgoing:"CITY",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-005",state:"Kano",region:"Kano City",sub:"Dan Agundi",tr:"TR2",cap:15.0,incoming:"DAN AGUNDI 2",outgoing:"KOFAR NAISA",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-006",state:"Kano",region:"Kano City",sub:"Goron Dutse",tr:"TR1",cap:15.0,incoming:"BUK",outgoing:"JAKARA",source:"Dan'Agundi 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-007",state:"Kano",region:"Kano North",sub:"Goron Dutse",tr:"TR1",cap:15.0,incoming:"BUK",outgoing:"AMINU KANO",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-008",state:"Kano",region:"Kano City",sub:"Goron Dutse",tr:"TR1",cap:15.0,incoming:"BUK",outgoing:"SANI MAINAGGE",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-009",state:"Kano",region:"Kano North",sub:"Goron Dutse",tr:"TR1",cap:15.0,incoming:"BUK",outgoing:"KABUGA",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-010",state:"Kano",region:"Kano City",sub:"Radio House",tr:"TR1",cap:7.5,incoming:"KURNA",outgoing:"BELLO DANDAGO",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-011",state:"Kano",region:"Kano City",sub:"Ado Bayero",tr:"TR1",cap:7.5,incoming:"KURNA",outgoing:"SAGAGI",source:"Dan'Agundi 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-012",state:"Kano",region:"Kano Northwest",sub:"Bukavu",tr:"TR1",cap:15.0,incoming:"KURNA",outgoing:"BACHIRAWA",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-013",state:"Kano",region:"Kano Central",sub:"Bukavu",tr:"TR1",cap:15.0,incoming:"KURNA",outgoing:"NOMANSLAND",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-014",state:"Kano",region:"Kano Northwest",sub:"Bukavu",tr:"TR2",cap:15.0,incoming:"KURNA",outgoing:"FEDERAL SECRETARIAT",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-015",state:"Kano",region:"Kano Northwest",sub:"Bukavu",tr:"TR2",cap:15.0,incoming:"KURNA",outgoing:"ORTHOPAEDIC",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-016",state:"Kano",region:"Kano Northwest",sub:"Bukavu",tr:"TR2",cap:15.0,incoming:"KURNA",outgoing:"FANISAU",source:"Dan'Agundi 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-017",state:"Kano",region:"Kano City",sub:"I.D.H",tr:"TR1",cap:15.0,incoming:"IDH",outgoing:"FAGGE",source:"Dakata 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-018",state:"Kano",region:"Kano City",sub:"I.D.H",tr:"TR2",cap:15.0,incoming:"IDH",outgoing:"GWAMMAJA",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-019",state:"Kano",region:"Kano Central",sub:"I.D.H",tr:"TR2",cap:15.0,incoming:"IDH",outgoing:"SABON GARI",source:"Dakata 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-020",state:"Kano",region:"Kano Central",sub:"I.D.H",tr:"TR3",cap:15.0,incoming:"IDH",outgoing:"ABUJA ROAD",source:"Dakata 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-021",state:"Kano",region:"Kano City",sub:"I.D.H",tr:"TR3",cap:15.0,incoming:"IDH",outgoing:"KOKI",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-022",state:"Kano",region:"Kano Central",sub:"Small Scale",tr:"TR1",cap:15.0,incoming:"SMALL SCALE",outgoing:"TUDUN MURTALA",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-023",state:"Kano",region:"Kano Central",sub:"Small Scale",tr:"TR1",cap:15.0,incoming:"SMALL SCALE",outgoing:"RIMIN KEBE",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-024",state:"Kano",region:"Kano Industrial",sub:"Bata (Sharada)",tr:"TR1",cap:15.0,incoming:"SHARADA-BATA",outgoing:"HOUSING ESTATE",source:"Kumbotso 330/132/33 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-025",state:"Kano",region:"Kano Industrial",sub:"Bata (Sharada)",tr:"TR1",cap:15.0,incoming:"SHARADA-BATA",outgoing:"NNDC",source:"Kumbotso 330/132/33 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-026",state:"Kano",region:"Kano Industrial",sub:"Bata (Sharada)",tr:"TR2",cap:15.0,incoming:"SHARADA-BATA",outgoing:"TUKUNTAWA",source:"Kumbotso 330/132/33 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-027",state:"Kano",region:"Kano Industrial",sub:"Bata (Sharada)",tr:"TR2",cap:15.0,incoming:"SHARADA-BATA",outgoing:"SHARADA INDUSTRIAL",source:"Kumbotso 330/132/33 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-028",state:"Kano",region:"Kano Industrial",sub:"Gongoni",tr:"TR1",cap:15.0,incoming:"SHARADA-BATA",outgoing:"JAEN",source:"Kumbotso 330/132/33 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-029",state:"Kano",region:"Kano Industrial",sub:"Gongoni",tr:"TR1",cap:15.0,incoming:"SHARADA-BATA",outgoing:"CHIRANCI",source:"Kumbotso 330/132/33 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-030",state:"Kano",region:"Kano Industrial",sub:"Gongoni",tr:"TR1",cap:15.0,incoming:"SHARADA-BATA",outgoing:"MUNDADU",source:"Kumbotso 330/132/33 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-031",state:"Kano",region:"Kano Industrial",sub:"Gongoni",tr:"TR2",cap:7.5,incoming:"SHARADA-BATA",outgoing:"DALA FOODS",source:"Kumbotso 330/132/33 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-032",state:"Kano",region:"Kano West",sub:"Zaria Road",tr:"TR1",cap:15.0,incoming:"ZARIA ROAD",outgoing:"KARKASARA",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-033",state:"Kano",region:"Kano East",sub:"Zaria Road",tr:"TR1",cap:15.0,incoming:"ZARIA ROAD",outgoing:"KUNDILA",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-034",state:"Kano",region:"Kano West",sub:"Zaria Road",tr:"TR2",cap:15.0,incoming:"ZARIA ROAD",outgoing:"UNGUWA UKU",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-035",state:"Kano",region:"Kano East",sub:"Zaria Road",tr:"TR2",cap:15.0,incoming:"ZARIA ROAD",outgoing:"HOTORO",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-036",state:"Kano",region:"Kano Industrial",sub:"Zaria Road",tr:"TR3",cap:15.0,incoming:"ZARIA ROAD",outgoing:"HAUSAWA",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-037",state:"Kano",region:"Kano Industrial",sub:"Zaria Road",tr:"TR3",cap:15.0,incoming:"ZARIA ROAD",outgoing:"SALLARI",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-038",state:"Kano",region:"Kano Industrial",sub:"Zaria Road",tr:"TR3",cap:15.0,incoming:"ZARIA ROAD",outgoing:"MARHABA",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-039",state:"Kano",region:"Kano Industrial",sub:"Abattoir",tr:"TR1",cap:15.0,incoming:"ATM",outgoing:"CERAMIC",source:"Kumbotso 330/132/33 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-040",state:"Kano",region:"Kano Industrial",sub:"Abattoir",tr:"TR1",cap:15.0,incoming:"ATM",outgoing:"NBC",source:"Kumbotso 330/132/33 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-041",state:"Kano",region:"Kano West",sub:"Abattoir",tr:"TR1",cap:15.0,incoming:"ATM",outgoing:"ZAWACIKI",source:"Kumbotso 330/132/33 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-042",state:"Kano",region:"Kano West",sub:"Challawa",tr:"TR1",cap:7.5,incoming:"CHALLAWA",outgoing:"CHALAWA WATER PLANT",source:"Tamburawa 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-043",state:"Kano",region:"Kano West",sub:"Challawa",tr:"TR1",cap:7.5,incoming:"CHALLAWA",outgoing:"PANSHEKARA",source:"Tamburawa 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-044",state:"Kano",region:"Kano West",sub:"Tamburawa",tr:"TR1",cap:15.0,incoming:"TAMBURAWA",outgoing:"TAMBURAWA WATER PLANT",source:"Tamburawa 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-045",state:"Kano",region:"Kano West",sub:"Na'ibawa",tr:"TR1",cap:7.5,incoming:"ZARIA ROAD",outgoing:"YANLEMO",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-046",state:"Kano",region:"Kano West",sub:"Na'ibawa",tr:"TR1",cap:7.5,incoming:"ZARIA ROAD",outgoing:"MASARAUTA",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-047",state:"Kano",region:"Kano Southwest",sub:"Law School",tr:"TR1",cap:7.5,incoming:"LAW SCHOOL",outgoing:"CAMPUS",source:"Kwanar Dangora 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-048",state:"Kano",region:"Kano Southwest",sub:"Law School",tr:"TR1",cap:7.5,incoming:"LAW SCHOOL",outgoing:"TIGA",source:"Kwanar Dangora 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-049",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR1",cap:15.0,incoming:"CLUB",outgoing:"AHMADU BELLO",source:"Dan'Agundi 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-050",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR1",cap:15.0,incoming:"CLUB",outgoing:"RACE COURSE",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-051",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR1",cap:15.0,incoming:"CLUB",outgoing:"BADAWA",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-052",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR2",cap:15.0,incoming:"CLUB",outgoing:"BANK ROAD",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-053",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR2",cap:15.0,incoming:"CLUB",outgoing:"AUDU BAKO",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-054",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR3",cap:15.0,incoming:"CLUB",outgoing:"MURTALA MUHAMMED",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-055",state:"Kano",region:"Kano Central",sub:"Club",tr:"TR3",cap:15.0,incoming:"CLUB",outgoing:"LAMIDO",source:"Dan'Agundi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-056",state:"Kano",region:"Kano Central",sub:"Farm Center",tr:"TR1",cap:7.5,incoming:"CBN",outgoing:"DR BALA",source:"Dan'Agundi 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-057",state:"Kano",region:"Kano East",sub:"Farm Center",tr:"TR2",cap:7.5,incoming:"CBN",outgoing:"TARAUNI",source:"Dan'Agundi 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-058",state:"Kano",region:"Kano East",sub:"Farm Center",tr:"TR2",cap:7.5,incoming:"CBN",outgoing:"LAMBISA",source:"Dan'Agundi 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-059",state:"Kano",region:"Kano South",sub:"Mariri",tr:"TR2",cap:7.5,incoming:"WUDIL",outgoing:"DANLADI NASIDI",source:"Wudil 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-060",state:"Kano",region:"Kano South",sub:"Mariri",tr:"TR2",cap:7.5,incoming:"WUDIL",outgoing:"MAIDUGURI ROAD",source:"Wudil 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-061",state:"Kano",region:"Kano South",sub:"Mariri",tr:"TR1",cap:7.5,incoming:"WUDIL",outgoing:"FARAWA",source:"Wudil 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-062",state:"Kano",region:"Kano East",sub:"Jogana",tr:"TR1",cap:15.0,incoming:"NNPC",outgoing:"TALAMIZ",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-063",state:"Kano",region:"Kano East",sub:"Jogana",tr:"TR1",cap:15.0,incoming:"NNPC",outgoing:"TOKARAWA",source:"Dakata 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-064",state:"Kano",region:"Kano East",sub:"Jogana",tr:"TR1",cap:15.0,incoming:"NNPC",outgoing:"TSAMIYA BABBA",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-065",state:"Kano",region:"Kano East",sub:"Jogana",tr:"TR1",cap:15.0,incoming:"NNPC",outgoing:"DUNDU",source:"Dakata 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-066",state:"Kano",region:"—",sub:"Jogana",tr:"TR1",cap:15.0,incoming:"NNPC",outgoing:"ASIAN PLASTICS",source:"Dakata 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-067",state:"Kano",region:"Kano South",sub:"Wudil",tr:"TR1",cap:7.5,incoming:"WUDIL",outgoing:"MAKAMA",source:"Wudil 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-068",state:"Kano",region:"Kano South",sub:"Wudil",tr:"TR1",cap:7.5,incoming:"WUDIL",outgoing:"WUDIL COMMERCIAL",source:"Wudil 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-069",state:"Kano",region:"Kano Central / Kano East",sub:"Kawaji",tr:"TR1",cap:15.0,incoming:"GASKIYA",outgoing:"DAKATA",source:"Dakata 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-070",state:"Kano",region:"Kano East",sub:"Kawaji",tr:"TR1",cap:15.0,incoming:"GASKIYA",outgoing:"YANKABA",source:"Dakata 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-071",state:"Kano",region:"Kano Central",sub:"Briscoe",tr:"TR1",cap:15.0,incoming:"BRISCOE",outgoing:"MAIMALARI",source:"Dakata 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-072",state:"Kano",region:"Kano Central",sub:"Briscoe",tr:"TR1",cap:15.0,incoming:"BRISCOE",outgoing:"TUDUN WADA",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-073",state:"Kano",region:"Kano Central",sub:"Briscoe",tr:"TR1",cap:15.0,incoming:"BRISCOE",outgoing:"YUSUF ROAD",source:"Dakata 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-074",state:"Kano",region:"Kano Central",sub:"Briscoe",tr:"TR2",cap:15.0,incoming:"BRISCOE",outgoing:"INDEPENDENCE",source:"Dakata 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-075",state:"Kano",region:"Kano Central",sub:"Briscoe",tr:"TR2",cap:15.0,incoming:"BRISCOE",outgoing:"GWAGWARWA",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-076",state:"Kano",region:"Kano Central",sub:"Briscoe",tr:"TR3",cap:15.0,incoming:"BRISCOE",outgoing:"BOMPAI",source:"Dakata 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-077",state:"Kano",region:"Kano Central",sub:"PRP",tr:"TR1",cap:7.5,incoming:"IDH",outgoing:"KAURA GOJE",source:"Dakata 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-078",state:"Kano",region:"Kano Central",sub:"PRP",tr:"TR1",cap:7.5,incoming:"IDH",outgoing:"AIRPORT ROAD",source:"Dakata 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-079",state:"Kano",region:"Kano Northwest",sub:"Bichi",tr:"TR1",cap:7.5,incoming:"BICHI",outgoing:"BICHI TOWN",source:"Bichi 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-080",state:"Kano",region:"Kano North",sub:"BUK",tr:"TR2*",cap:15.0,incoming:"RICE FIELD",outgoing:"GWARZO ROAD",source:"Tamburawa 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-081",state:"Kano",region:"Kano North",sub:"Goron Dutse",tr:"TR2*",cap:15.0,incoming:"—",outgoing:"NEW SITE",source:"—",band:"B",tito:"Not confirmed"},
+  {id:"F11-082",state:"Kano",region:"Kano North",sub:"BUK",tr:"TR2*",cap:15.0,incoming:"RICE FIELD",outgoing:"KUNTAU",source:"Tamburawa 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-083",state:"Jigawa",region:"Jigawa North",sub:"Hadejia Old",tr:"TR1",cap:7.5,incoming:"—",outgoing:"MAJE",source:"Hadejia 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-084",state:"Jigawa",region:"—",sub:"Hadejia NIPP",tr:"TR2",cap:7.5,incoming:"HADEJIA",outgoing:"SHAGARI",source:"Hadejia 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-085",state:"Jigawa",region:"Jigawa North",sub:"Hadejia NIPP",tr:"TR1",cap:7.5,incoming:"—",outgoing:"FANTAI",source:"Hadejia 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-086",state:"Jigawa",region:"Jigawa North",sub:"M/Madori",tr:"TR1",cap:7.5,incoming:"GUMEL",outgoing:"MAKWALLA",source:"Hadejia 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-087",state:"Jigawa",region:"Jigawa West",sub:"Gumel",tr:"TR1",cap:7.5,incoming:"GUMEL",outgoing:"LAUTAI",source:"Hadejia 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-088",state:"Jigawa",region:"Jigawa South",sub:"Dutse Old",tr:"TR1",cap:7.5,incoming:"DUTSE",outgoing:"NUHU SUNUSI",source:"Dutse 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-089",state:"Jigawa",region:"Jigawa South",sub:"Dutse Old",tr:"TR1",cap:7.5,incoming:"DUTSE",outgoing:"LIMAWA",source:"Dutse 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-090",state:"Jigawa",region:"Jigawa South",sub:"Dutse Old",tr:"TR1",cap:7.5,incoming:"DUTSE",outgoing:"GARU",source:"Dutse 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-091",state:"Jigawa",region:"Jigawa South",sub:"Dutse NIPP",tr:"TR1",cap:7.5,incoming:"DUTSE",outgoing:"SANI ABACHA WAY",source:"Dutse 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-092",state:"Jigawa",region:"Jigawa South",sub:"Dutse NIPP",tr:"TR2",cap:7.5,incoming:"DUTSE",outgoing:"TAKUR",source:"Dutse 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-093",state:"Jigawa",region:"Jigawa South",sub:"Dutse NIPP",tr:"TR2",cap:7.5,incoming:"DUTSE",outgoing:"GOVERNMENT HOUSE DUTSE",source:"Dutse 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-094",state:"Jigawa",region:"Jigawa South",sub:"Birnin Kudu",tr:"TR1",cap:7.5,incoming:"BIRNIN KUDU",outgoing:"SCHOOL OF NURSING",source:"Dutse 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-095",state:"Jigawa",region:"Jigawa South",sub:"Birnin Kudu",tr:"TR1",cap:7.5,incoming:"BIRNIN KUDU",outgoing:"MAJESTIC",source:"Dutse 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-096",state:"Katsina",region:"Katsina North",sub:"IBB Way",tr:"TR1",cap:15.0,incoming:"POWER HOUSE",outgoing:"GRA",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-097",state:"Katsina",region:"Katsina North",sub:"IBB NIPP",tr:"TR1",cap:15.0,incoming:"POWER HOUSE",outgoing:"ARMY BARRACKS",source:"Katsina 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-098",state:"Katsina",region:"Katsina North",sub:"IBB NIPP",tr:"TR2",cap:7.5,incoming:"POWER HOUSE",outgoing:"KANO ROAD",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-099",state:"Katsina",region:"Katsina North",sub:"IBB Way",tr:"TR3",cap:15.0,incoming:"POWER HOUSE",outgoing:"KOFAR MARUSA",source:"Katsina 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-100",state:"Katsina",region:"Katsina North",sub:"IBB Way",tr:"TR3",cap:15.0,incoming:"POWER HOUSE",outgoing:"DANDAGORO",source:"Katsina 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-101",state:"Katsina",region:"Katsina North",sub:"IBB NIPP",tr:"TR1",cap:15.0,incoming:"POWER HOUSE",outgoing:"LOW COST",source:"Katsina 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-102",state:"Katsina",region:"Katsina North",sub:"Kofar Guga",tr:"TR1",cap:7.5,incoming:"KOFAR GUGA",outgoing:"NATSINTA",source:"Katsina 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-103",state:"Katsina",region:"Katsina North",sub:"Kofar Guga",tr:"TR1",cap:7.5,incoming:"KOFAR GUGA",outgoing:"HOSPITAL ROAD",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-104",state:"Katsina",region:"Katsina North",sub:"Kofar Guga",tr:"TR2",cap:7.5,incoming:"KOFAR GUGA",outgoing:"FMC",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-105",state:"Katsina",region:"Katsina North",sub:"Kofar Guga",tr:"TR2",cap:7.5,incoming:"KOFAR GUGA",outgoing:"DUTSEN SAFE",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-106",state:"Katsina",region:"Katsina North",sub:"Fadama",tr:"TR1",cap:7.5,incoming:"AJIWA",outgoing:"HASSAN USMAN ROAD",source:"Katsina 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-107",state:"Katsina",region:"Katsina North",sub:"Fadama",tr:"TR1",cap:7.5,incoming:"AJIWA",outgoing:"APEX",source:"Katsina 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-108",state:"Katsina",region:"Katsina North",sub:"Fadama",tr:"TR2",cap:7.5,incoming:"AJIWA",outgoing:"NAGOGGO",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-109",state:"Katsina",region:"Katsina North",sub:"Fadama",tr:"TR2",cap:7.5,incoming:"AJIWA",outgoing:"KADARKO",source:"Katsina 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-110",state:"Katsina",region:"Katsina North",sub:"Kofar Sauri",tr:"TR1",cap:7.5,incoming:"KAITA",outgoing:"MUHAMMED DIKKO",source:"Katsina 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-111",state:"Katsina",region:"Katsina Central",sub:"Musawa",tr:"TR1",cap:7.5,incoming:"MUSAWA",outgoing:"KOFAR FADA",source:"Kankia 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-112",state:"Katsina",region:"Katsina Central",sub:"Musawa",tr:"TR1",cap:7.5,incoming:"MUSAWA",outgoing:"MATAZU",source:"Kankia 132 kV",band:"D",tito:"Not confirmed"},
+  {id:"F11-113",state:"Jigawa",region:"Katsina West",sub:"Kazaure",tr:"TR1",cap:7.5,incoming:"KAZAURE",outgoing:"KANTI",source:"Daura 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-114",state:"Jigawa",region:"Katsina West",sub:"Kazaure",tr:"TR1",cap:7.5,incoming:"KAZAURE",outgoing:"DANTUNKU",source:"Daura 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-115",state:"Katsina",region:"Katsina West",sub:"Daura",tr:"TR1",cap:7.5,incoming:"DAURA",outgoing:"DAURAMA",source:"Daura 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-116",state:"Katsina",region:"Katsina West",sub:"Daura",tr:"TR2",cap:7.5,incoming:"DAURA",outgoing:"BAYAJIDDA",source:"Daura 132 kV",band:"B",tito:"Not confirmed"},
+  {id:"F11-117",state:"Katsina",region:"Katsina West",sub:"Daura",tr:"TR2",cap:7.5,incoming:"DAURA",outgoing:"RIJIMA",source:"Daura 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-118",state:"Katsina",region:"Katsina South",sub:"Funtua",tr:"TR1",cap:15.0,incoming:"KATSINA ROAD",outgoing:"JABIRI",source:"Funtua 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-119",state:"Katsina",region:"Katsina South",sub:"Funtua",tr:"TR1",cap:15.0,incoming:"KATSINA ROAD",outgoing:"DUTSEN REME",source:"Funtua 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-120",state:"Katsina",region:"Katsina South",sub:"Funtua",tr:"TR1",cap:15.0,incoming:"KATSINA ROAD",outgoing:"INDUSTRIAL",source:"Funtua 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-121",state:"Katsina",region:"Katsina South",sub:"Funtua",tr:"TR1",cap:15.0,incoming:"KATSINA ROAD",outgoing:"TOWN",source:"Funtua 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-122",state:"Katsina",region:"Katsina South",sub:"Textile",tr:"TR1",cap:15.0,incoming:"TEXTILE",outgoing:"NAKOWA",source:"Funtua 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-123",state:"Katsina",region:"Katsina South",sub:"Textile",tr:"TR1",cap:15.0,incoming:"TEXTILE",outgoing:"MAI RUWA",source:"Funtua 132 kV",band:"E",tito:"Not confirmed"},
+  {id:"F11-124",state:"Katsina",region:"Katsina South",sub:"Textile",tr:"TR1",cap:15.0,incoming:"TEXTILE",outgoing:"FUNTUA TEXTILE MILL",source:"Funtua 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-125",state:"Katsina",region:"Katsina South",sub:"Textile",tr:"TR1",cap:15.0,incoming:"TEXTILE",outgoing:"FUNTUA WATER WORKS",source:"Funtua 132 kV",band:"A",tito:"Not confirmed"},
+  {id:"F11-126",state:"Katsina",region:"Katsina South",sub:"Malumfashi",tr:"TR1",cap:7.5,incoming:"MALUMFASHI",outgoing:"BCGA",source:"Funtua 132 kV",band:"C",tito:"Not confirmed"},
+  {id:"F11-127",state:"Katsina",region:"Katsina South",sub:"Malumfashi",tr:"TR1",cap:7.5,incoming:"MALUMFASHI",outgoing:"GALADIMA",source:"Funtua 132 kV",band:"C",tito:"Not confirmed"}
+];
+
+const circuits = [
+  {id:"TCN-001",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR1 60 MVA",feeder:"SMALL SCALE",connected:"Small Scale",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-002",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR1 60 MVA",feeder:"IDH",connected:"I.D.H; PRP",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-003",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR2 60 MVA",feeder:"MTN",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-004",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR2 60 MVA",feeder:"FLOUR MILLS",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-005",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR3 30 MVA",feeder:"GASKIYA",connected:"Kawaji",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-006",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR4 100 MVA",feeder:"NNPC",connected:"Jogana",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-007",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR4 100 MVA",feeder:"JODA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-008",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR4 100 MVA",feeder:"RUMMAWA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-009",state:"Kano",source:"Dakata 132 kV",tr:"3DKT-TR4 100 MVA",feeder:"BRISCOE",connected:"Briscoe",type:"Dual source",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-010",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR3 60 MVA",feeder:"KURNA",connected:"Ado Bayero; Bukavu; Radio House",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-011",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR3 60 MVA",feeder:"CBN",connected:"Farm Center",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-012",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR3 60 MVA",feeder:"CLUB",connected:"Club",type:"Dual source",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-013",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR4 100 MVA",feeder:"DAN AGUNDI 1",connected:"Dan Agundi",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-014",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR4 100 MVA",feeder:"ZARIA ROAD",connected:"Na'ibawa; Zaria Road",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-015",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR3 600 MVA",feeder:"BUK",connected:"Goron Dutse",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-016",state:"Kano",source:"Dan'Agundi 132 kV",tr:"3DNG-TR4 100 MVA",feeder:"DAN AGUNDI 2",connected:"Dan Agundi",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-017",state:"Katsina",source:"Daura 132 kV",tr:"3DRA-TR2 40 MVA",feeder:"MASHI",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-018",state:"Katsina",source:"Daura 132 kV",tr:"3DRA-TR2 40 MVA",feeder:"DAURA",connected:"Daura",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-019",state:"Katsina",source:"Daura 132 kV",tr:"3DRA-TR2 40 MVA",feeder:"MAI'ADU'A",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-020",state:"Jigawa",source:"Daura 132 kV",tr:"3DRA-TR2 40 MVA",feeder:"KAZAURE",connected:"Kazaure",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-021",state:"Katsina",source:"Funtua 132 kV",tr:"—",feeder:"KATSINA ROAD",connected:"Funtua",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-022",state:"Katsina",source:"Funtua 132 kV",tr:"—",feeder:"TEXTILE",connected:"Textile",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-023",state:"Katsina",source:"Funtua 132 kV",tr:"—",feeder:"MALUMFASHI",connected:"Malumfashi",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-024",state:"Jigawa",source:"Dutse 132 kV",tr:"3DUT-TR1 30/40 MVA",feeder:"SUMAILA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-025",state:"Jigawa",source:"Dutse 132 kV",tr:"3DUT-TR1 30/40 MVA",feeder:"DUTSE",connected:"Dutse NIPP; Dutse Old",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-026",state:"Jigawa",source:"Dutse 132 kV",tr:"3DUT-TR2 30/40 MVA",feeder:"BIRNIN KUDU",connected:"Birnin Kudu",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-027",state:"Jigawa",source:"Dutse 132 kV",tr:"3DUT-TR2 30/40 MVA",feeder:"JAHUN",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-028",state:"Jigawa",source:"Hadejia 132 kV",tr:"3HDJ-TR1 60 MVA",feeder:"BIRNIWA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-029",state:"Jigawa",source:"Hadejia 132 kV",tr:"3HDJ-TR1 60 MVA",feeder:"HADEJIA",connected:"Hadejia NIPP",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-030",state:"Jigawa",source:"Hadejia 132 kV",tr:"3HDJ-TR3 60 MVA",feeder:"KAFIN HAUSA",connected:"Kafin Hausa",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-031",state:"Jigawa",source:"Hadejia 132 kV",tr:"3HDJ-TR3 60 MVA",feeder:"UNIVERSITY",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-032",state:"Jigawa",source:"Hadejia 132 kV",tr:"3HDJ-TR3 60 MVA",feeder:"GUMEL",connected:"Gumel; M/Madori",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-033",state:"Jigawa",source:"Hadejia 132 kV",tr:"3HDJ-TR3 60 MVA",feeder:"NGURU",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-034",state:"Katsina",source:"Kankia 132 kV",tr:"3KNK-TR1 60 MVA",feeder:"AMPRI GLOBAL",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-035",state:"Kano",source:"Kankia 132 kV",tr:"3KNK-TR1 60 MVA",feeder:"DANBATTA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-036",state:"Katsina",source:"Kankia 132 kV",tr:"3KNK-TR1 60 MVA",feeder:"DUTSENMA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-037",state:"Katsina",source:"Kankia 132 kV",tr:"3KNK-TR1 60 MVA",feeder:"MUSAWA",connected:"Musawa",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-038",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR1 60 MVA",feeder:"AJIWA",connected:"Fadama",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-039",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR1 60 MVA",feeder:"POWER HOUSE",connected:"IBB Way; IBB NIPP",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-040",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR1 60 MVA",feeder:"POLY",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-041",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR2 30 MVA",feeder:"KAITA",connected:"Kofar Sauri",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-042",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR3 30 MVA",feeder:"WIND FARM",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-043",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR3 30 MVA",feeder:"KOFAR GUGA",connected:"Kofar Guga",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-044",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR4 60 MVA",feeder:"NAK",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-045",state:"Katsina",source:"Katsina 132 kV",tr:"3KTN-TR4 60 MVA",feeder:"JIBIA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-046",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR1 60 MVA",feeder:"MR JIMETA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-047",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR1 60 MVA",feeder:"SPANISH 1",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-048",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR1 60 MVA",feeder:"BAGAUDA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-049",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR2 100 MVA",feeder:"ANGELS",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-050",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR2 100 MVA",feeder:"ATM",connected:"Abattoir",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-051",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR2 100 MVA",feeder:"MAMUDA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-052",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR2 100 MVA",feeder:"SHARADA-BATA",connected:"Gongoni; Bata (Sharada)",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-053",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR4 60 MVA",feeder:"DANGOTE",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-054",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR4 60 MVA",feeder:"SPANISH 2",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-055",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"3KBT-TR4 60 MVA",feeder:"GAIDA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-056",state:"Kano",source:"Kwanar Dangora 132 kV",tr:"3KDG-TR2 40 MVA",feeder:"LAW SCHOOL",connected:"Law School",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-057",state:"Kano",source:"Kwanar Dangora 132 kV",tr:"3KDG-TR2 40 MVA",feeder:"KARAYE",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-058",state:"Kano",source:"Kwanar Dangora 132 kV",tr:"3KDG-TR2 40 MVA",feeder:"FALGORE",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-059",state:"Kano",source:"Kwanar Dangora 132 kV",tr:"3KDG-TR2 40 MVA",feeder:"N B CERAMICS",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-060",state:"Kano",source:"Tamburawa 132 kV",tr:"3TAM-TR1 40 MVA",feeder:"COCA-COLA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-061",state:"Kano",source:"Tamburawa 132 kV",tr:"3TAM-TR2 30/40 MVA",feeder:"KWANKWASO",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-062",state:"Kano",source:"Tamburawa 132 kV",tr:"3TAM-TR2 30/40 MVA",feeder:"TAMBURAWA",connected:"Tamburawa",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-063",state:"Kano",source:"Tamburawa 132 kV",tr:"3TAM-TR2 30/40 MVA",feeder:"CHALLAWA",connected:"Challawa",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-064",state:"Kano",source:"Tamburawa 132 kV",tr:"3TAM-TR2 30/40 MVA",feeder:"RICE FIELD",connected:"BUK",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-065",state:"Kano",source:"Tamburawa 132 kV",tr:"3TAM-TR2 30/40 MVA",feeder:"R/ZAKI",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-066",state:"Kano",source:"Wudil 132 kV",tr:"3WDL-TR1 30/40 MVA",feeder:"GARKO",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-067",state:"Kano",source:"Wudil 132 kV",tr:"3WDL-TR1 30/40 MVA",feeder:"GANO",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-068",state:"Kano",source:"Wudil 132 kV",tr:"3WDL-TR1 30/40 MVA",feeder:"WUDIL",connected:"Mariri; Wudil",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-069",state:"Jigawa",source:"Gagarawa 132 kV",tr:"3GGW-TR1 60 MVA",feeder:"SARKIN YAKI",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-070",state:"Jigawa",source:"Gagarawa 132 kV",tr:"3GGW-TR1 60 MVA",feeder:"MAJIYA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-071",state:"Jigawa",source:"Gagarawa 132 kV",tr:"3GGW-TR2 60 MVA",feeder:"GAGARAWA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-072",state:"Jigawa",source:"Gagarawa 132 kV",tr:"3GGW-TR2 60 MVA",feeder:"GUJUNGU",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-073",state:"Jigawa",source:"Gagarawa 132 kV",tr:"3GGW-TR2 60 MVA",feeder:"RICE MILL",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-074",state:"Kano",source:"Bichi 132 kV",tr:"3BCH-TR1 30 MVA",feeder:"BICHI",connected:"Bichi",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-075",state:"Kano",source:"Bichi 132 kV",tr:"3BCH-TR1 30 MVA",feeder:"WATARI",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-076",state:"Kano",source:"Bichi 132 kV",tr:"3BCH-TR1 30 MVA",feeder:"HON. ABUBAKAR KABIR",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-077",state:"Kano",source:"Bichi 132 kV",tr:"3BCH-TR1 30 MVA",feeder:"DAWANAU INDUSTRIAL",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"TCN-078",state:"Kano",source:"Bichi 132 kV",tr:"3BCH-TR1 30 MVA",feeder:"DANZABUWA",connected:"—",type:"Source feeder",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"L33-082",state:"Kano",source:"Dan'Agundi 132 kV",tr:"—",feeder:"Dawanau",connected:"Bukavu",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-083",state:"Kano",source:"Dakata 132 kV",tr:"—",feeder:"Rangaza",connected:"I.D.H",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-084",state:"Kano",source:"Dakata 132 kV",tr:"—",feeder:"Gezawa",connected:"Small Scale",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-085",state:"Kano",source:"Dan'Agundi 132 kV",tr:"—",feeder:"Dawaki",connected:"Zaria Road",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-086",state:"Kano",source:"Kumbotso 330/132/33 kV",tr:"—",feeder:"Haske Solar",connected:"Abattoir",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-087",state:"Kano",source:"Tamburawa 132 kV",tr:"—",feeder:"Dr Jamil Gwamna",connected:"Tamburawa",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-088",state:"Kano",source:"Wudil 132 kV",tr:"—",feeder:"Gaya",connected:"Wudil",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"L33-089",state:"Kano",source:"Bichi 132 kV",tr:"—",feeder:"Badume",connected:"Bichi",type:"Connection listed",tito:"Not confirmed",voltage:"33/11 kV conflict"},
+  {id:"RESP-087",state:"Kano",source:"—",tr:"—",feeder:"Dawanau Old",connected:"—",type:"Responsibility",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"RESP-120",state:"Kano",source:"—",tr:"—",feeder:"DR. Jamil",connected:"—",type:"Responsibility",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"RESP-194",state:"Jigawa",source:"—",tr:"—",feeder:"Gwaran Old",connected:"—",type:"Responsibility",tito:"Not confirmed",voltage:"33 kV"},
+  {id:"RESP-195",state:"Jigawa",source:"—",tr:"—",feeder:"Gwaran New",connected:"—",type:"Responsibility",tito:"Not confirmed",voltage:"33 kV"}
+];
+
+// ===== GLOBAL UNIT =====
+const UNIT_NAME = "Digitization, Asset Management and Quality Assurance Unit";
+
+// ===== NAVIGATION =====
+const pageTitles = {
+  dashboard: ['Dashboard', 'KEDCO Injection Substation Network Overview'],
+  states: ['State Coverage', 'Network assets distributed across Kano, Katsina, and Jigawa'],
+  substations: ['Injection Substations', '44 named station records for reconciliation'],
+  transformers: ['Power Transformers', '66 injection transformer records with capacity data'],
+  feeders: ['11 kV Feeders', '127 outgoing feeder records linked to injection transformers'],
+  circuits: ['33 kV & TITO', '93 transmission circuits and TITO arrangements'],
+  issues: ['Review Priorities', 'Data quality issues requiring field verification'],
+  sources: ['Source Records', 'Evidence references and source documentation']
+};
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('pageTitle').textContent = pageTitles[page][0];
+    document.getElementById('pageSubtitle').textContent = pageTitles[page][1];
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+document.getElementById('mobileToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+});
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+});
+
+// ===== RENDER HELPERS =====
+function getReviewBadge(review) {
+  if (review === 'Review source') return '<span class="badge badge-red"><span class="badge-dot"></span>Review Source</span>';
+  if (review === 'Pending') return '<span class="badge badge-amber"><span class="badge-dot"></span>Pending</span>';
+  return '<span class="badge badge-gray">' + review + '</span>';
+}
+
+function getBandBadge(band) {
+  const colors = {A:'green',B:'blue',C:'purple',D:'amber',E:'red'};
+  return '<span class="badge badge-' + (colors[band]||'gray') + '">Band ' + band + '</span>';
+}
+
+function getTypeBadge(type) {
+  if (type.includes('Dual')) return '<span class="badge badge-purple"><span class="badge-dot"></span>Dual Source</span>';
+  if (type.includes('Connection')) return '<span class="badge badge-cyan"><span class="badge-dot"></span>Connection at ISS</span>';
+  if (type.includes('Responsibility')) return '<span class="badge badge-gray"><span class="badge-dot"></span>Responsibility</span>';
+  return '<span class="badge badge-blue"><span class="badge-dot"></span>Source Feeder</span>';
+}
+
+function getVoltageBadge(v) {
+  if (v.includes('conflict')) return '<span class="badge badge-red"><span class="badge-dot"></span>' + v + '</span>';
+  return '<span class="badge badge-green"><span class="badge-dot"></span>' + v + '</span>';
+}
+
+// ===== RENDER TABLES =====
+function renderSubstations(data) {
+  const tbody = document.getElementById('substationBody');
+  tbody.innerHTML = data.map(s => `
+    <tr>
+      <td class="mono">${s.id}</td>
+      <td><span class="badge badge-${s.state==='Kano'?'blue':s.state==='Katsina'?'purple':'green'}">${s.state}</span></td>
+      <td>${s.region}</td>
+      <td style="font-weight:600;color:var(--text-primary);">${s.name}</td>
+      <td class="mono">${s.tr}</td>
+      <td class="mono">${s.cap.toFixed(1)}</td>
+      <td class="mono">${s.fdr}</td>
+      <td><span class="badge badge-gray">${s.loc}</span></td>
+      <td><span class="badge badge-amber"><span class="badge-dot"></span>${s.tito}</span></td>
+      <td>${getReviewBadge(s.review)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('substationCount').textContent = data.length + ' records';
+}
+
+function renderTransformers(data) {
+  const tbody = document.getElementById('transformerBody');
+  tbody.innerHTML = data.map(t => `
+    <tr>
+      <td class="mono">${t.key}</td>
+      <td><span class="badge badge-${t.state==='Kano'?'blue':t.state==='Katsina'?'purple':'green'}">${t.state}</span></td>
+      <td style="font-weight:500;color:var(--text-primary);">${t.sub}</td>
+      <td class="mono">${t.trid}</td>
+      <td class="mono">${t.cap.toFixed(1)} MVA</td>
+      <td class="mono">${t.incoming}</td>
+      <td>${t.source}</td>
+      <td class="mono">${t.fdr}</td>
+      <td>${getReviewBadge(t.review)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('transformerCount').textContent = data.length + ' records';
+}
+
+function renderFeeders(data) {
+  const tbody = document.getElementById('feederBody');
+  tbody.innerHTML = data.map(f => `
+    <tr>
+      <td class="mono">${f.id}</td>
+      <td><span class="badge badge-${f.state==='Kano'?'blue':f.state==='Katsina'?'purple':'green'}">${f.state}</span></td>
+      <td>${f.region}</td>
+      <td style="font-weight:500;color:var(--text-primary);">${f.sub}</td>
+      <td class="mono">${f.tr}</td>
+      <td class="mono">${f.cap.toFixed(1)} MVA</td>
+      <td class="mono">${f.incoming}</td>
+      <td style="font-weight:600;color:var(--accent-cyan);">${f.outgoing}</td>
+      <td>${f.source}</td>
+      <td>${getBandBadge(f.band)}</td>
+      <td><span class="badge badge-amber"><span class="badge-dot"></span>${f.tito}</span></td>
+    </tr>
+  `).join('');
+  document.getElementById('feederCount').textContent = data.length + ' records';
+}
+
+function renderCircuits(data) {
+  const tbody = document.getElementById('circuitBody');
+  tbody.innerHTML = data.map(c => `
+    <tr>
+      <td class="mono">${c.id}</td>
+      <td><span class="badge badge-${c.state==='Kano'?'blue':c.state==='Katsina'?'purple':'green'}">${c.state}</span></td>
+      <td>${c.source}</td>
+      <td class="mono">${c.tr}</td>
+      <td style="font-weight:600;color:var(--accent-amber);">${c.feeder}</td>
+      <td>${c.connected}</td>
+      <td>${getTypeBadge(c.type)}</td>
+      <td><span class="badge badge-amber"><span class="badge-dot"></span>${c.tito}</span></td>
+      <td>${getVoltageBadge(c.voltage)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('circuitCount').textContent = data.length + ' records';
+}
+
+// Initial render
+renderSubstations(substations);
+renderTransformers(transformers);
+renderFeeders(feeders);
+renderCircuits(circuits);
+
+// ===== FILTERS =====
+function setupFilter(searchId, stateFilterId, extraFilterId, data, renderFn, extraKey) {
+  const searchEl = document.getElementById(searchId);
+  const stateEl = document.getElementById(stateFilterId);
+  const extraEl = extraFilterId ? document.getElementById(extraFilterId) : null;
+
+  function apply() {
+    const q = searchEl.value.toLowerCase();
+    const state = stateEl.value;
+    const extra = extraEl ? extraEl.value : '';
+    const filtered = data.filter(row => {
+      const matchQ = !q || Object.values(row).some(v => String(v).toLowerCase().includes(q));
+      const matchState = !state || row.state === state;
+      let matchExtra = true;
+      if (extraKey === 'cap') matchExtra = !extra || row.cap === parseFloat(extra);
+      if (extraKey === 'band') matchExtra = !extra || row.band === extra;
+      if (extraKey === 'type') matchExtra = !extra || row.type.toLowerCase().includes(extra.toLowerCase());
+      return matchQ && matchState && matchExtra;
+    });
+    renderFn(filtered);
+  }
+
+  searchEl.addEventListener('input', apply);
+  stateEl.addEventListener('change', apply);
+  if (extraEl) extraEl.addEventListener('change', apply);
+}
+
+setupFilter('substationSearch', 'substationStateFilter', 'substationStatusFilter', substations, renderSubstations, 'review');
+setupFilter('transformerSearch', 'transformerStateFilter', 'transformerCapacityFilter', transformers, renderTransformers, 'cap');
+setupFilter('feederSearch', 'feederStateFilter', 'feederBandFilter', feeders, renderFeeders, 'band');
+setupFilter('circuitSearch', 'circuitStateFilter', 'circuitTypeFilter', circuits, renderCircuits, 'type');
+
+// Fix substation status filter
+document.getElementById('substationStatusFilter').addEventListener('change', function() {
+  const q = document.getElementById('substationSearch').value.toLowerCase();
+  const state = document.getElementById('substationStateFilter').value;
+  const status = this.value;
+  const filtered = substations.filter(s => {
+    const matchQ = !q || Object.values(s).some(v => String(v).toLowerCase().includes(q));
+    const matchState = !state || s.state === state;
+    const matchStatus = !status || s.review === status;
+    return matchQ && matchState && matchStatus;
+  });
+  renderSubstations(filtered);
+});
+
+// ===== CHARTS =====
+const chartColors = {
+  blue: '#3b82f6', cyan: '#06b6d4', green: '#10b981',
+  purple: '#8b5cf6', amber: '#f59e0b', red: '#ef4444', pink: '#ec4899'
+};
+
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = 'rgba(37,49,72,0.5)';
+Chart.defaults.font.family = "'Inter', sans-serif";
+
+new Chart(document.getElementById('chartCapacity'), {
+  type: 'bar',
+  data: {
+    labels: ['Kano', 'Katsina', 'Jigawa'],
+    datasets: [{
+      label: 'Capacity (MVA)',
+      data: [502.5, 150.0, 82.5],
+      backgroundColor: [
+        'rgba(59,130,246,0.7)',
+        'rgba(139,92,246,0.7)',
+        'rgba(16,185,129,0.7)'
+      ],
+      borderColor: [chartColors.blue, chartColors.purple, chartColors.green],
+      borderWidth: 2,
+      borderRadius: 8,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#151e31', borderColor: '#253148', borderWidth: 1,
+        titleColor: '#f1f5f9', bodyColor: '#94a3b8', padding: 12, cornerRadius: 8
+      }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(37,49,72,0.3)' }, ticks: { callback: v => v + ' MVA' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartDistribution'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Substations', 'Transformers', '11 kV Feeders', '33 kV Links'],
+    datasets: [{
+      data: [44, 66, 127, 93],
+      backgroundColor: [
+        'rgba(59,130,246,0.8)', 'rgba(139,92,246,0.8)',
+        'rgba(16,185,129,0.8)', 'rgba(245,158,11,0.8)'
+      ],
+      borderColor: '#151e31', borderWidth: 3, hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '65%',
+    plugins: {
+      legend: { position: 'right', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 12 } } },
+      tooltip: { backgroundColor: '#151e31', borderColor: '#253148', borderWidth: 1, padding: 12, cornerRadius: 8 }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartStateFeeders'), {
+  type: 'bar',
+  data: {
+    labels: ['Kano', 'Katsina', 'Jigawa'],
+    datasets: [
+      { label: '11 kV Feeders', data: [82, 30, 15], backgroundColor: 'rgba(16,185,129,0.7)', borderColor: chartColors.green, borderWidth: 2, borderRadius: 6 },
+      { label: '33 kV Links', data: [56, 20, 17], backgroundColor: 'rgba(245,158,11,0.7)', borderColor: chartColors.amber, borderWidth: 2, borderRadius: 6 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { usePointStyle: true, pointStyleWidth: 10, padding: 16 } },
+      tooltip: { backgroundColor: '#151e31', borderColor: '#253148', borderWidth: 1, padding: 12, cornerRadius: 8 }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(37,49,72,0.3)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartStateStations'), {
+  type: 'polarArea',
+  data: {
+    labels: ['Kano (25)', 'Katsina (10)', 'Jigawa (9)'],
+    datasets: [{
+      data: [25, 10, 9],
+      backgroundColor: ['rgba(59,130,246,0.6)', 'rgba(139,92,246,0.6)', 'rgba(16,185,129,0.6)'],
+      borderColor: [chartColors.blue, chartColors.purple, chartColors.green], borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { padding: 16, usePointStyle: true, font: { size: 12 } } },
+      tooltip: { backgroundColor: '#151e31', borderColor: '#253148', borderWidth: 1, padding: 12, cornerRadius: 8 }
+    },
+    scales: { r: { grid: { color: 'rgba(37,49,72,0.3)' }, ticks: { display: false } } }
+  }
+});
+
+// Global search
+document.getElementById('globalSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  if (!q) return;
+  const foundSub = substations.find(s => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q));
+  const foundFdr = feeders.find(f => f.outgoing.toLowerCase().includes(q) || f.id.toLowerCase().includes(q));
+  if (foundSub) {
+    document.querySelector('[data-page="substations"]').click();
+    document.getElementById('substationSearch').value = q;
+    document.getElementById('substationSearch').dispatchEvent(new Event('input'));
+  } else if (foundFdr) {
+    document.querySelector('[data-page="feeders"]').click();
+    document.getElementById('feederSearch').value = q;
+    document.getElementById('feederSearch').dispatchEvent(new Event('input'));
+  }
+});
+
+// ============================================================
+// ===== EXPORT ENGINE =====
+// ============================================================
+
+// Utility: get formatted date
+function todayStr() { return new Date().toISOString().slice(0,10); }
+
+// Utility: current active page key
+function getActivePage() {
+  const active = document.querySelector('.nav-item.active');
+  return active ? active.dataset.page : 'dashboard';
+}
+
+// ========== EXCEL EXPORT (SheetJS) ==========
+function buildWorkbook(sheetName, rows, columns, reportTitle) {
+  const wb = XLSX.utils.book_new();
+  const header = [
+    [reportTitle],
+    [UNIT_NAME],
+    ['Generated: ' + new Date().toLocaleString()],
+    []
+  ];
+  const data = header.concat([columns.map(c => c.label)], rows);
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  // Column widths
+  ws['!cols'] = columns.map(c => ({ wch: c.width || 18 }));
+  // Merge title cells
+  ws['!merges'] = [
+    { s: { r:0, c:0 }, e: { r:0, c: columns.length-1 } },
+    { s: { r:1, c:0 }, e: { r:1, c: columns.length-1 } },
+    { s: { r:2, c:0 }, e: { r:2, c: columns.length-1 } }
+  ];
+  ws['!rows'] = [{ hpt: 30 }, { hpt: 20 }, { hpt: 18 }, { hpt: 8 }, { hpt: 22 }];
+  ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s:{r:4,c:0}, e:{r:4 + rows.length,c:columns.length - 1} }) };
+  XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  return wb;
+}
+
+function exportExcel(sheetName, rows, columns, reportTitle, filename) {
+  const wb = buildWorkbook(sheetName, rows, columns, reportTitle);
+  XLSX.writeFile(wb, filename || (sheetName.toLowerCase().replace(/\s+/g,'_') + '_' + todayStr() + '.xlsx'));
+}
+
+// ========== PDF EXPORT (jsPDF + AutoTable) ==========
+function exportPDF(title, columns, rows, filename, summaryRows) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: columns.length > 7 ? 'landscape' : 'portrait', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+
+  // Header band
+  doc.setFillColor(8, 47, 73);
+  doc.rect(0, 0, pageW, 86, 'F');
+  doc.setFillColor(20, 184, 166);
+  doc.rect(0, 86, pageW, 4, 'F');
+  doc.setTextColor(94, 234, 212);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text('KEDCO  |  NETWORK REGISTER', 40, 32);
+  doc.setTextColor(241, 245, 249);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(title, 40, 50);
+  doc.setTextColor(148, 163, 184);
+  doc.setFontSize(8);
+  doc.text(UNIT_NAME, 40, 66);
+  doc.setTextColor(148, 163, 184);
+  doc.setFontSize(7);
+  doc.text('Generated: ' + new Date().toLocaleString(), pageW - 40, 66, { align: 'right' });
+
+  // Table
+  const body = rows.map(r => columns.map(c => r[c.key] !== undefined && r[c.key] !== null ? String(r[c.key]) : ''));
+
+  doc.autoTable({
+    head: [columns.map(c => c.label)],
+    body: body,
+    startY: 102,
+    theme: 'grid',
+    styles: { fontSize: 7.5, cellPadding: 4, textColor: [30, 41, 59], lineColor: [200, 210, 220], lineWidth: 0.4, overflow: 'linebreak' },
+    headStyles: { fillColor: [15, 76, 92], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7.5, halign: 'left' },
+    alternateRowStyles: { fillColor: [238, 248, 249] },
+    margin: { left: 30, right: 30, top: 102, bottom: 40 },
+    didDrawPage: function (data) {
+      // Footer
+      const pageNum = doc.internal.getNumberOfPages();
+      doc.setFontSize(7);
+      doc.setTextColor(148, 163, 184);
+      doc.text('KEDCO — ' + UNIT_NAME, 40, pageH - 20);
+      doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + pageNum, pageW - 40, pageH - 20, { align: 'right' });
+    }
+  });
+
+  // Summary block if provided
+  if (summaryRows && summaryRows.length) {
+    let finalY = doc.lastAutoTable.finalY + 15;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Summary', 40, finalY);
+    finalY += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    summaryRows.forEach(line => {
+      finalY += 13;
+      doc.text(line, 40, finalY);
+    });
+  }
+
+  doc.save(filename || (title.toLowerCase().replace(/\s+/g,'_') + '_' + todayStr() + '.pdf'));
+}
+
+function drawReportHeader(doc, title, subtitle) {
+  const pageW = doc.internal.pageSize.getWidth();
+  doc.setFillColor(8, 47, 73); doc.rect(0, 0, pageW, 92, 'F');
+  doc.setFillColor(20, 184, 166); doc.rect(0, 92, pageW, 4, 'F');
+  doc.setFillColor(245, 158, 11); doc.roundedRect(38, 20, 34, 34, 8, 8, 'F');
+  doc.setTextColor(8, 47, 73); doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('K', 49, 43);
+  doc.setTextColor(153, 246, 228); doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('KEDCO  |  NETWORK REGISTER', 82, 29);
+  doc.setTextColor(255,255,255); doc.setFontSize(17); doc.text(title, 38, 66);
+  doc.setTextColor(203,213,225); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text(subtitle || UNIT_NAME, 38, 82);
+  doc.text('GENERATED  ' + new Date().toLocaleString(), pageW - 38, 82, { align:'right' });
+}
+
+function drawKpiCards(doc, cards, y) {
+  const pageW = doc.internal.pageSize.getWidth();
+  const margin = 38, gap = 10, cardW = (pageW - margin * 2 - gap * (cards.length - 1)) / cards.length;
+  const colors = [[14,116,144],[37,99,235],[5,150,105],[217,119,6]];
+  cards.forEach((card, i) => {
+    const x = margin + i * (cardW + gap), color = colors[i % colors.length];
+    doc.setFillColor(241,245,249); doc.setDrawColor(226,232,240); doc.roundedRect(x, y, cardW, 56, 8, 8, 'FD');
+    doc.setFillColor(...color); doc.roundedRect(x, y, 4, 56, 2, 2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...color); doc.text(String(card.value), x + 13, y + 25);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(71,85,105); doc.text(card.label.toUpperCase(), x + 13, y + 42);
+  });
+}
+
+function addChartImage(doc, chartId, x, y, w, h) {
+  const canvas = document.getElementById(chartId);
+  if (!canvas || !window.Chart) return false;
+  const chart = Chart.getChart(canvas);
+  if (!chart) return false;
+  doc.setFillColor(255,255,255); doc.setDrawColor(226,232,240); doc.roundedRect(x, y, w, h, 7, 7, 'FD');
+  doc.addImage(chart.toBase64Image('image/png', 1), 'PNG', x + 7, y + 7, w - 14, h - 14);
+  return true;
+}
+
+// ========== COLUMN DEFINITIONS ==========
+const substationColumns = [
+  { key:'id', label:'Station ID', width:14 },
+  { key:'state', label:'State', width:10 },
+  { key:'region', label:'Operating Region', width:22 },
+  { key:'name', label:'Injection Substation', width:20 },
+  { key:'tr', label:'Transformers', width:12 },
+  { key:'cap', label:'Capacity (MVA)', width:14 },
+  { key:'fdr', label:'11 kV Feeders', width:12 },
+  { key:'loc', label:'Location', width:14 },
+  { key:'tito', label:'TITO Status', width:14 },
+  { key:'review', label:'Review', width:14 }
+];
+
+const transformerColumns = [
+  { key:'key', label:'TR Key', width:12 },
+  { key:'state', label:'State', width:10 },
+  { key:'sub', label:'Substation', width:20 },
+  { key:'trid', label:'TR ID', width:10 },
+  { key:'cap', label:'Capacity (MVA)', width:14 },
+  { key:'incoming', label:'Incoming 33 kV', width:20 },
+  { key:'source', label:'Source Substation', width:24 },
+  { key:'fdr', label:'11 kV Feeders', width:12 },
+  { key:'review', label:'Review', width:14 }
+];
+
+const feederColumns = [
+  { key:'id', label:'Feeder ID', width:12 },
+  { key:'state', label:'State', width:10 },
+  { key:'region', label:'Region', width:20 },
+  { key:'sub', label:'Substation', width:18 },
+  { key:'tr', label:'TR ID', width:9 },
+  { key:'cap', label:'Capacity (MVA)', width:13 },
+  { key:'incoming', label:'Incoming 33 kV', width:18 },
+  { key:'outgoing', label:'Outgoing 11 kV', width:20 },
+  { key:'source', label:'Source', width:20 },
+  { key:'band', label:'Band', width:8 },
+  { key:'tito', label:'TITO', width:13 }
+];
+
+const circuitColumns = [
+  { key:'id', label:'Circuit ID', width:12 },
+  { key:'state', label:'State', width:10 },
+  { key:'source', label:'Source Substation', width:20 },
+  { key:'tr', label:'Source TR', width:20 },
+  { key:'feeder', label:'33 kV Feeder', width:18 },
+  { key:'connected', label:'Connected ISS', width:24 },
+  { key:'type', label:'Connection Type', width:18 },
+  { key:'tito', label:'TITO Status', width:14 },
+  { key:'voltage', label:'Voltage', width:14 }
+];
+
+// ========== TABLE DATA ACCESS ==========
+function getSubstationsFiltered() {
+  const q = document.getElementById('substationSearch').value.toLowerCase();
+  const state = document.getElementById('substationStateFilter').value;
+  const status = document.getElementById('substationStatusFilter').value;
+  return substations.filter(s => {
+    const matchQ = !q || Object.values(s).some(v => String(v).toLowerCase().includes(q));
+    const matchState = !state || s.state === state;
+    const matchStatus = !status || s.review === status;
+    return matchQ && matchState && matchStatus;
+  });
+}
+
+function getTransformersFiltered() {
+  const q = document.getElementById('transformerSearch').value.toLowerCase();
+  const state = document.getElementById('transformerStateFilter').value;
+  const cap = document.getElementById('transformerCapacityFilter').value;
+  return transformers.filter(t => {
+    const matchQ = !q || Object.values(t).some(v => String(v).toLowerCase().includes(q));
+    const matchState = !state || t.state === state;
+    const matchCap = !cap || t.cap === parseFloat(cap);
+    return matchQ && matchState && matchCap;
+  });
+}
+
+function getFeedersFiltered() {
+  const q = document.getElementById('feederSearch').value.toLowerCase();
+  const state = document.getElementById('feederStateFilter').value;
+  const band = document.getElementById('feederBandFilter').value;
+  return feeders.filter(f => {
+    const matchQ = !q || Object.values(f).some(v => String(v).toLowerCase().includes(q));
+    const matchState = !state || f.state === state;
+    const matchBand = !band || f.band === band;
+    return matchQ && matchState && matchBand;
+  });
+}
+
+function getCircuitsFiltered() {
+  const q = document.getElementById('circuitSearch').value.toLowerCase();
+  const state = document.getElementById('circuitStateFilter').value;
+  const type = document.getElementById('circuitTypeFilter').value;
+  return circuits.filter(c => {
+    const matchQ = !q || Object.values(c).some(v => String(v).toLowerCase().includes(q));
+    const matchState = !state || c.state === state;
+    const matchType = !type || c.type.toLowerCase().includes(type.toLowerCase());
+    return matchQ && matchState && matchType;
+  });
+}
+
+// ========== DASHBOARD EXPORTS ==========
+function exportDashboardExcel() {
+  const wb = XLSX.utils.book_new();
+  // Summary sheet
+  const summary = [
+    ['KEDCO Network Register — Dashboard Summary'],
+    [UNIT_NAME],
+    ['Generated: ' + new Date().toLocaleString()],
+    [],
+    ['Asset Type', 'Count', 'Unit'],
+    ['Injection Substations', 44, 'stations'],
+    ['Power Transformers', 66, 'units'],
+    ['11 kV Feeders', 127, 'feeders'],
+    ['33 kV / TITO Links', 93, 'circuits'],
+    [],
+    ['State', 'Stations', 'Transformers', 'Capacity (MVA)', '11 kV Feeders', '33 kV Links'],
+    ['Kano', 25, 40, 502.5, 82, 56],
+    ['Katsina', 10, 15, 150.0, 30, 20],
+    ['Jigawa', 9, 11, 82.5, 15, 17],
+    ['Total', 44, 66, 735.0, 127, 93]
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(summary);
+  ws['!cols'] = [{wch:28},{wch:12},{wch:12},{wch:16},{wch:16},{wch:14}];
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:5} },
+    { s:{r:1,c:0}, e:{r:1,c:5} },
+    { s:{r:2,c:0}, e:{r:2,c:5} }
+  ];
+  const chartSheet = XLSX.utils.aoa_to_sheet([
+    ['KEDCO NETWORK AT A GLANCE'], [], ['Asset type','Count'],
+    ['Injection substations',44],['Power transformers',66],['11 kV feeders',127],['33 kV / TITO links',93],[],
+    ['State','Capacity (MVA)','11 kV Feeders','33 kV Links'],
+    ['Kano',502.5,82,56],['Katsina',150,30,20],['Jigawa',82.5,15,17]
+  ]);
+  chartSheet['!cols'] = [{wch:28},{wch:18},{wch:18},{wch:16}];
+  ws['!rows'] = [{ hpt:30 },{ hpt:20 },{ hpt:18 },{ hpt:8 },{ hpt:22 }];
+  ws['!autofilter'] = { ref:'A5:F9' };
+  XLSX.utils.book_append_sheet(wb, chartSheet, 'Visual Summary');
+  XLSX.utils.book_append_sheet(wb, ws, 'Dashboard Summary');
+  XLSX.writeFile(wb, 'kedco_dashboard_' + todayStr() + '.xlsx');
+}
+
+function exportDashboardPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+
+  drawReportHeader(doc, 'Network Dashboard', UNIT_NAME);
+  drawKpiCards(doc, [{label:'Injection stations',value:'44'},{label:'Transformers',value:'66'},{label:'11 kV feeders',value:'127'},{label:'33 kV links',value:'93'}], 110);
+  addChartImage(doc, 'chartCapacity', 38, 178, (pageW - 92) / 2, 190);
+  addChartImage(doc, 'chartDistribution', 54 + (pageW - 92) / 2, 178, (pageW - 92) / 2, 190);
+
+  doc.autoTable({
+    head: [['Asset Type', 'Count', 'Unit']],
+    body: [
+      ['Injection Substations', '44', 'stations'],
+      ['Power Transformers', '66', 'units'],
+      ['11 kV Feeders', '127', 'feeders'],
+      ['33 kV / TITO Links', '93', 'circuits']
+    ],
+    startY: 386, theme: 'grid',
+    styles: { fontSize: 9, cellPadding: 6 },
+    headStyles: { fillColor: [15, 76, 92], textColor: [255, 255, 255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [238, 248, 249] },
+    margin: { left: 40, right: 40 }
+  });
+
+  doc.autoTable({
+    head: [['State','Stations','Transformers','Capacity (MVA)','11 kV Feeders','33 kV Links']],
+    body: [
+      ['Kano','25','40','502.5','82','56'],
+      ['Katsina','10','15','150.0','30','20'],
+      ['Jigawa','9','11','82.5','15','17'],
+      ['Total','44','66','735.0','127','93']
+    ],
+    startY: doc.lastAutoTable.finalY + 20, theme: 'grid',
+    styles: { fontSize: 8.5, cellPadding: 5 },
+    headStyles: { fillColor: [21, 30, 49], textColor: [241, 245, 249], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245, 248, 252] },
+    margin: { left: 40, right: 40 }
+  });
+
+  // Footer
+  const pageNum = doc.internal.getNumberOfPages();
+  doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+  doc.text('KEDCO — ' + UNIT_NAME, 40, pageH - 20);
+  doc.text('Page ' + pageNum, pageW - 40, pageH - 20, { align: 'right' });
+
+  doc.save('kedco_dashboard_' + todayStr() + '.pdf');
+}
+
+// ========== COVERAGE EXPORTS ==========
+function exportCoverageExcel() {
+  const rows = [
+    ['State','Stations','Transformers','Stated Capacity','11 kV Feeders','33 kV / Links'],
+    ['Kano',25,40,'502.5 MVA',82,56],
+    ['Katsina',10,15,'150.0 MVA',30,20],
+    ['Jigawa',9,11,'82.5 MVA',15,17],
+    ['Total',44,66,'735.0 MVA',127,93]
+  ];
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([
+    ['KEDCO Network Register — Coverage by Physical State'],
+    [UNIT_NAME],
+    ['Generated: ' + new Date().toLocaleString()],
+    [],
+    ...rows
+  ]);
+  ws['!cols'] = [{wch:14},{wch:12},{wch:16},{wch:18},{wch:16},{wch:16}];
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:5} },
+    { s:{r:1,c:0}, e:{r:1,c:5} },
+    { s:{r:2,c:0}, e:{r:2,c:5} }
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'Coverage');
+  XLSX.writeFile(wb, 'kedco_coverage_' + todayStr() + '.xlsx');
+}
+
+function exportCoveragePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  drawReportHeader(doc, 'Coverage by Physical State', UNIT_NAME);
+  drawKpiCards(doc, [{label:'States covered',value:'3'},{label:'Total stations',value:'44'},{label:'Network capacity',value:'735 MVA'}], 110);
+  addChartImage(doc, 'chartStateStations', 38, 180, (pageW - 92) / 2, 205);
+  addChartImage(doc, 'chartStateFeeders', 54 + (pageW - 92) / 2, 180, (pageW - 92) / 2, 205);
+
+  doc.autoTable({
+    head: [['State','Stations','Transformers','Stated Capacity','11 kV Feeders','33 kV / Links']],
+    body: [
+      ['Kano','25','40','502.5 MVA','82','56'],
+      ['Katsina','10','15','150.0 MVA','30','20'],
+      ['Jigawa','9','11','82.5 MVA','15','17'],
+      [{ content:'Total', styles:{ fontStyle:'bold' } }, '44','66','735.0 MVA','127','93']
+    ],
+    startY: 400, theme: 'grid',
+    styles: { fontSize: 9, cellPadding: 6 },
+    headStyles: { fillColor: [15,76,92], textColor: [255,255,255], fontStyle:'bold' },
+    alternateRowStyles: { fillColor: [238,248,249] },
+    margin: { left: 40, right: 40 }
+  });
+
+  doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+  doc.text('KEDCO — ' + UNIT_NAME, 40, pageH - 20);
+  doc.text('Page 1', pageW - 40, pageH - 20, { align: 'right' });
+  doc.save('kedco_coverage_' + todayStr() + '.pdf');
+}
+
+// ========== STATES EXPORTS ==========
+function exportStatesExcel() {
+  const rows = [
+    ['State','Substations','Transformers','11 kV Feeders','33 kV Links','Capacity (MVA)'],
+    ['Kano',25,40,82,56,502.5],
+    ['Katsina',10,15,30,20,150.0],
+    ['Jigawa',9,11,15,17,82.5],
+    ['Total',44,66,127,93,735.0]
+  ];
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([
+    ['KEDCO Network Register — State Coverage'],
+    [UNIT_NAME],
+    ['Generated: ' + new Date().toLocaleString()],
+    [],
+    ...rows
+  ]);
+  ws['!cols'] = [{wch:12},{wch:14},{wch:14},{wch:14},{wch:12},{wch:16}];
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:5} },
+    { s:{r:1,c:0}, e:{r:1,c:5} },
+    { s:{r:2,c:0}, e:{r:2,c:5} }
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'State Coverage');
+  XLSX.writeFile(wb, 'kedco_states_' + todayStr() + '.xlsx');
+}
+
+function exportStatesPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  drawReportHeader(doc, 'State Coverage', 'Detailed asset breakdown  |  ' + UNIT_NAME);
+  drawKpiCards(doc, [{label:'Stations',value:'44'},{label:'Transformers',value:'66'},{label:'Feeders',value:'127'},{label:'33 kV links',value:'93'}], 110);
+  addChartImage(doc, 'chartStateStations', 38, 178, (pageW - 92) / 2, 200);
+  addChartImage(doc, 'chartStateFeeders', 54 + (pageW - 92) / 2, 178, (pageW - 92) / 2, 200);
+
+  doc.autoTable({
+    head: [['State','Substations','Transformers','11 kV Feeders','33 kV Links','Capacity (MVA)']],
+    body: [
+      ['Kano','25','40','82','56','502.5'],
+      ['Katsina','10','15','30','20','150.0'],
+      ['Jigawa','9','11','15','17','82.5'],
+      [{ content:'Total', styles:{ fontStyle:'bold' } },'44','66','127','93','735.0']
+    ],
+    startY: 392, theme: 'grid',
+    styles: { fontSize: 9, cellPadding: 6 },
+    headStyles: { fillColor: [15,76,92], textColor: [255,255,255], fontStyle:'bold' },
+    alternateRowStyles: { fillColor: [238,248,249] },
+    margin: { left: 40, right: 40 }
+  });
+
+  doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+  doc.text('KEDCO — ' + UNIT_NAME, 40, pageH - 20);
+  doc.text('Page 1', pageW - 40, pageH - 20, { align: 'right' });
+  doc.save('kedco_states_' + todayStr() + '.pdf');
+}
+
+// ========== TABLE EXPORTS (Substations / Transformers / Feeders / Circuits) ==========
+function exportTableExcel(section) {
+  if (section === 'substations') {
+    const rows = getSubstationsFiltered();
+    const wb = buildWorkbook('Substations', rows, substationColumns, 'KEDCO Injection Substations Register');
+    XLSX.writeFile(wb, 'kedco_substations_' + todayStr() + '.xlsx');
+  } else if (section === 'transformers') {
+    const rows = getTransformersFiltered();
+    const wb = buildWorkbook('Transformers', rows, transformerColumns, 'KEDCO Power Transformers Register');
+    XLSX.writeFile(wb, 'kedco_transformers_' + todayStr() + '.xlsx');
+  } else if (section === 'feeders') {
+    const rows = getFeedersFiltered();
+    const wb = buildWorkbook('11kV Feeders', rows, feederColumns, 'KEDCO 11 kV Feeders Register');
+    XLSX.writeFile(wb, 'kedco_feeders_' + todayStr() + '.xlsx');
+  } else if (section === 'circuits') {
+    const rows = getCircuitsFiltered();
+    const wb = buildWorkbook('33kV Circuits', rows, circuitColumns, 'KEDCO 33 kV / TITO Circuits Register');
+    XLSX.writeFile(wb, 'kedco_circuits_' + todayStr() + '.xlsx');
+  }
+}
+
+function exportTablePDF(section) {
+  if (section === 'substations') {
+    const rows = getSubstationsFiltered();
+    exportPDF('Injection Substations Register', substationColumns, rows, 'kedco_substations_' + todayStr() + '.pdf');
+  } else if (section === 'transformers') {
+    const rows = getTransformersFiltered();
+    exportPDF('Power Transformers Register', transformerColumns, rows, 'kedco_transformers_' + todayStr() + '.pdf');
+  } else if (section === 'feeders') {
+    const rows = getFeedersFiltered();
+    exportPDF('11 kV Feeder Register', feederColumns, rows, 'kedco_feeders_' + todayStr() + '.pdf');
+  } else if (section === 'circuits') {
+    const rows = getCircuitsFiltered();
+    exportPDF('33 kV / TITO Circuits Register', circuitColumns, rows, 'kedco_circuits_' + todayStr() + '.pdf');
+  }
+}
+
+// ========== ISSUES EXPORTS ==========
+function exportIssuesExcel() {
+  const rows = [
+    ['Priority','Issue','Detail','Action Required','Count'],
+    ['Critical','Network Completeness','44 named station records vs published total 43','Reconcile Kafin Hausa, Hadejia Old/NIPP and IBB Way/NIPP station boundaries','1'],
+    ['Critical','TITO Arrangements','No explicit 33 kV TITO sequence supplied','Confirm turn-in feeder, turn-out feeder, station and switch positions using approved SLDs','93'],
+    ['High','Station Locations','Street addresses and GPS absent','Enter verified station addresses in Substations register','44'],
+    ['High','Transformer Ratios','Nameplate voltage ratios absent','Record actual nameplate ratios. Source describes 33/11 kV service only','66'],
+    ['High','Voltage Conflicts','Eight local circuits labelled both 33 kV and 11 kV','Review 33 kV & TITO rows marked 33/11 kV conflict before adding to 11 kV inventory','8'],
+    ['Medium','Station Identity','Kafin Hausa vs Hadejia Old/NIPP; Power House vs IBB names','Retain source names and confirm physical station boundaries','6'],
+    ['Medium',"Na'ibawa / Tamburawa",'YANLEMO and MASARAUTA differ between masters','Clean and user masters retained. Confirm normal electrical supply','2'],
+    ['Low','Kazaure Geography','Chart places Kazaure in Katsina; geographic state is Jigawa','Geographic state corrected. Operating region remains for confirmation','1']
+  ];
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([
+    ['KEDCO Network Register — Review Priorities'],
+    [UNIT_NAME],
+    ['Generated: ' + new Date().toLocaleString()],
+    [],
+    ...rows
+  ]);
+  ws['!cols'] = [{wch:10},{wch:22},{wch:36},{wch:46},{wch:8}];
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:4} },
+    { s:{r:1,c:0}, e:{r:1,c:4} },
+    { s:{r:2,c:0}, e:{r:2,c:4} }
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'Review Priorities');
+  XLSX.writeFile(wb, 'kedco_review_priorities_' + todayStr() + '.xlsx');
+}
+
+function exportIssuesPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  doc.setFillColor(10, 14, 26);
+  doc.rect(0, 0, pageW, 80, 'F');
+  doc.setTextColor(59, 130, 246); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text('KEDCO Network Register', 40, 32);
+  doc.setTextColor(241, 245, 249); doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.text('Review Priorities — Data Quality Issues', 40, 50);
+  doc.setTextColor(148, 163, 184); doc.setFontSize(8);
+  doc.text(UNIT_NAME, 40, 66);
+  doc.text('Generated: ' + new Date().toLocaleString(), pageW - 40, 66, { align: 'right' });
+
+  doc.autoTable({
+    head: [['Priority','Issue','Detail','Action Required','Count']],
+    body: [
+      ['Critical','Network Completeness','44 named station records vs published total 43','Reconcile Kafin Hausa, Hadejia Old/NIPP and IBB Way/NIPP station boundaries','1'],
+      ['Critical','TITO Arrangements','No explicit 33 kV TITO sequence supplied','Confirm turn-in feeder, turn-out feeder, station and switch positions using approved SLDs','93'],
+      ['High','Station Locations','Street addresses and GPS absent','Enter verified station addresses in Substations register','44'],
+      ['High','Transformer Ratios','Nameplate voltage ratios absent','Record actual nameplate ratios. Source describes 33/11 kV service only','66'],
+      ['High','Voltage Conflicts','Eight local circuits labelled both 33 kV and 11 kV','Review 33 kV & TITO rows marked 33/11 kV conflict before adding to 11 kV inventory','8'],
+      ['Medium','Station Identity','Kafin Hausa vs Hadejia Old/NIPP; Power House vs IBB names','Retain source names and confirm physical station boundaries','6'],
+      ["Medium","Na'ibawa / Tamburawa",'YANLEMO and MASARAUTA differ between masters','Clean and user masters retained. Confirm normal electrical supply','2'],
+      ['Low','Kazaure Geography','Chart places Kazaure in Katsina; geographic state is Jigawa','Geographic state corrected. Operating region remains for confirmation','1']
+    ],
+    startY: 95, theme: 'grid',
+    styles: { fontSize: 7.5, cellPadding: 4 },
+    headStyles: { fillColor: [21,30,49], textColor: [241,245,249], fontStyle:'bold' },
+    alternateRowStyles: { fillColor: [245,248,252] },
+    margin: { left: 30, right: 30 }
+  });
+
+  doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+  doc.text('KEDCO — ' + UNIT_NAME, 30, pageH - 20);
+  doc.text('Page 1', pageW - 30, pageH - 20, { align: 'right' });
+  doc.save('kedco_review_priorities_' + todayStr() + '.pdf');
+}
+
+// ========== SOURCES EXPORTS ==========
+function exportSourcesExcel() {
+  const rows = [
+    ['Evidence ID','Source File / Publisher','File Section / URL','Record Set','Use & Limitation'],
+    ['S1','teams-main.zip','pages/operations-maintenance/re_te.html','RETE_HEADPI_DATA; INJECTION_STATIONS','209 feeder topology rows. Station transformer text sometimes aggregated.'],
+    ['S1S','teams-main.zip','pages/operations-maintenance/re_te.html','INJECTION_STATIONS','44 supply path records, including Dan Agundi split and Club alternate path.'],
+    ['S2','teams-main.zip','pages/system-operations/dispatch.html','KEDCO_11KV_CLEAN_MASTER','128 named feeder rows, 43 station names. Primary detailed mapping.'],
+    ['S3','teams-main.zip','pages/system-operations/dispatch.html','kedco11VerifiedMaster()','132 rows. Runtime mapping can disagree with clean/user masters.'],
+    ['S4','teams-main.zip','pages/system-operations/dispatch.html','kedco11UserMaster()','130 rows. Used for corroboration and missing transformer details only.'],
+    ['S5','teams-main.zip','pages/operations-maintenance/re_te.html','TRANSMISSION_FEEDERS','81 source circuits. Funtua corrections retained.'],
+    ['S6','teams-main.zip','pages/system-operations/dispatch.html','KEDCO_33KV_STATE_GROUPS','Geographic state assignments for named source circuits.'],
+    ['W1','KEDCO official website','https://kedco.ng/who-we-are/','Accessed 15 October 2026','Published total 43 injection substations. Not a named asset schedule.'],
+    ['W2','Jigawa State Government','https://jigawastate.gov.ng/kazaureemirate','Accessed 15 October 2026','Kazaure is in Jigawa State. Physical state ≠ KEDCO operating region.']
+  ];
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([
+    ['KEDCO Network Register — Source Records & Evidence'],
+    [UNIT_NAME],
+    ['Generated: ' + new Date().toLocaleString()],
+    [],
+    ...rows
+  ]);
+  ws['!cols'] = [{wch:12},{wch:22},{wch:34},{wch:30},{wch:52}];
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:4} },
+    { s:{r:1,c:0}, e:{r:1,c:4} },
+    { s:{r:2,c:0}, e:{r:2,c:4} }
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'Evidence');
+  XLSX.writeFile(wb, 'kedco_sources_' + todayStr() + '.xlsx');
+}
+
+function exportSourcesPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  doc.setFillColor(10, 14, 26);
+  doc.rect(0, 0, pageW, 80, 'F');
+  doc.setTextColor(59, 130, 246); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text('KEDCO Network Register', 40, 32);
+  doc.setTextColor(241, 245, 249); doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.text('Source Records & Evidence Register', 40, 50);
+  doc.setTextColor(148, 163, 184); doc.setFontSize(8);
+  doc.text(UNIT_NAME, 40, 66);
+  doc.text('Generated: ' + new Date().toLocaleString(), pageW - 40, 66, { align: 'right' });
+
+  doc.autoTable({
+    head: [['Evidence ID','Source File / Publisher','File Section / URL','Record Set','Use & Limitation']],
+    body: [
+      ['S1','teams-main.zip','pages/operations-maintenance/re_te.html','RETE_HEADPI_DATA; INJECTION_STATIONS','209 feeder topology rows. Station transformer text sometimes aggregated.'],
+      ['S1S','teams-main.zip','pages/operations-maintenance/re_te.html','INJECTION_STATIONS','44 supply path records, including Dan Agundi split and Club alternate path.'],
+      ['S2','teams-main.zip','pages/system-operations/dispatch.html','KEDCO_11KV_CLEAN_MASTER','128 named feeder rows, 43 station names. Primary detailed mapping.'],
+      ['S3','teams-main.zip','pages/system-operations/dispatch.html','kedco11VerifiedMaster()','132 rows. Runtime mapping can disagree with clean/user masters.'],
+      ['S4','teams-main.zip','pages/system-operations/dispatch.html','kedco11UserMaster()','130 rows. Used for corroboration and missing transformer details only.'],
+      ['S5','teams-main.zip','pages/operations-maintenance/re_te.html','TRANSMISSION_FEEDERS','81 source circuits. Funtua corrections retained.'],
+      ['S6','teams-main.zip','pages/system-operations/dispatch.html','KEDCO_33KV_STATE_GROUPS','Geographic state assignments for named source circuits.'],
+      ['W1','KEDCO official website','https://kedco.ng/who-we-are/','Accessed 15 October 2026','Published total 43 injection substations. Not a named asset schedule.'],
+      ['W2','Jigawa State Government','https://jigawastate.gov.ng/kazaureemirate','Accessed 15 October 2026','Kazaure is in Jigawa State. Physical state ≠ KEDCO operating region.']
+    ],
+    startY: 95, theme: 'grid',
+    styles: { fontSize: 7.5, cellPadding: 4 },
+    headStyles: { fillColor: [21,30,49], textColor: [241,245,249], fontStyle:'bold' },
+    alternateRowStyles: { fillColor: [245,248,252] },
+    margin: { left: 30, right: 30 }
+  });
+
+  doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+  doc.text('KEDCO — ' + UNIT_NAME, 30, pageH - 20);
+  doc.text('Page 1', pageW - 30, pageH - 20, { align: 'right' });
+  doc.save('kedco_sources_' + todayStr() + '.pdf');
+}
+
+// Expose to global
+window.exportDashboardExcel = exportDashboardExcel;
+window.exportDashboardPDF = exportDashboardPDF;
+window.exportCoverageExcel = exportCoverageExcel;
+window.exportCoveragePDF = exportCoveragePDF;
+window.exportStatesExcel = exportStatesExcel;
+window.exportStatesPDF = exportStatesPDF;
+window.exportTableExcel = exportTableExcel;
+window.exportTablePDF = exportTablePDF;
+window.exportIssuesExcel = exportIssuesExcel;
+window.exportIssuesPDF = exportIssuesPDF;
+window.exportSourcesExcel = exportSourcesExcel;
+window.exportSourcesPDF = exportSourcesPDF;
+</script>
+</body>
+</html>

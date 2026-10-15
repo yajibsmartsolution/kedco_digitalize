@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitization, Asset Management & Quality Assurance Unit | KEDCO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { DEFAULT: '#0A192F', dark: '#060F1D', light: '#1E3A5F' },
+                        gold: { DEFAULT: '#C5A059', light: '#E6C687', dark: '#9E7D3B' },
+                        skyblue: { DEFAULT: '#F0F4F8', accent: '#38BDF8', light: '#F8FAFC' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.8s ease-in-out',
+                        'slideUp': 'slideUp 0.8s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-8px)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
+        .custom-shadow { box-shadow: 0 20px 40px -12px rgba(10, 25, 47, 0.15), 0 8px 16px -8px rgba(10, 25, 47, 0.1); }
+        .hero-overlay { background: linear-gradient(135deg, rgba(10,25,47,0.94) 0%, rgba(10,25,47,0.82) 100%); }
+        .carousel-slide { transition: opacity 1s ease-in-out, transform 1s ease-in-out; }
+        .carousel-slide.active { opacity: 1; z-index: 10; transform: scale(1); }
+        .carousel-slide:not(.active) { opacity: 0; z-index: 1; pointer-events: none; transform: scale(1.05); }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1.25rem; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .stat-card:hover { transform: translateY(-6px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .dot.active { background-color: #C5A059; width: 28px; border-radius: 6px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255,255,255,0.5); transition: all 0.4s; cursor: pointer; }
+        .dot:hover { background-color: rgba(255,255,255,0.8); }
+        .image-zoom { transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .image-zoom:hover { transform: scale(1.08); }
+        .nav-btn.active-nav { color: #0A192F; background-color: #F0F4F8; font-weight: 600; }
+        .gradient-text { background: linear-gradient(135deg, #C5A059, #E6C687, #C5A059); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .scroll-smooth { scroll-behavior: smooth; }
+        @media (max-width: 768px) { .carousel-height { height: 360px; } }
+        @media (min-width: 769px) { .carousel-height { height: 520px; } }
+        .animate-fadeIn { animation: fadeIn 0.8s ease-in-out; }
+        .animate-slideUp { animation: slideUp 0.8s ease-out; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .gold-border-glow { box-shadow: 0 0 20px rgba(197, 160, 89, 0.3); }
+        .image-overlay-card { background: linear-gradient(to top, rgba(10,25,47,0.95) 0%, transparent 60%); }
+        .section-divider { height: 4px; background: linear-gradient(90deg, transparent, #C5A059, transparent); }
+        .nigerian-flag-accent { border-left: 4px solid #008751; }
+    </style>
+</head>
+<body class="bg-skyblue text-navy antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+                    <div class="w-12 h-12 rounded-xl bg-navy flex items-center justify-center text-gold font-bold text-xl shadow-lg border border-gold/40 gold-border-glow">
+                        <i class="fa-solid fa-bolt text-gold"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gold-dark block">Kano Electricity Distribution Company</span>
+                        <h1 class="text-sm md:text-base font-bold text-navy leading-tight">Digitization, Asset Management & QA Unit</h1>
+                    </div>
+                </div>
+
+                <nav class="hidden lg:flex items-center space-x-1">
+                    <button onclick="switchView('home')" id="nav-home" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-navy hover:bg-skyblue transition">Home</button>
+                    <a href="digital.html" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-skyblue transition">Digitization</a>
+                    <a href="project.html" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-skyblue transition">Projects & Assets</a>
+                    <a href="automation.html" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-skyblue transition">QA & Automation</a>
+                    <div id="auth-nav-section" class="ml-4 pl-4 border-l border-gray-300 flex items-center space-x-3"></div>
+                </nav>
+
+                <div class="flex lg:hidden items-center space-x-2">
+                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-navy hover:bg-skyblue focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl" id="mobile-menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchView('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-navy hover:bg-skyblue">Home</button>
+            <a href="digital.html" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-navy hover:bg-skyblue">Digitization</a>
+            <a href="project.html" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-navy hover:bg-skyblue">Projects & Assets</a>
+            <a href="automation.html" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-navy hover:bg-skyblue">QA & Automation</a>
+            <div id="mobile-auth-section" class="pt-2 border-t border-gray-100"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+
+        <!-- ==================== HOME VIEW ==================== -->
+        <div id="view-home" class="view-section animate-fadeIn">
+
+            <!-- Hero Section with Nigerian Professional Imagery -->
+            <section class="relative bg-navy text-white py-24 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[680px] flex items-center">
+                <div class="absolute inset-0 z-0">
+                    <!-- Nigerian Engineer / Power Infrastructure Image -->
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop" alt="Nigerian Engineer - KEDCO Technical Operations" class="w-full h-full object-cover opacity-30">
+                    <div class="hero-overlay absolute inset-0"></div>
+                </div>
+                <div class="absolute inset-0 opacity-10 z-0 bg-[radial-gradient(#C5A059_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+                <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center w-full">
+                    <div class="lg:col-span-7 space-y-8">
+                        <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gold/10 border border-gold/40 text-gold text-xs font-bold uppercase tracking-widest animate-slideUp">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Technical Department • KEDCO</span>
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight animate-slideUp">
+                            Digitization, Asset Management & <span class="gradient-text">Quality Assurance Unit</span>
+                        </h1>
+                        <p class="text-xl text-gray-200 font-light max-w-2xl leading-relaxed italic border-l-4 border-gold pl-5 animate-slideUp nigerian-flag-accent">
+                            “Strengthening technical operations through reliable digital records, accountable asset management, and consistent quality assurance.”
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-4 animate-slideUp">
+                            <button onclick="openLoginModal()" class="px-8 py-4 rounded-xl bg-gold text-navy font-bold hover:bg-gold-light transition shadow-2xl flex items-center space-x-3 transform hover:scale-105">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                <span>Staff Portal Login</span>
+                            </button>
+                            <a href="#functions" class="px-8 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium transition border border-white/20 flex items-center space-x-3 backdrop-blur-sm transform hover:scale-105">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>Explore Modules</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 animate-float">
+                        <div class="bg-navy-light/90 backdrop-blur-lg p-8 rounded-3xl border border-gold/30 shadow-2xl space-y-8">
+                            <h3 class="text-2xl font-bold text-gold flex items-center space-x-3">
+                                <i class="fa-solid fa-network-wired"></i>
+                                <span>Operational Jurisdictions</span>
+                            </h3>
+                            <p class="text-sm text-gray-300 leading-relaxed">Managing technical records, infrastructure inventories, and quality benchmarks across our core franchise states:</p>
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div class="bg-navy/80 p-5 rounded-2xl border border-gray-700 hover:border-gold/60 transition duration-300">
+                                    <i class="fa-solid fa-city text-gold text-2xl mb-2"></i>
+                                    <div class="font-bold text-base text-white">Kano</div>
+                                    <div class="text-xs text-gray-400">Headquarters</div>
+                                </div>
+                                <div class="bg-navy/80 p-5 rounded-2xl border border-gray-700 hover:border-gold/60 transition duration-300">
+                                    <i class="fa-solid fa-landmark text-gold text-2xl mb-2"></i>
+                                    <div class="font-bold text-base text-white">Katsina</div>
+                                    <div class="text-xs text-gray-400">Regional Hub</div>
+                                </div>
+                                <div class="bg-navy/80 p-5 rounded-2xl border border-gray-700 hover:border-gold/60 transition duration-300">
+                                    <i class="fa-solid fa-industry text-gold text-2xl mb-2"></i>
+                                    <div class="font-bold text-base text-white">Jigawa</div>
+                                    <div class="text-xs text-gray-400">Regional Hub</div>
+                                </div>
+                            </div>
+                            <div class="pt-3 text-xs text-gray-400 flex items-center justify-between border-t border-gray-700">
+                                <span>Status: Fully Operational</span>
+                                <span class="flex items-center text-green-400 font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-green-400 inline-block mr-2 animate-pulse"></span> Live Feed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video & Slideshow Section -->
+            <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-gold font-bold text-xs uppercase tracking-widest">Visual Overview</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-navy mt-3">Inside KEDCO Operations</h2>
+                    <div class="section-divider w-24 mx-auto my-4"></div>
+                    <p class="text-gray-600 text-lg">A glimpse into the technical precision and digital infrastructure powering KEDCO's network across Kano, Katsina, and Jigawa.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                    <!-- KEDCO Video Report -->
+                    <div class="rounded-3xl overflow-hidden shadow-2xl border border-gray-200 bg-white">
+                        <div class="video-container">
+                            <iframe 
+                                src="https://www.youtube.com/embed/we_t8hlzXW8" 
+                                title="KEDCO - Kano, Katsina, Jigawa to enjoy better power supply"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="p-5 border-t border-gray-100">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-gold">
+                                    <i class="fa-solid fa-play text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-navy">KEDCO Management Reforms & Service Improvement</p>
+                                    <p class="text-xs text-gray-500">Official video: Customer engagement and operational upgrades across franchise states.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KEDCO Field Operations Slideshow - Nigerian Professionals -->
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200 bg-white">
+                        <div class="relative carousel-height">
+                            <!-- Slide 1: Nigerian Engineer at Substation -->
+                            <div class="carousel-slide active absolute inset-0" data-slide="0">
+                                <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?q=80&w=2070&auto=format&fit=crop" alt="Nigerian KEDCO Engineer Substation Inspection" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 image-overlay-card flex items-end">
+                                    <div class="p-8 text-white">
+                                        <span class="text-gold text-xs font-bold uppercase tracking-widest">Substation Monitoring</span>
+                                        <h3 class="text-2xl font-bold mt-2">Real-time Asset Telemetry</h3>
+                                        <p class="text-sm text-gray-300 mt-2">Continuous monitoring of transformer loads and feeder performance across 42 injection substations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 2: Nigerian Engineers Field Work -->
+                            <div class="carousel-slide absolute inset-0" data-slide="1">
+                                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop" alt="Nigerian KEDCO Engineers Field Operations" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 image-overlay-card flex items-end">
+                                    <div class="p-8 text-white">
+                                        <span class="text-gold text-xs font-bold uppercase tracking-widest">Field Operations</span>
+                                        <h3 class="text-2xl font-bold mt-2">Technical Inspections & Maintenance</h3>
+                                        <p class="text-sm text-gray-300 mt-2">KEDCO engineers conducting routine inspections and transformer servicing across franchise areas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 3: Nigerian Professional at Control Room -->
+                            <div class="carousel-slide absolute inset-0" data-slide="2">
+                                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2070&auto=format&fit=crop" alt="Nigerian KEDCO Professional Control Room" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 image-overlay-card flex items-end">
+                                    <div class="p-8 text-white">
+                                        <span class="text-gold text-xs font-bold uppercase tracking-widest">Digital Operations</span>
+                                        <h3 class="text-2xl font-bold mt-2">Control Room & Data Management</h3>
+                                        <p class="text-sm text-gray-300 mt-2">Real-time monitoring and digital documentation of KEDCO's network performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+                            <div class="dot active" data-slide="0" onclick="goToSlide(0)"></div>
+                            <div class="dot" data-slide="1" onclick="goToSlide(1)"></div>
+                            <div class="dot" data-slide="2" onclick="goToSlide(2)"></div>
+                        </div>
+                        <button onclick="prevSlide()" class="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-navy shadow-lg transition">
+                            <i class="fa-solid fa-chevron-left text-sm"></i>
+                        </button>
+                        <button onclick="nextSlide()" class="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-navy shadow-lg transition">
+                            <i class="fa-solid fa-chevron-right text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Core Functions Section -->
+            <section id="functions" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-gold font-bold text-xs uppercase tracking-widest">Our Capabilities</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-navy mt-3">Core Functional Pillars</h2>
+                    <div class="section-divider w-24 mx-auto my-4"></div>
+                    <p class="text-gray-600 text-lg">Specialized modules driving precision, accountability, and engineering excellence across KEDCO's network.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <a href="digital.html" class="bg-white p-10 rounded-3xl custom-shadow border border-gray-100 hover:border-gold/60 transition-all duration-500 cursor-pointer group flex flex-col justify-between transform hover:-translate-y-2">
+                        <div>
+                            <div class="w-16 h-16 rounded-2xl bg-skyblue flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-navy transition-all duration-300 mb-8 text-3xl">
+                                <i class="fa-solid fa-database"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-navy mb-4 group-hover:text-gold-dark transition-colors">1. Digitization</h3>
+                            <p class="text-gray-600 leading-relaxed mb-8">
+                                Conversion of legacy electrical schemas, network maps, substation diagrams, and technical logs into structured digital databases for rapid query and analysis.
+                            </p>
+                        </div>
+                        <div class="flex items-center text-sm font-bold text-gold group-hover:translate-x-2 transition-transform">
+                            <span>Open Digitization Module</span>
+                            <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </div>
+                    </a>
+
+                    <a href="project.html" class="bg-white p-10 rounded-3xl custom-shadow border border-gray-100 hover:border-gold/60 transition-all duration-500 cursor-pointer group flex flex-col justify-between transform hover:-translate-y-2">
+                        <div>
+                            <div class="w-16 h-16 rounded-2xl bg-skyblue flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-navy transition-all duration-300 mb-8 text-3xl">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-navy mb-4 group-hover:text-gold-dark transition-colors">2. Asset Management</h3>
+                            <p class="text-gray-600 leading-relaxed mb-8">
+                                Comprehensive tracking, lifecycle auditing, and condition appraisal of network assets including transformers, switchgears, feeders, and regional infrastructure.
+                            </p>
+                        </div>
+                        <div class="flex items-center text-sm font-bold text-gold group-hover:translate-x-2 transition-transform">
+                            <span>Open Asset & Projects Module</span>
+                            <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </div>
+                    </a>
+
+                    <a href="automation.html" class="bg-white p-10 rounded-3xl custom-shadow border border-gray-100 hover:border-gold/60 transition-all duration-500 cursor-pointer group flex flex-col justify-between transform hover:-translate-y-2">
+                        <div>
+                            <div class="w-16 h-16 rounded-2xl bg-skyblue flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-navy transition-all duration-300 mb-8 text-3xl">
+                                <i class="fa-solid fa-check-double"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-navy mb-4 group-hover:text-gold-dark transition-colors">3. Quality Assurance</h3>
+                            <p class="text-gray-600 leading-relaxed mb-8">
+                                Rigorous technical compliance testing, safety inspections, automated workflow audits, and maintenance standard verification across Kano, Katsina, and Jigawa.
+                            </p>
+                        </div>
+                        <div class="flex items-center text-sm font-bold text-gold group-hover:translate-x-2 transition-transform">
+                            <span>Open QA & Automation</span>
+                            <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- KEDCO Technical Gallery - Nigerian Professionals -->
+            <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-gray-200">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center max-w-3xl mx-auto mb-14">
+                        <span class="text-gold font-bold text-xs uppercase tracking-widest">Field Operations</span>
+                        <h2 class="text-3xl sm:text-4xl font-bold text-navy mt-3">KEDCO Technical Gallery</h2>
+                        <div class="section-divider w-24 mx-auto my-4"></div>
+                        <p class="text-gray-600 text-lg">Nigerian engineers, technicians, and digital specialists powering KEDCO's technical excellence across our franchise states.</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                        <div class="rounded-2xl overflow-hidden shadow-lg group relative">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2070&auto=format&fit=crop" alt="Nigerian Female Engineer KEDCO" class="w-full h-56 object-cover image-zoom">
+                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-5">
+                                <div>
+                                    <i class="fa-solid fa-hard-hat text-gold text-xl mb-2"></i>
+                                    <span class="text-white text-sm font-bold block">Substation Inspection</span>
+                                    <span class="text-gray-300 text-xs">Routine technical audit</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl overflow-hidden shadow-lg group relative">
+                            <img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?q=80&w=2070&auto=format&fit=crop" alt="Nigerian Engineers KEDCO Field Team" class="w-full h-56 object-cover image-zoom">
+                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-5">
+                                <div>
+                                    <i class="fa-solid fa-users text-gold text-xl mb-2"></i>
+                                    <span class="text-white text-sm font-bold block">Field Engineering Team</span>
+                                    <span class="text-gray-300 text-xs">Collaborative operations</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl overflow-hidden shadow-lg group relative">
+                            <img src="https://images.unsplash.com/photo-1580894742597-87bc8789db3d?q=80&w=2070&auto=format&fit=crop" alt="Nigerian Professional KEDCO Digital Documentation" class="w-full h-56 object-cover image-zoom">
+                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-5">
+                                <div>
+                                    <i class="fa-solid fa-file-pen text-gold text-xl mb-2"></i>
+                                    <span class="text-white text-sm font-bold block">Digital Documentation</span>
+                                    <span class="text-gray-300 text-xs">Technical records indexing</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl overflow-hidden shadow-lg group relative">
+                            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" alt="Nigerian Technician KEDCO Maintenance" class="w-full h-56 object-cover image-zoom">
+                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-5">
+                                <div>
+                                    <i class="fa-solid fa-bolt text-gold text-xl mb-2"></i>
+                                    <span class="text-white text-sm font-bold block">Transformer Maintenance</span>
+                                    <span class="text-gray-300 text-xs">Preventive servicing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <p class="text-xs text-gray-500 italic">Images represent KEDCO's Nigerian engineering workforce, field operations, and technical personnel across Kano, Katsina, and Jigawa franchise areas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Records Overview -->
+            <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
+                    <div>
+                        <span class="text-gold font-bold text-xs uppercase tracking-widest">Repository & Resources</span>
+                        <h2 class="text-3xl sm:text-4xl font-bold text-navy mt-3">Technical Records Overview</h2>
+                    </div>
+                    <p class="text-gray-600 text-base max-w-lg mt-4 md:mt-0">Centralized documentation index managed by the Technical Department for regional distribution networks.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="p-7 rounded-2xl bg-white border border-gray-200 hover:shadow-xl transition stat-card">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h4 class="font-bold text-navy text-lg">Substations & Feeders</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">Inventory logs of 33kV and 11kV feeders, injection substations, and transformer capacity ratings across franchise zones.</p>
+                    </div>
+
+                    <div class="p-7 rounded-2xl bg-white border border-gray-200 hover:shadow-xl transition stat-card">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <h4 class="font-bold text-navy text-lg">Inspections & Audits</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">Routine and emergency technical inspection reports, safety compliance checklists, and defect logs.</p>
+                    </div>
+
+                    <div class="p-7 rounded-2xl bg-white border border-gray-200 hover:shadow-xl transition stat-card">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <h4 class="font-bold text-navy text-lg">Maintenance Documentation</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">Standard Operating Procedures (SOPs), scheduled maintenance logs, and transformer servicing histories.</p>
+                    </div>
+
+                    <div class="p-7 rounded-2xl bg-white border border-gray-200 hover:shadow-xl transition stat-card">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <h4 class="font-bold text-navy text-lg">Regional Submissions</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">Periodic operational returns submitted by regional technical teams in Kano, Katsina, and Jigawa.</p>
+                    </div>
+
+                    <div class="p-7 rounded-2xl bg-white border border-gray-200 hover:shadow-xl transition stat-card">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <h4 class="font-bold text-navy text-lg">Asset Telemetry Logs</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">Real-time and historical loading reports, fault occurrence tracking, and performance analytics.</p>
+                    </div>
+
+                    <div class="p-7 rounded-2xl bg-white border border-gray-200 hover:shadow-xl transition stat-card">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-navy text-gold flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-shield-virus"></i>
+                            </div>
+                            <h4 class="font-bold text-navy text-lg">QA Compliance Standards</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">Regulatory guidelines, NERC compliance frameworks, and internal quality benchmarks.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy text-white pt-16 pb-10 border-t border-gold/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-gold text-navy font-bold flex items-center justify-center text-base">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <span class="font-bold text-base">KEDCO Technical Department</span>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    DIGITIZATION, ASSET MANAGEMENT AND QUALITY ASSURANCE UNIT.<br>
+                    Powering Kano, Katsina, and Jigawa States with reliable digital records and quality assurance.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-sm font-bold text-gold uppercase tracking-widest">Quick Navigation</h4>
+                <div class="grid grid-cols-2 gap-3 text-sm text-gray-300">
+                    <button onclick="switchView('home')" class="text-left hover:text-gold transition">Home Overview</button>
+                    <a href="digital.html" class="text-left hover:text-gold transition">Digitization Module</a>
+                    <a href="project.html" class="text-left hover:text-gold transition">Asset Management</a>
+                    <a href="automation.html" class="text-left hover:text-gold transition">Quality Assurance</a>
+                    <button onclick="openLoginModal()" class="text-left hover:text-gold transition">Staff Portal Login</button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-sm font-bold text-gold uppercase tracking-widest">Contact Information</h4>
+                <div class="text-sm text-gray-300 space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-location-dot text-gold mt-1"></i>
+                        <span>KEDCO Headquarters, Post Office Road, Kano State</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-envelope text-gold"></i>
+                        <span>tech.digitization@kedco.ng</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-phone text-gold"></i>
+                        <span>+234 (0) 64 900 123</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-gray-800 text-center text-xs text-gray-500">
+            &copy; 2026 Kano Electricity Distribution Company (KEDCO). All rights reserved. DIGITIZATION, ASSET MANAGEMENT AND QUALITY ASSURANCE UNIT.
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden animate-fadeIn">
+        <div class="bg-white rounded-3xl w-full max-w-md p-8 custom-shadow relative mx-4 border border-gray-100">
+            <button onclick="closeLoginModal()" class="absolute top-5 right-5 text-gray-400 hover:text-navy transition">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 rounded-2xl bg-navy text-gold flex items-center justify-center mx-auto mb-4 text-xl shadow-lg">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-navy">Staff Portal Login</h3>
+                <p class="text-sm text-gray-500 mt-1">DIGITIZATION, ASSET MANAGEMENT & QA UNIT</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-navy uppercase tracking-widest mb-2">Email Address</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                            <i class="fa-solid fa-envelope"></i>
+                        </span>
+                        <input type="email" id="login-email" required placeholder="e.g., ibrahimlawan70@gmail.com" class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-navy focus:ring-2 focus:ring-navy/20 transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-navy uppercase tracking-widest mb-2">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                            <i class="fa-solid fa-key"></i>
+                        </span>
+                        <input type="password" id="login-password" required placeholder="••••••••••••" class="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-navy focus:ring-2 focus:ring-navy/20 transition">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-navy">
+                            <i class="fa-solid fa-eye" id="toggle-pwd-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-navy uppercase tracking-widest mb-2">Target Module Destination</label>
+                    <select id="login-module" class="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-navy focus:ring-2 focus:ring-navy/20 bg-white transition">
+                        <option value="digital.html">Digitization Portal (`digital.html`)</option>
+                        <option value="project.html">Asset Management (`project.html`)</option>
+                        <option value="automation.html">Quality Assurance (`automation.html`)</option>
+                    </select>
+                </div>
+
+                <div id="login-error" class="hidden p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm"></div>
+
+                <button type="submit" id="login-submit-btn" class="w-full py-4 rounded-xl bg-navy text-white font-bold text-sm hover:bg-navy-light transition shadow-xl flex items-center justify-center space-x-3 transform hover:scale-[1.02]">
+                    <span>Authenticate & Open Portal</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+                <p class="text-xs text-gray-500 font-semibold">Authorized Accounts:</p>
+                <div class="mt-3 text-xs font-mono bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
+                    <div>ibrahimlawan70@gmail.com</div>
+                    <div>yaquba@gmail.com</div>
+                    <div class="text-gray-400 text-[11px]">Password: digital@kedco</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const AUTHORIZED_ACCOUNTS = [
+            { email: 'ibrahimlawan70@gmail.com', pass: 'digital@kedco' },
+            { email: 'yaquba@gmail.com', pass: 'digital@kedco' }
+        ];
+
+        let currentSession = JSON.parse(localStorage.getItem('kedco_session')) || null;
+        let currentSlide = 0;
+        const totalSlides = 3;
+        let slideInterval;
+
+        window.onload = function() {
+            updateAuthUI();
+            startCarousel();
+            const hash = window.location.hash.replace('#', '');
+            if(['home'].includes(hash)) { switchView(hash, false); }
+        };
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.dot');
+            if (index >= totalSlides) currentSlide = 0;
+            else if (index < 0) currentSlide = totalSlides - 1;
+            else currentSlide = index;
+            slides.forEach((slide, i) => { slide.classList.toggle('active', i === currentSlide); });
+            dots.forEach((dot, i) => { dot.classList.toggle('active', i === currentSlide); });
+        }
+
+        function nextSlide() { showSlide(currentSlide + 1); resetCarouselInterval(); }
+        function prevSlide() { showSlide(currentSlide - 1); resetCarouselInterval(); }
+        function goToSlide(index) { showSlide(index); resetCarouselInterval(); }
+
+        function startCarousel() {
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(() => { showSlide(currentSlide + 1); }, 6000);
+        }
+
+        function resetCarouselInterval() {
+            if (slideInterval) clearInterval(slideInterval);
+            startCarousel();
+        }
+
+        function switchView(viewName, updateHash = true) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById('view-' + viewName);
+            if (target) {
+                target.classList.remove('hidden');
+                if (updateHash) { window.location.hash = viewName; }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-navy', 'bg-skyblue', 'font-semibold', 'active-nav');
+                btn.classList.add('text-gray-600');
+            });
+            const activeBtn = document.getElementById('nav-' + viewName);
+            if(activeBtn) {
+                activeBtn.classList.add('text-navy', 'bg-skyblue', 'font-semibold', 'active-nav');
+                activeBtn.classList.remove('text-gray-600');
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function openLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-error').classList.add('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('login-password');
+            const icon = document.getElementById('toggle-pwd-icon');
+            if(pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                pwdInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+            const pwdInput = document.getElementById('login-password').value;
+            const targetModule = document.getElementById('login-module').value;
+            const errorBox = document.getElementById('login-error');
+            const submitBtn = document.getElementById('login-submit-btn');
+
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Authenticating...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                submitBtn.innerHTML = '<span>Authenticate & Open Portal</span><i class="fa-solid fa-arrow-right"></i>';
+                submitBtn.disabled = false;
+
+                const matchedAccount = AUTHORIZED_ACCOUNTS.find(acc => acc.email === emailInput && acc.pass === pwdInput);
+
+                if(matchedAccount) {
+                    currentSession = { email: matchedAccount.email, loginTime: new Date().toISOString() };
+                    localStorage.setItem('kedco_session', JSON.stringify(currentSession));
+                    closeLoginModal();
+                    updateAuthUI();
+                    window.location.href = targetModule;
+                } else {
+                    errorBox.textContent = 'Invalid email or password. Please verify your credentials and try again.';
+                    errorBox.classList.remove('hidden');
+                    showToast('Authentication failed.', 'error');
+                }
+            }, 900);
+        }
+
+        function handleLogout() {
+            currentSession = null;
+            localStorage.removeItem('kedco_session');
+            updateAuthUI();
+            switchView('home');
+            showToast('Signed out successfully.', 'success');
+        }
+
+        function updateAuthUI() {
+            const authNav = document.getElementById('auth-nav-section');
+            const mobileAuth = document.getElementById('mobile-auth-section');
+
+            if(currentSession) {
+                const userHtml = `
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right hidden xl:block">
+                            <div class="text-xs font-bold text-navy">${currentSession.email}</div>
+                            <div class="text-[10px] text-green-600 font-semibold"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Active Session</div>
+                        </div>
+                        <button onclick="handleLogout()" class="px-4 py-2 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 text-xs font-bold transition flex items-center space-x-2" title="Sign Out">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="hidden sm:inline">Logout</span>
+                        </button>
+                    </div>
+                `;
+                authNav.innerHTML = userHtml;
+                mobileAuth.innerHTML = `
+                    <div class="py-2 px-3 text-xs text-navy font-bold">Signed in as: ${currentSession.email}</div>
+                    <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-lg">Logout</button>
+                `;
+            } else {
+                const loginBtnHtml = `
+                    <button onclick="openLoginModal()" class="px-5 py-2.5 rounded-xl bg-gold text-navy font-bold text-xs hover:bg-gold-light transition shadow-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Staff Login</span>
+                    </button>
+                `;
+                authNav.innerHTML = loginBtnHtml;
+                mobileAuth.innerHTML = `
+                    <button onclick="openLoginModal(); toggleMobileMenu();" class="w-full text-left px-3 py-2 text-base font-bold text-gold-dark hover:bg-skyblue">Staff Login</button>
+                `;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto px-5 py-4 rounded-xl shadow-2xl text-sm font-semibold text-white flex items-center space-x-3 transition transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-navy border-l-4 border-gold' : 'bg-red-700 border-l-4 border-white'}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check text-gold' : 'fa-triangle-exclamation text-white'} text-lg"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
