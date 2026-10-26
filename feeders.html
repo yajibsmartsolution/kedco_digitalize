@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c1830">
+<title>KEDCO GRID360 | Professional Feeder Intelligence</title>
+<meta name="description" content="KEDCO GRID360 local feeder register intelligence, network topology, analytics, quality audit and reporting.">
+<style>
+:root{--nav:#0c1830;--nav2:#122746;--navtxt:#b8c8de;--gold:#d8aa55;--goldp:#fff3dc;--bg:#f3f6fb;--card:#fff;--text:#13243c;--muted:#687993;--soft:#e9eff7;--border:#dce5f1;--accent:#1765c1;--teal:#0a9c89;--red:#c74b60;--amber:#c17b16;--shadow:0 12px 30px rgba(21,43,77,.055);--radius:16px;--sidebar:258px}
+[data-theme=dark]{--bg:#091321;--card:#111f33;--text:#eaf2fb;--muted:#96a9c1;--soft:#192b43;--border:#2a4059;--accent:#6ba9ff;--goldp:#3b311e;--shadow:0 12px 26px rgba(0,0,0,.18)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #dea93b;outline-offset:3px}[hidden]{display:none!important}
+svg.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}a{color:var(--accent)}.subtle{color:var(--muted)}.muted{color:var(--muted)}.tiny{font-size:11px}.small{font-size:12px}.mono{font-family:ui-monospace,Consolas,monospace}.weight-700{font-weight:700}
+.app-shell{display:flex;min-height:100vh}.sidebar{position:fixed;top:0;bottom:0;left:0;width:var(--sidebar);background:linear-gradient(170deg,#0c1b33,#102946 77%,#0d213b);color:#edf6ff;z-index:80;display:flex;flex-direction:column;border-right:1px solid #2a3e59;box-shadow:8px 0 24px rgba(8,16,30,.08)}.brand{display:flex;gap:12px;align-items:center;padding:26px 20px 23px;border-bottom:1px solid rgba(255,255,255,.10)}.brand-mark{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#ecc47a,#b88d40);color:#10203b;box-shadow:0 8px 22px rgba(218,164,70,.21)}.brand-mark .icon{width:26px;height:26px;stroke-width:2.4}.brand-title{font-weight:850;font-size:17px;letter-spacing:.15px}.brand-title b{color:#e9bf72}.brand-sub{font-size:10px;letter-spacing:.75px;color:#a9bed5;margin-top:2px}.nav-scroll{padding:15px 11px;overflow-y:auto;flex:1}.nav-caption{text-transform:uppercase;letter-spacing:1.4px;color:#7895b3;font-size:10px;font-weight:800;padding:12px 13px 9px}.nav-link{border:1px solid transparent;border-radius:11px;background:none;color:var(--navtxt);width:100%;display:flex;align-items:center;gap:13px;text-align:left;padding:12px 13px;font-size:13px;font-weight:620;margin-bottom:3px;transition:background .2s,color .2s,border .2s}.nav-link:hover{background:rgba(255,255,255,.075);color:#fff}.nav-link.active{color:#fff;background:rgba(216,170,85,.13);border-color:rgba(216,170,85,.37)}.nav-link.active .nav-ico{color:#edbe6a}.nav-ico{display:inline-flex;color:#91afcf}.nav-link .counter{margin-left:auto;background:rgba(255,255,255,.11);border-radius:8px;padding:1px 8px;font-size:10px}.sidebar-foot{border-top:1px solid rgba(255,255,255,.1);padding:18px 17px 20px}.side-status{display:flex;align-items:center;gap:9px;color:#bad0e7;font-size:11px}.side-status-dot{width:8px;height:8px;border-radius:50%;background:#e7ba6a;box-shadow:0 0 0 4px rgba(231,186,106,.12)}.side-small{color:#7895b3;font-size:10px;line-height:1.5;margin-top:8px}
+.workspace{margin-left:var(--sidebar);width:calc(100% - var(--sidebar));min-width:0}.topbar{position:sticky;top:0;z-index:55;display:flex;align-items:center;gap:16px;padding:15px 28px;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);min-height:74px}.page-crumb{min-width:0;flex:1}.eyebrow{font-size:10px;font-weight:800;color:var(--amber);text-transform:uppercase;letter-spacing:1.5px}.page-crumb h1{font-size:19px;line-height:1.25;letter-spacing:-.45px;margin:3px 0 0}.top-actions{display:flex;align-items:center;gap:9px}.searchbar{height:40px;display:flex;align-items:center;gap:7px;border:1px solid var(--border);border-radius:10px;background:var(--bg);padding:0 11px;width:240px}.searchbar .icon{color:var(--muted);width:16px}.searchbar input{outline:none;border:0;background:transparent;color:var(--text);width:100%;min-width:0;font-size:12px}.searchbar input:focus{outline:none}.icon-btn{width:40px;height:40px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--text);display:grid;place-items:center}.icon-btn:hover,.btn:hover{border-color:var(--accent)}.menu-toggle{display:none}.source-pill{border:1px solid var(--border);border-radius:999px;padding:7px 11px;color:var(--muted);background:var(--card);font-size:10px;font-weight:750;white-space:nowrap}.source-pill .dot{display:inline-block;width:6px;height:6px;background:var(--amber);border-radius:50%;margin-right:5px}
+.content{max-width:1790px;margin:0 auto;padding:27px 28px 46px}.filter-shell{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px 19px;margin-bottom:21px;box-shadow:var(--shadow)}.filter-summary{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.filter-summary .filter-heading{display:flex;gap:8px;align-items:center;font-weight:800;letter-spacing:-.2px}.filter-summary .filter-heading .icon{color:var(--accent)}.filter-chips{flex:1;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.filter-chip{border:1px solid var(--border);border-radius:999px;padding:5px 10px;font-size:11px;background:var(--bg);color:var(--muted)}.filter-chip strong{color:var(--text)}.filter-tail{margin-left:auto;display:flex;gap:8px}.btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:9px 13px;border-radius:10px;display:inline-flex;gap:7px;align-items:center;justify-content:center;font-size:12px;font-weight:760;white-space:nowrap}.btn .icon{width:15px;height:15px}.btn-primary{border-color:#1a5b9c;background:#165fae;color:#fff}.btn-primary:hover{background:#0b4e94;border-color:#0b4e94}.btn-gold{border-color:#e6bc7b;background:#fff5e5;color:#77501b}.btn-gold:hover{background:#ffeac8}.filters-expanded{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding-top:17px;margin-top:15px;border-top:1px solid var(--border)}.field label{display:block;font-weight:700;font-size:11px;color:var(--muted);margin-bottom:5px}.select,.input{height:39px;width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);min-width:0}.select:focus,.input:focus{border-color:var(--accent)}.switch-row{display:flex;gap:6px;flex-wrap:wrap}.quick-filter{padding:6px 12px;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:999px;font-size:11px;font-weight:750}.quick-filter.active{background:#e7f1fc;color:#11579e;border-color:#a8caec}[data-theme=dark] .quick-filter.active{background:#193652;color:#b7dcff}
+.hero{background:linear-gradient(110deg,#102441 0%,#16385d 66%,#22547b 100%);color:white;border-radius:21px;position:relative;overflow:hidden;padding:33px;display:flex;gap:20px;justify-content:space-between;align-items:center;box-shadow:0 16px 34px rgba(13,43,81,.14);margin-bottom:20px}.hero::after{content:"";position:absolute;right:-80px;top:-100px;width:470px;height:420px;border:1px solid rgba(227,186,115,.3);border-radius:50%;box-shadow:0 0 0 65px rgba(228,185,100,.04),0 0 0 125px rgba(228,185,100,.03);pointer-events:none}.hero-content{position:relative;z-index:1;max-width:735px}.hero .kicker{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#efc77a;font-weight:800}.hero h2{font-size:clamp(24px,3vw,36px);letter-spacing:-1.3px;line-height:1.16;margin:10px 0 12px}.hero h2 span{color:#f0ca86}.hero p{color:#cbdaf0;font-size:13px;line-height:1.75;max-width:640px}.hero-actions{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}.hero .btn-primary{background:#e8b866;color:#15223a;border-color:#f4d198}.hero .btn{border-color:rgba(255,255,255,.24)}.hero .btn-outline{background:rgba(255,255,255,.06);color:white}.hero-stamp{position:relative;z-index:1;width:162px;min-width:162px;padding:20px 10px;border:1px solid rgba(245,206,130,.45);border-radius:18px;text-align:center;background:rgba(255,255,255,.06)}.hero-stamp .stamp-value{font-size:42px;font-weight:850;line-height:1;color:#f5cd7c}.hero-stamp .stamp-label{color:#cedcec;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-top:9px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:20px 0}.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:17px;box-shadow:var(--shadow);position:relative;overflow:hidden}.kpi-card::before{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:var(--kpic,var(--accent))}.kpi-top{display:flex;justify-content:space-between;align-items:center}.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:800}.kpi-icon{display:grid;place-items:center;width:35px;height:35px;color:var(--kpic,var(--accent));background:var(--soft);border-radius:10px}.kpi-number{font-weight:850;font-size:28px;letter-spacing:-1px;line-height:1.1;margin-top:10px}.kpi-note{font-size:11px;color:var(--muted);margin-top:4px}.section-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:17px;overflow:hidden}.card-inner{padding:20px}.card-head{padding:18px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.card-head h3{margin:0;font-size:15px;letter-spacing:-.25px}.card-head p{margin:3px 0 0;color:var(--muted);font-size:11px}.card-actions{display:flex;align-items:center;gap:8px}.section-header{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:5px 0 18px}.section-header h2{margin:0;font-size:24px;letter-spacing:-.7px}.section-header p{margin:5px 0 0;color:var(--muted);font-size:12px}.hint{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.notice{border:1px solid #ead6b1;background:var(--goldp);color:var(--text);border-radius:12px;padding:12px 15px;font-size:11px;line-height:1.6;margin-bottom:17px}.notice b{color:var(--amber)}
+.chart-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}.chart-grid .card{margin:0}.span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}.chart-inner{padding:19px;min-height:250px}.chart-caption{color:var(--muted);font-size:11px;padding:0 19px 13px}.donut-block{display:flex;align-items:center;justify-content:center;gap:20px;min-height:175px}.donut{width:160px;height:160px;flex:0 0 160px;border-radius:50%;display:grid;place-items:center;background:var(--soft);position:relative}.donut::after{content:"";position:absolute;inset:30px;background:var(--card);border-radius:50%}.donut-center{z-index:1;text-align:center;font-size:26px;font-weight:850;line-height:1.1}.donut-center small{display:block;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.8px}.legend{display:grid;gap:9px;min-width:100px}.legend-item{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.legend-dot{height:9px;width:9px;border-radius:50%;flex:0 0 9px}.legend-item b{margin-left:auto;color:var(--text)}.bars{display:grid;gap:11px}.bar-line{display:grid;grid-template-columns:minmax(100px,1.05fr) 2fr 40px;align-items:center;gap:9px;font-size:11px}.bar-label{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--muted);font-weight:620}.bar-track{background:var(--soft);height:11px;overflow:hidden;border-radius:999px}.bar-fill{height:100%;border-radius:999px;min-width:0}.bar-value{text-align:right;font-weight:800}.matrix-table{width:100%;border-collapse:separate;border-spacing:6px;font-size:11px}.matrix-table th{font-weight:700;color:var(--muted);padding:4px}.matrix-table td{border-radius:6px;padding:10px 5px;text-align:center;font-weight:800;background:var(--soft)}.empty-box{border:1px dashed var(--border);background:var(--bg);padding:40px 20px;text-align:center;color:var(--muted);border-radius:12px}.micro-pills{display:flex;flex-wrap:wrap;gap:7px}.micro-pill{display:inline-flex;gap:7px;align-items:center;padding:7px 10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:9px;font-size:11px;font-weight:700}.micro-pill b{color:var(--accent)}.insight-list{display:grid;gap:11px}.insight-row{display:flex;gap:12px;align-items:start;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px}.insight-row:last-child{border:0}.insight-bullet{width:8px;height:8px;background:var(--amber);border-radius:50%;margin-top:5px;flex:0 0 8px}
+.table-wrap{overflow:auto;max-height:720px}.data-table{border-collapse:collapse;width:100%;min-width:1000px;text-align:left}.data-table th{position:sticky;z-index:1;top:0;background:var(--bg);color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.6px;font-size:10px;padding:13px 12px;border-bottom:1px solid var(--border)}.data-table td{padding:12px;font-size:12px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--muted)}.data-table tr:hover td{background:var(--bg)}.data-table .main-cell{font-weight:800;color:var(--text)}.sort-trigger{background:none;border:0;color:inherit;text-transform:inherit;font:inherit;letter-spacing:inherit;padding:0}.sort-trigger:hover{color:var(--accent)}.mark-btn{border:0;background:none;color:var(--muted);font-size:19px;line-height:1}.mark-btn.saved{color:var(--amber)}.badge{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:4px 7px;font-size:10px;font-weight:800;white-space:nowrap;background:var(--soft);color:var(--text)}.badge.a{background:#e0f6ec;color:#136b4e}.badge.b{background:#e4f1fd;color:#246cb6}.badge.c{background:#eee8ff;color:#6750ac}.badge.d{background:#fff2d6;color:#975e12}.badge.e,.badge.f{background:#fee7e9;color:#ac3849}.badge.warning{background:#fff1d9;color:#935e14}.badge.blue{background:#e1effe;color:#1f659e}.badge.dark{background:#e7ebf0;color:#243950}[data-theme=dark] .badge{filter:brightness(.85)}.pagination{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:15px 19px;flex-wrap:wrap}.page-buttons{display:flex;gap:5px}.page-btn{min-width:31px;height:31px;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:8px}.page-btn.active{background:var(--accent);color:white;border-color:var(--accent)}
+.source-list{display:grid;gap:7px;max-height:620px;overflow:auto}.source-option{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:11px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:12px}.source-option.selected{background:var(--goldp);border-color:#e6c389}.source-option b{color:var(--accent)}.network-grid{display:grid;grid-template-columns:minmax(210px,.75fr) minmax(0,2fr);gap:14px}.tree-main{padding:20px}.tree-source{background:#173b62;color:white;padding:17px;border-radius:12px;margin-bottom:17px}.tree-source .tiny{color:#cbdff2}.injection-list{display:grid;gap:11px;padding-left:20px;border-left:2px solid #d4b06c}.injection-card{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px}.injection-card::before{content:"";position:absolute;width:20px;border-top:2px solid #d4b06c;left:-21px;top:24px}.injection-name{font-size:13px;font-weight:800}.feeder-nodes{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}.feeder-node{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:10px;color:var(--text)}.feeder-node strong{font-weight:800}.feeder-node .tag{font-size:9px;color:var(--accent);margin-left:6px}.feeder-node:hover{border-color:var(--accent)}.source-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px}.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat-item{padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:12px}.stat-value{font-size:24px;font-weight:850}.stat-label{color:var(--muted);font-size:11px}
+.audit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.audit-metric{border-radius:12px;padding:16px;background:var(--bg);border:1px solid var(--border)}.audit-metric b{font-size:23px;display:block}.audit-metric span{font-size:11px;color:var(--muted)}.audit-metric.problem b{color:var(--red)}.audit-metric.good b{color:var(--teal)}.audit-list{display:grid;gap:9px}.audit-entry{display:flex;align-items:center;gap:12px;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:13px;background:var(--bg);font-size:12px}.audit-entry .issue{font-weight:800}.audit-entry small{color:var(--muted)}.audit-entry .count{border:1px solid var(--border);padding:5px 9px;background:var(--card);border-radius:7px;font-weight:800}.report-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.report-card{padding:21px;background:var(--card);border:1px solid var(--border);border-radius:14px}.report-emoji{font-size:25px;margin-bottom:10px}.report-card h3{margin:0 0 7px;font-size:15px}.report-card p{font-size:12px;color:var(--muted);min-height:45px}.report-card .btn{margin-top:11px}.settings-group{display:grid;gap:13px;max-width:750px}.setting{display:flex;justify-content:space-between;align-items:center;gap:15px;background:var(--bg);border:1px solid var(--border);padding:15px;border-radius:11px}.setting-title{font-weight:800}.setting-sub{font-size:11px;color:var(--muted);margin-top:4px}.setting-control{max-width:180px;min-width:120px}.footer{font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding:19px 0;margin-top:30px;text-align:center}
+.modal{border:1px solid var(--border);border-radius:20px;padding:0;background:var(--card);color:var(--text);box-shadow:0 30px 120px rgba(0,0,0,.25);width:min(720px,94vw);max-height:88vh}.modal::backdrop{background:rgba(10,22,39,.63);backdrop-filter:blur(3px)}.modal-head{padding:23px;border-bottom:1px solid var(--border);display:flex;align-items:start;justify-content:space-between;gap:14px}.modal-head h2{margin:0;font-size:22px;letter-spacing:-.4px}.modal-body{padding:22px;overflow:auto;max-height:calc(88vh - 118px)}.data-pairs{display:grid;grid-template-columns:1fr 1fr;gap:9px}.data-pair{background:var(--bg);padding:11px;border-radius:9px;border:1px solid var(--border);min-width:0;overflow-wrap:anywhere}.data-pair .key{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.45px;font-weight:800}.data-pair .val{font-size:12px;font-weight:740;margin-top:4px}.modal-actions{margin-top:18px;display:flex;gap:9px;flex-wrap:wrap}.comparison-table{width:100%;border-collapse:collapse}.comparison-table td,.comparison-table th{border-bottom:1px solid var(--border);padding:11px;text-align:left;font-size:12px;overflow-wrap:anywhere}.comparison-table td:first-child{font-weight:750;color:var(--muted);width:27%}.toast{position:fixed;z-index:150;right:22px;bottom:22px;background:#183555;color:#fff;border:1px solid #486381;box-shadow:0 13px 25px rgba(0,0,0,.18);padding:14px 20px;border-radius:12px;font-size:12px;max-width:min(410px,90vw)}.sidebar-backdrop{display:none}
+@media(max-width:1280px){:root{--sidebar:230px}.content{padding:21px}.topbar{padding:14px 21px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filters-expanded{grid-template-columns:repeat(3,minmax(0,1fr))}.searchbar{width:195px}.span-4{grid-column:span 6}.span-8{grid-column:span 12}}
+@media(max-width:980px){.sidebar{transform:translateX(-100%);transition:transform .22s ease}.sidebar.is-open{transform:translateX(0)}.sidebar-backdrop.show{display:block;position:fixed;inset:0;background:rgba(5,18,37,.54);z-index:74}.workspace{margin-left:0;width:100%}.menu-toggle{display:grid}.source-pill{display:none}.topbar{padding:12px 18px}.filters-expanded{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.section-header{display:block}.section-header>.card-actions{margin-top:13px;justify-content:flex-start}.section-header .btn{white-space:normal;text-align:center;max-width:100%}.topbar{gap:8px}.top-actions{gap:5px}.searchbar{width:40px;padding:0 10px;transition:width .2s}.searchbar:focus-within{position:absolute;right:60px;left:65px;width:auto;z-index:5;box-shadow:var(--shadow)}.searchbar input{width:0}.searchbar:focus-within input{width:100%}.content{padding:16px 12px}.page-crumb h1{font-size:16px}.hero{padding:23px;display:block}.hero h2{font-size:25px}.hero-stamp{display:none}.filters-expanded{grid-template-columns:1fr}.filter-summary{gap:8px}.filter-tail{width:100%;justify-content:stretch}.filter-tail .btn{flex:1}.kpi-grid{gap:9px}.kpi-card{padding:13px}.kpi-number{font-size:23px}.section-grid,.two-col,.network-grid,.report-cards{grid-template-columns:1fr}.chart-grid{display:block}.chart-grid .card{margin-bottom:13px}.donut{width:132px;height:132px;flex-basis:132px}.donut::after{inset:26px}.donut-center{font-size:22px}.chart-inner{min-height:auto}.audit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.data-pairs{grid-template-columns:1fr}.section-header h2{font-size:20px}.stat-strip{grid-template-columns:1fr 1fr 1fr}.stat-item{padding:10px}.stat-value{font-size:19px}.modal-head h2{font-size:18px}}
+.section-header>.card-actions{flex-wrap:wrap}
+@media print{.sidebar,.topbar,.filter-shell,.footer,.card-actions,.btn,.pagination,.mark-btn,.toast{display:none!important}.workspace{margin:0;width:100%}.content{padding:0}.card,.kpi-card{box-shadow:none;break-inside:avoid}.hero{color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.view[hidden]{display:none!important}.data-table{min-width:0}.table-wrap{max-height:none;overflow:visible}.data-table td,.data-table th{padding:6px;font-size:8px}.chart-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr))}.chart-grid .card{break-inside:avoid}}
+
+/* GRID360 Professional Export Centre — native, self-contained browser exports */
+.export-main-trigger{background:linear-gradient(112deg,#143656,#24567a);color:white;border-color:#476b8c;gap:7px;font-weight:800}
+.export-main-trigger:hover{color:#fff;background:#214d71;border-color:#d9b569}
+.export-selected-badge{font-size:11px;font-weight:800;padding:8px 10px;border:1px solid #cfdfeb;border-radius:10px;color:#23618f;background:#ebf5fc;white-space:nowrap}
+.export-feature{display:flex;gap:19px;align-items:center;margin-bottom:21px;padding:24px 26px;border-radius:19px;background:linear-gradient(112deg,#122a49 0%,#1c4167 67%,#234a6b 100%);box-shadow:0 13px 28px rgba(7,24,45,.17);color:#fff;border:1px solid rgba(214,178,113,.38)}
+.export-feature-mark,.export-dialog-logo{flex:0 0 58px;height:58px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#ecd39c,#c69348);color:#142f4d;box-shadow:0 8px 22px rgba(7,24,45,.13)}
+.export-feature-mark .icon,.export-dialog-logo .icon{width:29px;height:29px;stroke-width:1.7}
+.export-feature-copy{flex:1;min-width:0}
+.export-feature h3{font-size:23px;font-weight:850;letter-spacing:-.4px;margin:6px 0}
+.export-feature p{font-size:12px;line-height:1.75;color:#d6e4f2;max-width:670px}
+.export-eyebrow{font-weight:850;font-size:10px;letter-spacing:1.25px;color:#c5a269}
+.export-feature-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.export-feature-tags span{border:1px solid #6384a0;background:#1d476c;border-radius:999px;padding:5px 9px;font-size:10px;color:#f2e2c7;font-weight:750}
+.export-feature>.btn{flex:0 0 auto;background:linear-gradient(125deg,#deb873,#cba062);border-color:transparent;color:#192b42;min-height:45px;padding:0 21px}
+.export-dialog{width:min(940px,96vw);max-height:94vh;border:0;border-radius:20px;box-shadow:0 35px 125px rgba(4,16,34,.32)}
+.export-dialog-top{display:flex;align-items:center;gap:17px;padding:21px 25px;background:linear-gradient(118deg,#112744,#245278);color:#fff}
+.export-dialog-top h2{font-size:23px;font-weight:850;letter-spacing:-.5px;margin:4px 0 3px;color:#fff}
+.export-dialog-top p{font-size:11px;color:#c5d9eb;line-height:1.5}
+.export-dialog-top .icon-btn{margin-left:auto;align-self:start;color:#fff;background:#234768;border-color:#55718d;flex-shrink:0}
+.export-dialog-body{padding:22px 25px;max-height:calc(94vh - 118px);overflow-y:auto}
+.export-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.export-form-grid .field label{font-size:11px}
+.export-span-2{grid-column:span 2}
+.export-field-block{border:1px solid var(--border);background:var(--bg);padding:16px;border-radius:13px;margin-bottom:14px}
+.export-block-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:13px}
+.export-block-heading h3{font-size:14px;font-weight:850;margin:0}
+.export-block-heading p{font-size:10px;color:var(--muted);margin-top:4px}
+.export-block-heading>div:last-child{display:flex;gap:7px;flex-wrap:wrap}
+.export-block-heading .btn{font-size:10px;padding:8px 10px}
+.export-field-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.export-field-grid label,.export-options label{display:flex;align-items:center;gap:10px;color:var(--text);font-size:11px;font-weight:700;cursor:pointer;min-width:0}
+.export-field-grid label{padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:var(--card);transition:border .15s}
+.export-field-grid label:hover{border-color:#d3b16c}
+.export-field-grid input,.export-options input{accent-color:#1e608f;width:16px;height:16px;flex:0 0 16px}
+.export-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.export-options label{line-height:1.5}
+.export-preview{display:flex;align-items:center;gap:19px;padding:13px 16px;margin:17px 0;background:linear-gradient(105deg,#eef5fb,#fdf8ef);border:1px solid #dce7f1;border-radius:13px;color:#183d60}
+.export-preview-stats{display:flex;gap:16px;flex:0 0 auto}
+.export-preview-stats>div{min-width:75px;padding-right:14px;border-right:1px solid #d8e4ee}
+.export-preview-stats span{font-size:22px;font-weight:850;display:block;letter-spacing:-.3px}
+.export-preview-stats small{display:block;font-size:9px;color:#607b92;margin-top:3px;font-weight:750}
+.export-preview-note{font-size:11px;color:#536a7b;line-height:1.65;flex:1}
+.export-dialog-actions{display:flex;align-items:center;justify-content:space-between;gap:13px;padding-top:4px;flex-wrap:wrap}
+.export-no-network{font-size:10px;color:var(--muted);font-weight:700}
+.export-buttons{display:flex;gap:9px;flex-wrap:wrap}
+.export-buttons .btn{min-height:40px;padding:9px 15px}
+.export-pdf-btn{background:#a43b45;border-color:#a43b45;color:white;font-weight:850}
+.export-pdf-btn:hover{background:#8d2c38;color:#fff}
+.export-excel-btn{background:#147a54;border-color:#147a54;color:white;font-weight:850}
+.export-excel-btn:hover{background:#075d3d;color:#fff}
+.export-buttons .btn:disabled{opacity:.45;cursor:not-allowed}
+[data-theme="dark"] .export-selected-badge{background:#203f53;color:#e7d6b2;border-color:#456884}
+[data-theme="dark"] .export-preview{background:linear-gradient(105deg,#1b344c,#263a49);border-color:#426179;color:#e7f3ff}
+[data-theme="dark"] .export-preview-note,[data-theme="dark"] .export-preview-stats small{color:#b9cbda}
+[data-theme="dark"] .export-preview-stats>div{border-color:#45617a}
+@media(max-width:950px){.export-main-trigger span{display:none}.export-feature{flex-wrap:wrap}.export-feature .btn{margin-left:auto}}
+@media(max-width:650px){.export-dialog{width:100vw;max-width:100vw;max-height:100vh;border-radius:0}.export-dialog-top{padding:17px}.export-dialog-logo{flex-basis:43px;height:43px}.export-dialog-top h2{font-size:18px}.export-dialog-body{max-height:calc(100vh - 95px);padding:15px}.export-form-grid{grid-template-columns:1fr}.export-span-2{grid-column:auto}.export-field-grid{grid-template-columns:1fr 1fr}.export-options{grid-template-columns:1fr}.export-preview{display:block}.export-preview-note{margin-top:12px}.export-preview-stats{gap:8px}.export-preview-stats>div{min-width:0;flex:1}.export-dialog-actions{align-items:stretch}.export-buttons{width:100%;display:grid;grid-template-columns:1fr 1fr}.export-buttons .btn:first-child{grid-column:span 2}.export-feature{padding:20px}.export-feature h3{font-size:19px}.export-feature-mark{display:none}.export-feature>.btn{margin:0;width:100%;justify-content:center}#view-register .card-head .card-actions{align-items:start;flex-wrap:wrap}.export-selected-badge{max-width:100%;white-space:normal}}
+@media print{.export-feature,.export-main-trigger,.export-dialog{display:none!important}}
+
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+<symbol id="ic-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-12h-7l1-8z"/></symbol>
+<symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="ic-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+<symbol id="ic-network" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 8v5M5 16v-3h14v3"/></symbol>
+<symbol id="ic-building" viewBox="0 0 24 24"><path d="M4 22V5l8-3 8 3v17M2 22h20M8 9h2m4 0h2M8 13h2m4 0h2M8 17h2m4 0h2"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 16v-4m5 4V7m5 9v-6"/></symbol>
+<symbol id="ic-shield" viewBox="0 0 24 24"><path d="m12 2 9 4v6c0 5-4 8.5-9 10-5-1.5-9-5-9-10V6zM9 12l2 2 4-4"/></symbol>
+<symbol id="ic-report" viewBox="0 0 24 24"><path d="M5 2h10l4 4v16H5zM15 2v5h4M9 12h6M9 16h6"/></symbol>
+<symbol id="ic-settings" viewBox="0 0 24 24"><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/><circle cx="12" cy="12" r="4"/></symbol>
+<symbol id="ic-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.4 7.1 1-5.1 5 1.2 7-6.3-3.4-6.3 3.4 1.2-7-5.1-5 7.1-1z"/></symbol>
+<symbol id="ic-filter" viewBox="0 0 24 24"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></symbol>
+<symbol id="ic-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+<symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4 12H2m20 0h-2M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+<symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+<symbol id="ic-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+<symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
+</svg>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+    <div class="brand"><div class="brand-mark"><svg class="icon"><use href="#ic-bolt"/></svg></div><div><div class="brand-title">GRID<b>360</b><span style="font-size:10px">™</span></div><div class="brand-sub">KEDCO · TEAMS Intelligence</div></div></div>
+    <div class="nav-scroll"><div class="nav-caption">Workspace</div>
+      <nav id="mainNav" aria-label="Main menu">
+        <button class="nav-link active" data-view="overview"><span class="nav-ico"><svg class="icon"><use href="#ic-grid"/></svg></span>Executive Overview</button>
+        <button class="nav-link" data-view="register"><span class="nav-ico"><svg class="icon"><use href="#ic-list"/></svg></span>Feeder Register<span id="navRegisterCount" class="counter">—</span></button>
+        <button class="nav-link" data-view="network"><span class="nav-ico"><svg class="icon"><use href="#ic-network"/></svg></span>Network Topology</button>
+        <button class="nav-link" data-view="substations"><span class="nav-ico"><svg class="icon"><use href="#ic-building"/></svg></span>Substation Directory</button>
+        <button class="nav-link" data-view="analytics"><span class="nav-ico"><svg class="icon"><use href="#ic-chart"/></svg></span>Distribution Analytics</button>
+        <button class="nav-link" data-view="favorites"><span class="nav-ico"><svg class="icon"><use href="#ic-star"/></svg></span>Saved Feeders<span class="counter" id="favoriteCount">0</span></button>
+      </nav>
+      <div class="nav-caption">Governance & Utilities</div>
+      <nav id="auxNav" aria-label="Tools menu">
+        <button class="nav-link" data-view="quality"><span class="nav-ico"><svg class="icon"><use href="#ic-shield"/></svg></span>Data Quality Audit</button>
+        <button class="nav-link" data-view="reports"><span class="nav-ico"><svg class="icon"><use href="#ic-report"/></svg></span>Reports & Exports</button>
+        <button class="nav-link" data-view="settings"><span class="nav-ico"><svg class="icon"><use href="#ic-settings"/></svg></span>Preferences</button>
+      </nav>
+    </div>
+    <div class="sidebar-foot"><div class="side-status"><span class="side-status-dot"></span> Local register snapshot</div><div class="side-small">Read-only reference dashboard. No backend connection or live feeder telemetry.</div></div>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="workspace">
+    <header class="topbar"><button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open main menu" aria-expanded="false"><svg class="icon"><use href="#ic-menu"/></svg></button>
+      <div class="page-crumb"><div class="eyebrow">Technical Digitalization · Feeder Intelligence</div><h1 id="pageTitle">Executive Overview</h1></div>
+      <div class="top-actions"><div class="searchbar"><svg class="icon"><use href="#ic-search"/></svg><input id="globalSearch" type="search" autocomplete="off" aria-label="Search feeders" placeholder="Search feeder / ID / station…"></div><button class="btn export-main-trigger" type="button" data-open-export="1" aria-label="Open PDF and Excel export centre"><svg class="icon"><use href="#ic-download"/></svg><span>Export Centre</span></button><span class="source-pill"><span class="dot"></span>LOCAL SNAPSHOT</span><button class="icon-btn" id="themeToggle" title="Switch light / dark appearance" aria-label="Toggle theme"><svg class="icon"><use href="#ic-sun"/></svg></button></div>
+    </header>
+    <main class="content">
+      <section class="filter-shell" aria-label="Global smart filters">
+        <div class="filter-summary"><div class="filter-heading"><svg class="icon"><use href="#ic-filter"/></svg>Smart Filters</div><div class="filter-chips" id="activeChips"><span class="filter-chip">All feeder records</span></div><div class="filter-tail"><button class="btn" id="resetFilters">Clear</button><button class="btn btn-primary" id="toggleFilters" aria-controls="filtersExpanded" aria-expanded="false">Advanced Filters ⌄</button></div></div>
+        <div class="filters-expanded" id="filtersExpanded" hidden>
+          <div class="field"><label for="fState">State</label><select class="select" id="fState" data-filter="state"></select></div>
+          <div class="field"><label for="fRegion">Operating region</label><select class="select" id="fRegion" data-filter="region"></select></div>
+          <div class="field"><label for="fVoltage">Voltage class</label><select class="select" id="fVoltage" data-filter="voltage"></select></div>
+          <div class="field"><label for="fBand">Service band</label><select class="select" id="fBand" data-filter="band"></select></div>
+          <div class="field"><label for="fSegment">Customer segment</label><select class="select" id="fSegment" data-filter="segment"></select></div>
+          <div class="field"><label for="fSource">Transmission source</label><select class="select" id="fSource" data-filter="source"></select></div>
+          <div class="field"><label for="fInjection">Injection station</label><select class="select" id="fInjection" data-filter="injection"></select></div>
+          <div class="field"><label for="fSearch">Feeder search</label><input class="input" id="fSearch" type="search" placeholder="Name, ID, source, region..."></div>
+          <div class="field" style="grid-column:1/-1"><label>Quick state selection</label><div class="switch-row" id="stateQuickFilters"></div></div>
+        </div>
+      </section>
+      <section class="view" id="view-overview">
+        <div class="hero"><div class="hero-content"><div class="kicker">KEDCO · Operational Data Intelligence</div><h2>Every feeder. <span>One intelligent view.</span></h2><p>Explore the embedded 33 kV and 11 kV network register across Kano, Katsina and Jigawa. Interrogate connectivity, identify record gaps, compare feeders and export decision-ready views from a single workspace.</p><div class="hero-actions"><button class="btn btn-primary" data-go="register">Explore Feeder Register <svg class="icon"><use href="#ic-arrow"/></svg></button><button class="btn btn-outline" data-go="quality">Open Data Audit</button></div></div><div class="hero-stamp"><div class="stamp-value" id="heroTotal">—</div><div class="stamp-label">Matching feeders</div><div class="tiny" style="margin-top:13px;color:#e8c58a" id="heroStates">Kano · Katsina · Jigawa</div></div></div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="section-grid"><div class="card"><div class="card-head"><div><h3>State Portfolio</h3><p>Record count across the franchise states</p></div><div class="card-actions"><button class="btn" data-go="analytics">Explore Charts</button></div></div><div class="chart-inner" id="overviewStateChart"></div></div><div class="card"><div class="card-head"><div><h3>Network Intelligence</h3><p>Dynamic findings from the selected records</p></div></div><div class="card-inner insight-list" id="insightList"></div></div></div>
+        <div class="card"><div class="card-head"><div><h3>Quick Navigation</h3><p>Jump directly to the relevant operational view</p></div></div><div class="card-inner"><div class="micro-pills"><button class="micro-pill" data-go="register">⚡ Feeder master register</button><button class="micro-pill" data-go="network">🔗 Source-to-injection relationships</button><button class="micro-pill" data-go="substations">🏭 Station directory</button><button class="micro-pill" data-go="reports">📄 Reporting centre</button><button class="micro-pill" data-go="favorites">★ Saved feeders</button></div></div></div>
+      </section>
+      <section class="view" id="view-register" hidden><div class="section-header"><div><h2>Approved Feeder Register</h2><p>Search, sort, inspect, bookmark and compare 33 kV / 11 kV entries.</p></div><div class="card-actions"><button class="btn" id="compareBtn" disabled>Compare (0/2)</button><button class="btn btn-gold" type="button" data-open-export="1">Export PDF / Excel</button></div></div><div class="notice"><b>Register provenance:</b> This page uses the embedded records supplied in the source HTML. Classifications and connections have not been independently verified against KEDCO systems. “Haske Solar” is shown separately as a generation-source record, not counted as a feeder.</div><div class="card"><div class="card-head"><div><h3>Master Register</h3><p id="tableCount">—</p></div><div class="card-actions"><span class="export-selected-badge" id="exportSelectedBadge">0 selected for export</span><button class="btn" type="button" id="selectFilteredExport">Select all matching</button><button class="btn" type="button" id="clearExportSelection">Clear selection</button><button class="btn" type="button" data-open-export="selected">Export selection</button><label class="small subtle" for="pageSizeRegister">Rows</label><select class="select" id="pageSizeRegister" style="width:76px"><option>15</option><option>25</option><option>50</option><option>100</option></select></div></div><div class="table-wrap"><table class="data-table" id="feederTable"><thead><tr><th>★</th><th><input type="checkbox" id="selectVisibleExport" title="Select visible page rows for export" aria-label="Select visible page feeders for export"></th><th>Compare</th><th><button class="sort-trigger" data-sort="feeder">Feeder ↕</button></th><th><button class="sort-trigger" data-sort="feederId">ID ↕</button></th><th><button class="sort-trigger" data-sort="state">State ↕</button></th><th><button class="sort-trigger" data-sort="region">Region ↕</button></th><th><button class="sort-trigger" data-sort="voltage">Voltage ↕</button></th><th><button class="sort-trigger" data-sort="band">Band ↕</button></th><th><button class="sort-trigger" data-sort="segment">Segment ↕</button></th><th><button class="sort-trigger" data-sort="source">Transmission Source ↕</button></th><th>Injection Substation</th><th>Details</th></tr></thead><tbody id="feederTbody"></tbody></table></div><div class="pagination"><span class="small subtle" id="pageInfo">—</span><div class="page-buttons" id="pageControls"></div></div></div></section>
+      <section class="view" id="view-network" hidden><div class="section-header"><div><h2>Network Topology Explorer</h2><p>Trace registered transmission source → injection point → downstream feeder relationships.</p></div></div><div class="notice"><b>Logical network view:</b> This diagram uses the relationships in the supplied register. It is not a surveyed GIS layout or a switching/SCADA single-line diagram. Missing links are shown as “Not recorded”.</div><div class="network-grid"><div class="card"><div class="card-head"><div><h3>Transmission Sources</h3><p>Select a source to trace connections</p></div></div><div class="card-inner source-list" id="sourceChooser"></div></div><div class="card"><div class="card-head"><div><h3>Feeder Hierarchy</h3><p id="networkSubtitle">—</p></div></div><div class="tree-main" id="networkTree"></div></div></div></section>
+      <section class="view" id="view-substations" hidden><div class="section-header"><div><h2>Substation Directory</h2><p>Explore the transmission-source footprint and associated injection stations.</p></div><button class="btn" data-export="stations">Export stations CSV</button></div><div class="stat-strip" style="margin-bottom:17px"><div class="stat-item"><div class="stat-value" id="stationSources">—</div><div class="stat-label">Distinct transmission sources</div></div><div class="stat-item"><div class="stat-value" id="stationInjections">—</div><div class="stat-label">Distinct recorded injection names</div></div><div class="stat-item"><div class="stat-value" id="stationUnlinked">—</div><div class="stat-label">Feeders with no source field</div></div></div><div class="card"><div class="card-head"><div><h3>Source Station → Feeder Breakdown</h3><p>Select a station to view its register records</p></div></div><div class="table-wrap"><table class="data-table" style="min-width:620px"><thead><tr><th>Transmission Source</th><th>Matching feeders</th><th>33 kV</th><th>11 kV</th><th>Injection names</th><th>Inspect</th></tr></thead><tbody id="stationTbody"></tbody></table></div></div><div class="card"><div class="card-head"><div><h3 id="stationDetailTitle">Source details</h3><p>Click a source station above to inspect its connections.</p></div></div><div class="card-inner" id="stationDetails"><div class="empty-box">No station selected</div></div></div></section>
+      <section class="view" id="view-analytics" hidden><div class="section-header"><div><h2>Distribution Analytics</h2><p>Charts recompute instantly from the same selected feeder subset.</p></div><button class="btn" data-export="summary"><svg class="icon"><use href="#ic-download"/></svg> Export summary</button></div><div class="chart-grid"><div class="card span-4"><div class="card-head"><h3>⚡ Voltage Composition</h3></div><div class="chart-inner" id="chartVoltage"></div></div><div class="card span-4"><div class="card-head"><h3>◉ Service Band Mix</h3></div><div class="chart-inner" id="chartBand"></div></div><div class="card span-4"><div class="card-head"><h3>👥 Customer Segments</h3></div><div class="chart-inner" id="chartSegment"></div></div><div class="card span-6"><div class="card-head"><h3>🗺️ State Coverage</h3></div><div class="chart-inner" id="chartState"></div></div><div class="card span-6"><div class="card-head"><h3>📍 Operating Regions</h3></div><div class="chart-inner" id="chartRegion"></div></div><div class="card span-8"><div class="card-head"><h3>🏭 Transmission Source Distribution</h3></div><div class="chart-inner" id="chartSource"></div></div><div class="card span-4"><div class="card-head"><h3>▦ Voltage × Band Matrix</h3></div><div class="chart-inner" id="chartMatrix"></div></div></div></section>
+      <section class="view" id="view-favorites" hidden><div class="section-header"><div><h2>Saved Feeders</h2><p>Personal shortcuts stored in this browser only — never sent to a server.</p></div><button class="btn" data-export="favorites">Export saved list</button></div><div class="card"><div class="card-head"><div><h3>My Shortlist</h3><p>Use the star symbol in the register or feeder details to save an entry.</p></div></div><div class="card-inner" id="favoriteList"></div></div></section>
+      <section class="view" id="view-quality" hidden><div class="section-header"><div><h2>Data Quality & Validation</h2><p>Transparent checks, special classifications and issues requiring human review.</p></div><button class="btn" data-export="audit"><svg class="icon"><use href="#ic-download"/></svg> Export issues</button></div><div class="audit-grid" id="auditMetrics"></div><div class="section-grid" style="margin-top:17px"><div class="card"><div class="card-head"><div><h3>Integrity Checks</h3><p>Derived solely from the locally embedded register</p></div></div><div class="card-inner audit-list" id="auditList"></div></div><div class="card"><div class="card-head"><div><h3>Records Requiring Review</h3><p id="auditIssueCount">—</p></div></div><div class="card-inner" id="auditRecords"></div></div></div><div class="card"><div class="card-head"><div><h3>Special Generation Source</h3><p>Preserved separately from feeder KPIs</p></div></div><div class="card-inner" id="generationDetails"></div></div></section>
+      <section class="view" id="view-reports" hidden><div class="section-header"><div><h2>Reports & Export Centre</h2><p>Prepare auditable, filtered records or stakeholder-ready summaries.</p></div></div><div class="notice"><b>Data scope:</b> Reports contain register classifications and record counts, not energy consumption, real-time outages, billing, or operational status. Filter controls apply to exports unless otherwise stated.</div><div class="export-feature">
+<div class="export-feature-mark"><svg class="icon"><use href="#ic-download"/></svg></div>
+<div class="export-feature-copy"><span class="export-eyebrow">GRID360 REPORTING STUDIO · OFFLINE CAPABLE</span><h3>Create a professional PDF or Excel workbook</h3><p>Choose exactly which feeders, report type, columns and appendices to include. Download a branded, paginated PDF or multi-sheet formatted Excel (.xlsx) workbook.</p><div class="export-feature-tags"><span>PDF / XLSX</span><span>Field-level selection</span><span>Filtered or selected data</span><span>Audit & summary sheets</span></div></div>
+<button class="btn btn-primary" type="button" data-open-export="1">Create Report</button>
+</div><div class="report-cards"><div class="report-card"><div class="report-emoji">📑</div><h3>Filtered Feeder Register · CSV</h3><p>Export the complete current table subset, including source, injection, incoming feeder and outgoing link fields.</p><button class="btn btn-primary" data-export="csv">Download CSV</button></div><div class="report-card"><div class="report-emoji">📦</div><h3>Structured Register · JSON</h3><p>Export filtered feeder records with machine-readable metadata, report date and applied filter values.</p><button class="btn btn-primary" data-export="json">Download JSON</button></div><div class="report-card"><div class="report-emoji">📊</div><h3>Management Summary · JSON</h3><p>Generate aggregated feeder counts by state, source, voltage, band, region and segment.</p><button class="btn" data-export="summary">Download Summary</button></div><div class="report-card"><div class="report-emoji">🛡️</div><h3>Data Quality Exceptions · CSV</h3><p>Download unresolved identifiers, missing fields, disputed voltage and review notes for quality assurance.</p><button class="btn" data-export="audit">Download Audit</button></div><div class="report-card"><div class="report-emoji">🏭</div><h3>Source Substation Directory · CSV</h3><p>Summarise feeders and injection points by source station for the current filtered selection.</p><button class="btn" data-export="stations">Download Stations</button></div><div class="report-card"><div class="report-emoji">🖨️</div><h3>Printable Executive View</h3><p>Open a print-ready summary; choose Save as PDF from your browser print dialog.</p><button class="btn btn-gold" id="printReport">Print / Save as PDF</button></div></div></section>
+      <section class="view" id="view-settings" hidden><div class="section-header"><div><h2>Workspace Preferences</h2><p>Local display and usability settings; no account or backend permissions required.</p></div></div><div class="card"><div class="card-head"><h3>Appearance & Navigation</h3></div><div class="card-inner settings-group"><div class="setting"><div><div class="setting-title">Appearance</div><div class="setting-sub">Choose light or dark professional dashboard style.</div></div><select class="select setting-control" id="themeSelect"><option value="light">Royal Light</option><option value="dark">Executive Dark</option></select></div><div class="setting"><div><div class="setting-title">Register rows per page</div><div class="setting-sub">Applies to the register table and pagination.</div></div><select class="select setting-control" id="pageSizeSettings"><option>15</option><option>25</option><option>50</option><option>100</option></select></div><div class="setting"><div><div class="setting-title">Clear current filters</div><div class="setting-sub">Restore the entire registered feeder portfolio.</div></div><button class="btn" data-action="clear-filters">Reset Filters</button></div><div class="setting"><div><div class="setting-title">Clear saved feeders</div><div class="setting-sub">Remove bookmarks from this browser; source register remains unchanged.</div></div><button class="btn" id="clearFavorites">Clear Saved Feeders</button></div></div></div><div class="card"><div class="card-head"><h3>Data Provenance</h3></div><div class="card-inner"><div class="data-pairs" id="provenanceDetails"></div></div></div></section>
+      <footer class="footer">KEDCO GRID360™ · Feeder Intelligence · TEAMS | Local read-only analysis of the supplied embedded feeder register · <span id="footerYear">2026</span><br>Not a live SCADA feed, engineering switching instruction or authoritative verification of network connections.</footer>
+    </main>
+  </div>
+</div>
+<dialog id="feederDialog" class="modal" aria-label="Feeder configuration details"><div class="modal-head"><div><div class="eyebrow">Feeder Configuration</div><h2 id="detailName">—</h2><div id="detailId" class="small subtle mono"></div></div><button class="icon-btn" data-close="feederDialog" aria-label="Close feeder detail"><svg class="icon"><use href="#ic-close"/></svg></button></div><div class="modal-body"><div id="detailBody"></div><div class="modal-actions"><button class="btn" id="detailFavorite">☆ Save feeder</button><button class="btn" id="detailCompare">Compare feeder</button><button class="btn" id="detailCopy">Copy feeder details</button></div></div></dialog>
+<dialog id="compareDialog" class="modal" aria-label="Compare feeders"><div class="modal-head"><div><div class="eyebrow">Technical Side-by-Side</div><h2>Feeder Configuration Comparison</h2></div><button class="icon-btn" data-close="compareDialog" aria-label="Close comparison"><svg class="icon"><use href="#ic-close"/></svg></button></div><div class="modal-body" id="compareBody"></div></dialog>
+<dialog id="exportDialog" class="modal export-dialog" aria-labelledby="exportDialogTitle">
+  <div class="export-dialog-top">
+    <div class="export-dialog-logo"><svg class="icon"><use href="#ic-report"/></svg></div>
+    <div><div class="export-eyebrow">KEDCO GRID360 · REPORTING STUDIO</div><h2 id="exportDialogTitle">Professional Export Centre</h2><p>Prepare a tailored register, management report or quality-audit export.</p></div>
+    <button class="icon-btn" type="button" data-close="exportDialog" aria-label="Close export centre"><svg class="icon"><use href="#ic-close"/></svg></button>
+  </div>
+  <div class="export-dialog-body">
+    <div class="export-form-grid">
+      <div class="field"><label for="exportReportType">Report / Dataset</label><select id="exportReportType" class="select"><option value="feeders">Feeder Master Register</option><option value="stations">Transmission / Source Stations</option><option value="audit">Data Quality & Exceptions</option><option value="summary">Executive Management Summary</option></select></div>
+      <div class="field"><label for="exportScope">Records to export</label><select id="exportScope" class="select"><option value="filtered">Currently filtered records</option><option value="all">All registered feeders</option><option value="selected">Only checked / selected feeders</option><option value="saved">My saved feeders</option></select></div>
+      <div class="field export-span-2"><label for="exportReportTitle">Report title</label><input id="exportReportTitle" type="text" class="input" maxlength="115" value="KEDCO GRID360 | Feeder Intelligence Report" placeholder="Enter title for your report"></div>
+    </div>
+    <div class="export-field-block" id="exportFieldBlock"><div class="export-block-heading"><div><h3>Choose required columns</h3><p>Only checked fields appear in the feeder detail table.</p></div><div><button class="btn" type="button" id="exportFieldsAll">Select all</button><button class="btn" type="button" id="exportFieldsDefault">Recommended</button></div></div><div class="export-field-grid" id="exportFieldGrid"></div></div>
+    <div class="export-field-block"><div class="export-block-heading"><div><h3>Additional report content</h3><p>Include useful management and data governance sections.</p></div></div><div class="export-options"><label><input type="checkbox" id="exportIncludeSummary" checked> Management summary / classification breakdown</label><label><input type="checkbox" id="exportIncludeAudit"> Data quality / exceptions appendix</label><label><input type="checkbox" id="exportIncludeStations"> Transmission sources appendix</label><label><input type="checkbox" id="exportIncludeGeneration"> Special generation source appendix (Haske Solar)</label></div></div>
+    <div class="export-preview" aria-live="polite"><div class="export-preview-stats"><div><span id="exportPreviewCount">0</span><small>Feeder records</small></div><div><span id="exportPreviewCols">0</span><small>Selected fields</small></div><div><span id="exportPreviewIssues">0</span><small>Quality findings</small></div></div><div id="exportPreviewScope" class="export-preview-note">Preparing report selection</div></div>
+    <div class="export-dialog-actions"><span class="export-no-network">Generated locally · no upload or account needed</span><div class="export-buttons"><button class="btn" type="button" data-close="exportDialog">Cancel</button><button class="btn export-pdf-btn" type="button" id="exportPdfBtn">↓ Export PDF</button><button class="btn export-excel-btn" type="button" id="exportExcelBtn">↓ Export Excel (.xlsx)</button></div></div>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+const RAW = [
+  // KANO 33kV
+  ["Kano","Kano Industrial","33 kV","ANGELS","A","MDI","Kumbotso 330/132/33 kV","","","","TCN-049"],
+  ["Kano","Kano Industrial","33 kV","ATM","A","MDI","Kumbotso 330/132/33 kV","Abattoir","","","TCN-050"],
+  ["Kano","Kano West","33 kV","BAGAUDA","D","Regional","Kumbotso 330/132/33 kV","","","","TCN-048"],
+  ["Kano","Kano North West","11 kV","BICHI TOWN","C","Regional","Bichi 132 kV","Bichi","","","TCN-074"],
+  ["Kano","Kano Central","33 kV","BRISCOE","A","MDNI","Dakata 132 kV","Briscoe; Club (alternate supply)","","","TCN-009"],
+  ["Kano","Kano North","33 kV","BUK","B","Regional","Dan'Agundi 132 kV","Goron Dutse","","","TCN-015"],
+  ["Kano","Kano Central","33 kV","CBN","A","MDNI","Dan'Agundi 132 kV","Farm Center","","","TCN-011"],
+  ["Kano","Kano West","33 kV","CHALLAWA","A","MDI","Tamburawa 132 kV","Challawa","","","TCN-063"],
+  ["Kano","Kano Central","33 kV","CLUB","A","Regional","Dan'Agundi 132 kV","Club","","","TCN-012"],
+  ["Kano","Kano Industrial","33 kV","COCA-COLA","A","MDI","Tamburawa 132 kV","","","","TCN-060"],
+  ["Kano","Kano City","33 kV","DAN AGUNDI 1","A","Regional","Dan'Agundi 132 kV","Dan Agundi","","","TCN-013"],
+  ["Kano","Kano City","33 kV","DAN AGUNDI 2","A","Regional","Dan'Agundi 132 kV","Dan Agundi","","","TCN-016"],
+  ["Kano","Katsina Central","33 kV","DANBATTA","C","Regional","Kankia 132 kV","","","","TCN-035"],
+  ["Kano","Kano Industrial","33 kV","DANGOTE","A","MDI","Kumbotso 330/132/33 kV","","","","TCN-053"],
+  ["Kano","Kano Northwest","33 kV","DANZABUWA","D","Regional","Bichi 132 kV","","","","TCN-078"],
+  ["Kano","Kano Northwest","33 kV","DAWANAU INDUSTRIAL","A","MDI","Bichi 132 kV","","","","TCN-077"],
+  ["Kano","Kano West","33 kV","DR. Jamil","A","MDI","","","","","RESP-120"],
+  ["Kano","Kano Northwest","33 kV","Dawanau Old","E","Regional","","","","","RESP-087"],
+  ["Kano","Kano Southwest","33 kV","FALGORE","C","MDI","Kwanar Dangora 132 kV","","","","TCN-058"],
+  ["Kano","Kano Central","33 kV","FLOUR MILLS","A","MDI","Dakata 132 kV","","","","TCN-004"],
+  ["Kano","Kano North","33 kV","GAIDA","C","Regional","Kumbotso 330/132/33 kV","","","","TCN-055"],
+  ["Kano","Kano South","33 kV","GANO","C","Regional","Wudil 132 kV","","","","TCN-067"],
+  ["Kano","Kano South","33 kV","GARKO","E","Regional","Wudil 132 kV","","","","TCN-066"],
+  ["Kano","Kano East","33 kV","GASKIYA","A","MDI","Dakata 132 kV","Kawaji","","","TCN-005"],
+  ["Kano","Kano Northwest","33 kV","HON. ABUBAKAR KABIR","C","Regional","Bichi 132 kV","","","","TCN-076"],
+  ["Kano","Kano Central","33 kV","IDH","B","MDNI","Dakata 132 kV","I.D.H; PRP","","","TCN-002"],
+  ["Kano","Kano East","33 kV","JODA","A","MDI","Dakata 132 kV","","","","TCN-007"],
+  ["Kano","Kano Southwest","33 kV","KARAYE","C","Regional","Kwanar Dangora 132 kV","","","","TCN-057"],
+  ["Kano","Kano City","33 kV","KURNA","A","MDNI","Dan'Agundi 132 kV","Ado Bayero; Bukavu; Radio House","","","TCN-010"],
+  ["Kano","Kano North","33 kV","KWANKWASO","E","Regional","Tamburawa 132 kV","","","","TCN-061"],
+  ["Kano","Kano Southwest","33 kV","LAW SCHOOL","A","Regional","Kwanar Dangora 132 kV","Law School","","","TCN-056"],
+  ["Kano","Kano Industrial","33 kV","MAMUDA","A","MDI","Kumbotso 330/132/33 kV","","","","TCN-051"],
+  ["Kano","Kano West","33 kV","MR JIMETA","A","MDI","Kumbotso 330/132/33 kV","","","","TCN-046"],
+  ["Kano","Kano Central","33 kV","MTN","A","MDI","Dakata 132 kV","","","","TCN-003"],
+  ["Kano","Kano Southwest","33 kV","N B CERAMICS","A","Regional","Kwanar Dangora 132 kV","","","","TCN-059"],
+  ["Kano","Kano East","33 kV","NNPC","A","Regional","Dakata 132 kV","Jogana","","","TCN-006"],
+  ["Kano","Kano North","33 kV","R/ZAKI","B","Regional","Tamburawa 132 kV","","","","TCN-065"],
+  ["Kano","Kano North","33 kV","RICE FIELD","A","MDI","Tamburawa 132 kV","BUK","","","TCN-064"],
+  ["Kano","Kano Central","33 kV","RUMMAWA","A","MDI","Dakata 132 kV","","","","TCN-008"],
+  ["Kano","Kano Industrial","33 kV","SHARADA-BATA","A","MDI","Kumbotso 330/132/33 kV","Gongoni; Bata (Sharada)","","","TCN-052"],
+  ["Kano","Kano Central","33 kV","SMALL SCALE","A","MDI","Dakata 132 kV","Small Scale","","","TCN-001"],
+  ["Kano","Kano Industrial","33 kV","SPANISH 1","A","MDI","Kumbotso 330/132/33 kV","","","","TCN-047"],
+  ["Kano","Kano Industrial","33 kV","SPANISH 2","A","MDI","Kumbotso 330/132/33 kV","","","","TCN-054"],
+  ["Kano","Jigawa South","33 kV","SUMAILA","D","Regional","Dutse 132 kV","","","","TCN-024"],
+  ["Kano","Kano West","33 kV","TAMBURAWA","A","MDI","Tamburawa 132 kV","Tamburawa","","","TCN-062"],
+  ["Kano","Kano Northwest","33 kV","WATARI","C","Regional","Bichi 132 kV","","","","TCN-075"],
+  ["Kano","Kano South","33 kV","WUDIL","A","MDNI","Wudil 132 kV","Mariri; Wudil","","","TCN-068"],
+  ["Kano","Kano Industrial","33 kV","ZARIA ROAD","A","MDNI","Dan'Agundi 132 kV","Na'ibawa; Zaria Road","","","TCN-014"],
+  // KANO 11kV
+  ["Kano","Kano Central","11 kV","ABUJA ROAD","B","Regional","Dakata 132 kV","I.D.H","IDH","","F11-020"],
+  ["Kano","Kano Central","11 kV","AHMADU BELLO","A","MDNI","Dan'Agundi 132 kV","Club","CLUB","","F11-049"],
+  ["Kano","Kano Central","11 kV","AIRPORT ROAD","B","Regional","Dakata 132 kV","PRP","IDH","","F11-078"],
+  ["Kano","Kano Industrial","11 kV","AJASA","B","Regional","Dan'Agundi 132 kV","Dan Agundi","DAN AGUNDI 1","","F11-002"],
+  ["Kano","Kano North","11 kV","AMINU KANO","C","Regional","Dan'Agundi 132 kV","Goron Dutse","BUK","","F11-007"],
+  ["Kano","KANO EAST","11 kV","ASIAN PLASTICS","A","MDI","Dakata 132 kV","Jogana","NNPC","","F11-066"],
+  ["Kano","Kano Central","11 kV","AUDU BAKO","B","MDNI","Dan'Agundi 132 kV","Club","CLUB","","F11-053"],
+  ["Kano","Kano Northwest","11 kV","BACHIRAWA","C","Regional","Dan'Agundi 132 kV","Bukavu","KURNA","","F11-012"],
+  ["Kano","Kano Central","11 kV","BADAWA","B","Regional","Dan'Agundi 132 kV","Club","CLUB","","F11-051"],
+  ["Kano","Kano Central","11 kV","BANK ROAD","B","MDNI","Dan'Agundi 132 kV","Club","CLUB","","F11-052"],
+  ["Kano","Kano City","11 kV","BELLO DANDAGO","B","MDNI","Dan'Agundi 132 kV","Radio House","KURNA","","F11-010"],
+  ["Kano","Kano Northwest","11 kV","BICHI TOWN","C","Regional","Bichi 132 kV","Bichi","BICHI","","F11-079"],
+  ["Kano","Kano Central","11 kV","BOMPAI","A","MDNI","Dakata 132 kV","Briscoe","BRISCOE","","F11-076"],
+  ["Kano","Kano Southwest","11 kV","CAMPUS","C","Regional","Kwanar Dangora 132 kV","Law School","LAW SCHOOL","","F11-047"],
+  ["Kano","Kano Industrial","11 kV","CERAMIC","A","MDI","Kumbotso 330/132/33 kV","Abattoir","ATM","","F11-039"],
+  ["Kano","Kano West","11 kV","CHALAWA WATER PLANT","A","MDNI","Tamburawa 132 kV","Challawa","CHALLAWA","","F11-042"],
+  ["Kano","Kano Industrial","11 kV","CHIRANCI","D","Regional","Kumbotso 330/132/33 kV","Gongoni","SHARADA-BATA","","F11-029"],
+  ["Kano","Kano City","11 kV","CITY","C","Regional","Dan'Agundi 132 kV","Dan Agundi","DAN AGUNDI 2","","F11-004"],
+  ["Kano","Kano Central / Kano East","11 kV","DAKATA","B","Regional","Dakata 132 kV","Kawaji","GASKIYA","","F11-069"],
+  ["Kano","Kano Industrial","11 kV","DALA FOODS","A","MDI","Kumbotso 330/132/33 kV","Gongoni","SHARADA-BATA","","F11-031"],
+  ["Kano","Kano South","11 kV","DANLADI NASIDI","B","Regional","Wudil 132 kV","Mariri","WUDIL","","F11-059"],
+  ["Kano","Kano Central","11 kV","DR BALA","A","MDNI","Dan'Agundi 132 kV","Farm Center","CBN","","F11-056"],
+  ["Kano","Kano East","11 kV","DUNDU","A","MDI","Dakata 132 kV","Jogana","NNPC","","F11-065"],
+  ["Kano","Kano City","11 kV","FAGGE","C","Regional","Dakata 132 kV","I.D.H","IDH","","F11-017"],
+  ["Kano","Kano Northwest","11 kV","FANISAU","D","Regional","Dan'Agundi 132 kV","Bukavu","KURNA","","F11-016"],
+  ["Kano","Kano South","11 kV","FARAWA","C","Regional","Wudil 132 kV","Mariri","WUDIL","","F11-061"],
+  ["Kano","Kano Northwest","11 kV","FEDERAL SECRETARIAT","C","Regional","Dan'Agundi 132 kV","Bukavu","KURNA","","F11-014"],
+  ["Kano","Kano Central","11 kV","GWAGWARWA","D","Regional","Dakata 132 kV","Briscoe","BRISCOE","","F11-075"],
+  ["Kano","Kano City","11 kV","GWAMMAJA","D","Regional","Dakata 132 kV","I.D.H","IDH","","F11-018"],
+  ["Kano","Kano North","11 kV","GWARZO ROAD","B","MDNI","Tamburawa 132 kV","BUK","RICE FIELD","","F11-080"],
+  ["Kano","Kano Industrial","11 kV","HAUSAWA","B","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-036"],
+  ["Kano","Kano East","11 kV","HOTORO","C","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-035"],
+  ["Kano","Kano Industrial","11 kV","HOUSING ESTATE","B","Unclassified","Kumbotso 330/132/33 kV","Bata (Sharada)","SHARADA-BATA","","F11-024"],
+  ["Kano","Kano City","11 kV","IBRAHIM TAIWO","B","Regional","Dan'Agundi 132 kV","Dan Agundi","DAN AGUNDI 1","","F11-003"],
+  ["Kano","Kano Central","11 kV","INDEPENDENCE","B","Regional","Dakata 132 kV","Briscoe","BRISCOE","","F11-074"],
+  ["Kano","Kano Industrial","11 kV","JAEN","D","Regional","Kumbotso 330/132/33 kV","Gongoni","SHARADA-BATA","","F11-028"],
+  ["Kano","Kano City","11 kV","JAKARA","D","Regional","Dan'Agundi 132 kV","Goron Dutse","BUK","","F11-006"],
+  ["Kano","Kano North","11 kV","KABUGA","B","Regional","Dan'Agundi 132 kV","Goron Dutse","BUK","","F11-009"],
+  ["Kano","Kano West","11 kV","KARKASARA","B","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-032"],
+  ["Kano","Kano Central","11 kV","KAURA GOJE","D","Regional","Dakata 132 kV","PRP","IDH","","F11-077"],
+  ["Kano","Kano City","11 kV","KOFAR NAISA","C","Regional","Dan'Agundi 132 kV","Dan Agundi","DAN AGUNDI 2","","F11-005"],
+  ["Kano","Kano City","11 kV","KOFAR NASSARAWA","C","Regional","Dan'Agundi 132 kV","Dan Agundi","DAN AGUNDI 1","","F11-001"],
+  ["Kano","Kano City","11 kV","KOKI","D","Regional","Dakata 132 kV","I.D.H","IDH","","F11-021"],
+  ["Kano","Kano East","11 kV","KUNDILA","C","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-033"],
+  ["Kano","Kano North","11 kV","KUNTAU","C","Regional","Tamburawa 132 kV","BUK","RICE FIELD","","F11-082"],
+  ["Kano","Kano East","11 kV","LAMBISA","A","Regional","Dan'Agundi 132 kV","Farm Center","CBN","","F11-058"],
+  ["Kano","Kano Central","11 kV","LAMIDO","C","Regional","Dan'Agundi 132 kV","Club","CLUB","","F11-055"],
+  ["Kano","Kano South","11 kV","MAIDUGURI ROAD","C","Regional","Wudil 132 kV","Mariri","WUDIL","","F11-060"],
+  ["Kano","Kano Central","11 kV","MAIMALARI","A","MDI","Dakata 132 kV","Briscoe","BRISCOE","","F11-071"],
+  ["Kano","Kano South","11 kV","MAKAMA","C","Regional","Wudil 132 kV","Wudil","WUDIL","","F11-067"],
+  ["Kano","Kano Industrial","11 kV","MARHABA","C","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-038"],
+  ["Kano","Kano West","11 kV","MASARAUTA","B","Regional","Dan'Agundi 132 kV","Na'ibawa","ZARIA ROAD","","F11-046"],
+  ["Kano","Kano Industrial","11 kV","MUNDADU","C","Regional","Kumbotso 330/132/33 kV","Gongoni","SHARADA-BATA","","F11-030"],
+  ["Kano","Kano Central","11 kV","MURTALA MUHAMMED","B","MDNI","Dan'Agundi 132 kV","Club","CLUB","","F11-054"],
+  ["Kano","Kano Industrial","11 kV","NBC","A","MDI","Kumbotso 330/132/33 kV","Abattoir","ATM","","F11-040"],
+  ["Kano","Kano North","11 kV","NEW SITE","B","Regional","","Goron Dutse","","","F11-081"],
+  ["Kano","Kano Industrial","11 kV","NNDC","B","Regional","Kumbotso 330/132/33 kV","Bata (Sharada)","SHARADA-BATA","","F11-025"],
+  ["Kano","Kano Central","11 kV","NOMANSLAND","B","Regional","Dan'Agundi 132 kV","Bukavu","KURNA","","F11-013"],
+  ["Kano","Kano Northwest","11 kV","ORTHOPAEDIC","C","Regional","Dan'Agundi 132 kV","Bukavu","KURNA","","F11-015"],
+  ["Kano","Kano West","11 kV","PANSHEKARA","C","Regional","Tamburawa 132 kV","Challawa","CHALLAWA","","F11-043"],
+  ["Kano","Kano Central","11 kV","RACE COURSE","B","Regional","Dan'Agundi 132 kV","Club","CLUB","","F11-050"],
+  ["Kano","Kano Central","11 kV","RIMIN KEBE","D","Regional","Dakata 132 kV","Small Scale","SMALL SCALE","","F11-023"],
+  ["Kano","Kano Central","11 kV","SABON GARI","B","Regional","Dakata 132 kV","I.D.H","IDH","","F11-019"],
+  ["Kano","Kano City","11 kV","SAGAGI","D","Regional","Dan'Agundi 132 kV","Ado Bayero","KURNA","","F11-011"],
+  ["Kano","Kano Industrial","11 kV","SALLARI","C","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-037"],
+  ["Kano","Kano City","11 kV","SANI MAINAGGE","C","Regional","Dan'Agundi 132 kV","Goron Dutse","BUK","","F11-008"],
+  ["Kano","Kano Industrial","11 kV","SHARADA INDUSTRIAL","B","Regional","Kumbotso 330/132/33 kV","Bata (Sharada)","SHARADA-BATA","","F11-027"],
+  ["Kano","Kano East","11 kV","TALAMIZ","D","Regional","Dakata 132 kV","Jogana","NNPC","","F11-062"],
+  ["Kano","Kano West","11 kV","TAMBURAWA WATER PLANT","A","MDNI","Tamburawa 132 kV","Tamburawa","TAMBURAWA","","F11-044"],
+  ["Kano","Kano East","11 kV","TARAUNI","B","Regional","Dan'Agundi 132 kV","Farm Center","CBN","","F11-057"],
+  ["Kano","Kano Southwest","11 kV","TIGA","C","Regional","Kwanar Dangora 132 kV","Law School","LAW SCHOOL","","F11-048"],
+  ["Kano","Kano East","11 kV","TOKARAWA","A","MDI","Dakata 132 kV","Jogana","NNPC","","F11-063"],
+  ["Kano","Kano East","11 kV","TSAMIYA BABBA","D","Regional","Dakata 132 kV","Jogana","NNPC","","F11-064"],
+  ["Kano","Kano Central","11 kV","TUDUN MURTALA","D","Regional","Dakata 132 kV","Small Scale","SMALL SCALE","","F11-022"],
+  ["Kano","Kano Central","11 kV","TUDUN WADA","D","Regional","Dakata 132 kV","Briscoe","BRISCOE","","F11-072"],
+  ["Kano","Kano Industrial","11 kV","TUKUNTAWA","C","Regional","Kumbotso 330/132/33 kV","Bata (Sharada)","SHARADA-BATA","","F11-026"],
+  ["Kano","Kano West","11 kV","UNGUWA UKU","C","Regional","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","","F11-034"],
+  ["Kano","Kano South","11 kV","WUDIL COMMERCIAL","A","MDNI","Wudil 132 kV","Wudil","WUDIL","","F11-068"],
+  ["Kano","Kano East","11 kV","YANKABA","B","Regional","Dakata 132 kV","Kawaji","GASKIYA","","F11-070"],
+  ["Kano","Kano West","11 kV","YANLEMO","B","Regional","Dan'Agundi 132 kV","Na'ibawa","ZARIA ROAD","","F11-045"],
+  ["Kano","Kano Central","11 kV","YUSUF ROAD","A","Regional","Dakata 132 kV","Briscoe","BRISCOE","","F11-073"],
+  ["Kano","Kano West","11 kV","ZAWACIKI","C","Regional","Kumbotso 330/132/33 kV","Abattoir","ATM","","F11-041"],
+  // KANO Disputed
+  ["Kano","Kano Northwest","33 / 11 kV disputed","Badume","C","Regional","Bichi 132 kV","Bichi","BICHI","Badume","L33-089"],
+  ["Kano","Kano East / Kano Industrial / Kano West","33 / 11 kV disputed","Dawaki","A","MDNI","Dan'Agundi 132 kV","Zaria Road","ZARIA ROAD","Dawaki","L33-085"],
+  ["Kano","Kano Central / Kano Northwest","33KV","Dawanau","E","Regional","Dan'Agundi 132 kV","Bukavu","KURNA","Dawanau","L33-082"],
+  ["Kano","Kano West","33 / 11 kV disputed","Dr Jamil Gwamna","A","MDI","Tamburawa 132 kV","Tamburawa","TAMBURAWA","Dr Jamil Gwamna","L33-087"],
+  ["Kano","Kano South","33 / 11 kV disputed","Gaya","E","Regional","Wudil 132 kV","Wudil","WUDIL","Gaya","L33-088"],
+  ["Kano","Kano Central","33 / 11 kV disputed","Gezawa","E","Regional","Dakata 132 kV","Small Scale","SMALL SCALE","Gezawa","L33-084"],
+  ["Kano","Kano Industrial / Kano West","33 / 11 kV disputed","Haske Solar","F","MDI","Kumbotso 330/132/33 kV","Abattoir","ATM","Haske Solar","L33-086"],
+  ["Kano","Kano Central / Kano City","33 / 11 kV disputed","Rangaza","A","MDI","Dakata 132 kV","I.D.H","IDH","Rangaza","L33-083"],
+  // KATSINA 33kV
+  ["Katsina","Katsina North","33 kV","AJIWA","A","MDNI","Katsina 132 kV","Fadama","","","TCN-038"],
+  ["Katsina","Katsina Central","33 kV","AMPRI GLOBAL","D","Regional","Kankia 132 kV","","","","TCN-034"],
+  ["Katsina","Katsina South","33 kV","DANDUME","D","Regional","Funtua 132 kV","","","","HEADPI-TCN-209"],
+  ["Katsina","Katsina West","33 kV","DAURA","A","Regional","Daura 132 kV","Daura","","","TCN-018"],
+  ["Katsina","Katsina Central","33 kV","DUTSENMA","C","Regional","Kankia 132 kV","","","","TCN-036"],
+  ["Katsina","Katsina South","33 kV","FASKARI","D","Regional","Funtua 132 kV","","","","HEADPI-TCN-208"],
+  ["Katsina","Katsina North","33 kV","JIBIA","D","Regional","Katsina 132 kV","","","","TCN-045"],
+  ["Katsina","Katsina North","33 kV","KAITA","B","Regional","Katsina 132 kV","Kofar Sauri","","","TCN-041"],
+  ["Katsina","Katsina South","33 kV","KATSINA ROAD","A","MDI","Funtua 132 kV","Funtua","","","TCN-021"],
+  ["Katsina","Katsina North","33 kV","KOFAR GUGA","A","MDNI","Katsina 132 kV","Kofar Guga","","","TCN-043"],
+  ["Katsina","Katsina West","33 kV","MAI'ADU'A","E","Regional","Daura 132 kV","","","","TCN-019"],
+  ["Katsina","Katsina South","33 kV","MALUMFASHI","A","Regional","Funtua 132 kV","Malumfashi","","","TCN-023"],
+  ["Katsina","Katsina South","33 kV","MAMMAN NASIR","B","Regional","Funtua 132 kV","","","","HEADPI-TCN-207"],
+  ["Katsina","Katsina West","33 kV","MASHI","C","Regional","Daura 132 kV","","","","TCN-017"],
+  ["Katsina","Katsina Central","33 kV","MUSAWA","D","Regional","Kankia 132 kV","Musawa","","","TCN-037"],
+  ["Katsina","Katsina North","33 kV","NAK","A","MDI","Katsina 132 kV","","","","TCN-044"],
+  ["Katsina","Katsina North","33 kV","POLY","D","Regional","Katsina 132 kV","","","","TCN-040"],
+  ["Katsina","Katsina North","33 kV","POWER HOUSE","A","Regional","Katsina 132 kV","IBB Way; IBB NIPP","","","TCN-039"],
+  ["Katsina","Katsina South","33 kV","TEXTILE","A","MDI","Funtua 132 kV","Textile","","","TCN-022"],
+  // KATSINA 11kV
+  ["Katsina","Katsina North","11 kV","APEX","A","Regional","Katsina 132 kV","Fadama","AJIWA","","F11-107"],
+  ["Katsina","Katsina North","11 kV","ARMY BARRACKS","D","Regional","Katsina 132 kV","IBB NIPP","POWER HOUSE","","F11-097"],
+  ["Katsina","Katsina West","11 kV","BAYAJIDDA","B","Regional","Daura 132 kV","Daura","DAURA","","F11-116"],
+  ["Katsina","Katsina South","11 kV","BCGA","C","Regional","Funtua 132 kV","Malumfashi","MALUMFASHI","","F11-126"],
+  ["Katsina","Katsina North","11 kV","DANDAGORO","B","Regional","Katsina 132 kV","IBB Way","POWER HOUSE","","F11-100"],
+  ["Katsina","Katsina West","11 kV","DAURAMA","B","Regional","Daura 132 kV","Daura","DAURA","","F11-115"],
+  ["Katsina","Katsina South","11 kV","DUTSEN REME","C","Regional","Funtua 132 kV","Funtua","KATSINA ROAD","","F11-119"],
+  ["Katsina","Katsina North","11 kV","DUTSEN SAFE","C","Regional","Katsina 132 kV","Kofar Guga","KOFAR GUGA","","F11-105"],
+  ["Katsina","Katsina North","11 kV","FMC","C","Regional","Katsina 132 kV","Kofar Guga","KOFAR GUGA","","F11-104"],
+  ["Katsina","Katsina South","11 kV","FUNTUA TEXTILE MILL","A","MDI","Funtua 132 kV","Textile","TEXTILE","","F11-124"],
+  ["Katsina","Katsina South","11 kV","FUNTUA WATER WORKS","A","MDNI","Funtua 132 kV","Textile","TEXTILE","","F11-125"],
+  ["Katsina","Katsina South","11 kV","GALADIMA","C","Regional","Funtua 132 kV","Malumfashi","MALUMFASHI","","F11-127"],
+  ["Katsina","Katsina North","11 kV","GRA","C","Regional","Katsina 132 kV","IBB Way","POWER HOUSE","","F11-096"],
+  ["Katsina","Katsina North","11 kV","HASSAN USMAN ROAD","B","Regional","Katsina 132 kV","Fadama","AJIWA","","F11-106"],
+  ["Katsina","Katsina North","11 kV","HOSPITAL ROAD","C","Regional","Katsina 132 kV","Kofar Guga","KOFAR GUGA","","F11-103"],
+  ["Katsina","Katsina South","11 kV","INDUSTRIAL","A","Regional","Funtua 132 kV","Funtua","KATSINA ROAD","","F11-120"],
+  ["Katsina","Katsina South","11 kV","JABIRI","C","Regional","Funtua 132 kV","Funtua","KATSINA ROAD","","F11-118"],
+  ["Katsina","Katsina North","11 kV","KADARKO","B","Regional","Katsina 132 kV","Fadama","AJIWA","","F11-109"],
+  ["Katsina","Katsina North","11 kV","KANO ROAD","C","Regional","Katsina 132 kV","IBB NIPP","POWER HOUSE","","F11-098"],
+  ["Katsina","Katsina Central","11 kV","KOFAR FADA","D","Regional","Kankia 132 kV","Musawa","MUSAWA","","F11-111"],
+  ["Katsina","Katsina North","11 kV","KOFAR MARUSA","D","Regional","Katsina 132 kV","IBB Way","POWER HOUSE","","F11-099"],
+  ["Katsina","Katsina North","11 kV","LOW COST","B","Regional","Katsina 132 kV","IBB NIPP","POWER HOUSE","","F11-101"],
+  ["Katsina","Katsina South","11 kV","MAI RUWA","E","Regional","Funtua 132 kV","Textile","TEXTILE","","F11-123"],
+  ["Katsina","Katsina Central","11 kV","MATAZU","D","Regional","Kankia 132 kV","Musawa","MUSAWA","","F11-112"],
+  ["Katsina","Katsina North","11 kV","MUHAMMED DIKKO","C","Regional","Katsina 132 kV","Kofar Sauri","KAITA","","F11-110"],
+  ["Katsina","Katsina North","11 kV","NAGOGGO","C","Regional","Katsina 132 kV","Fadama","AJIWA","","F11-108"],
+  ["Katsina","Katsina South","11 kV","NAKOWA","C","Regional","Funtua 132 kV","Textile","TEXTILE","","F11-122"],
+  ["Katsina","Katsina North","11 kV","NATSINTA","A","MDNI","Katsina 132 kV","Kofar Guga","KOFAR GUGA","","F11-102"],
+  ["Katsina","Katsina West","11 kV","RIJIMA","A","MDI","Daura 132 kV","Daura","DAURA","","F11-117"],
+  ["Katsina","Katsina South","11 kV","TOWN","C","Regional","Funtua 132 kV","Funtua","KATSINA ROAD","","F11-121"],
+  // JIGAWA 33kV
+  ["Jigawa","Jigawa South","33 kV","BIRNIN KUDU","A","Regional","Dutse 132 kV","Birnin Kudu","","","TCN-026"],
+  ["Jigawa","Jigawa North","33 kV","BIRNIWA","D","Regional","Hadejia 132 kV","","","","TCN-028"],
+  ["Jigawa","Jigawa South","33 kV","DUTSE","A","MDNI","Dutse 132 kV","Dutse NIPP; Dutse Old","","","TCN-025"],
+  ["Jigawa","Jigawa West","33 kV","GAGARAWA","B","Regional","Gagarawa 132 kV","","","","TCN-071"],
+  ["Jigawa","Jigawa West","33 kV","GUJUNGU","D","Regional","Gagarawa 132 kV","","","","TCN-072"],
+  ["Jigawa","Jigawa North","33 kV","GUMEL","C","Regional","Hadejia 132 kV","Gumel; M/Madori","","","TCN-032"],
+  ["Jigawa","Jigawa North","33 kV","HADEJIA","A","MDI","Hadejia 132 kV","Hadejia NIPP","","","TCN-029"],
+  ["Jigawa","Jigawa West","33 kV","JAHUN","D","Regional","Dutse 132 kV","","","","TCN-027"],
+  ["Jigawa","Jigawa North","33 kV","KAFIN HAUSA","A","Regional","Hadejia 132 kV","Kafin Hausa","","","TCN-030"],
+  ["Jigawa","Katsina West","33 kV","KAZAURE","C","Regional","Daura 132 kV","Kazaure","","","TCN-020"],
+  ["Jigawa","Jigawa West","33 kV","MAJIYA","D","Regional","Gagarawa 132 kV","","","","TCN-070"],
+  ["Jigawa","Jigawa West","33 kV","RICE MILL","A","MDI","Gagarawa 132 kV","","","","TCN-073"],
+  ["Jigawa","Jigawa West","33 kV","SARKIN YAKI","A","Regional","Gagarawa 132 kV","","","","TCN-069"],
+  ["Jigawa","Jigawa North","33 kV","UNIVERSITY","A","MDNI","Hadejia 132 kV","","","","TCN-031"],
+  // JIGAWA 11kV
+  ["Jigawa","Katsina West","11 kV","DANTUNKU","C","Regional","Daura 132 kV","Kazaure","KAZAURE","","F11-114"],
+  ["Jigawa","Jigawa North","11 kV","FANTAI","B","Unclassified","Hadejia 132 kV","Hadejia NIPP","","","F11-085"],
+  ["Jigawa","Jigawa South","11 kV","GARU","B","Regional","Dutse 132 kV","Dutse Old","DUTSE","","F11-090"],
+  ["Jigawa","Jigawa South","11 kV","GOVERNMENT HOUSE DUTSE","A","MDNI","Dutse 132 kV","Dutse NIPP","DUTSE","","F11-093"],
+  ["Jigawa","Katsina West","11 kV","KANTI","C","Regional","Daura 132 kV","Kazaure","KAZAURE","","F11-113"],
+  ["Jigawa","Jigawa West","11 kV","LAUTAI","C","Regional","Hadejia 132 kV","Gumel","GUMEL","","F11-087"],
+  ["Jigawa","Jigawa South","11 kV","LIMAWA","C","Regional","Dutse 132 kV","Dutse Old","DUTSE","","F11-089"],
+  ["Jigawa","Jigawa North","11 kV","MAJE","B","Regional","Hadejia 132 kV","Hadejia Old","","","F11-083"],
+  ["Jigawa","Jigawa South","11 kV","MAJESTIC","B","Regional","Dutse 132 kV","Birnin Kudu","BIRNIN KUDU","","F11-095"],
+  ["Jigawa","Jigawa North","11 kV","MAKWALLA","D","Regional","Hadejia 132 kV","M/Madori","GUMEL","","F11-086"],
+  ["Jigawa","Jigawa South","11 kV","NUHU SUNUSI","A","MDNI","Dutse 132 kV","Dutse Old","DUTSE","","F11-088"],
+  ["Jigawa","Jigawa South","11 kV","SANI ABACHA WAY","B","Regional","Dutse 132 kV","Dutse NIPP","DUTSE","","F11-091"],
+  ["Jigawa","Jigawa South","11 kV","SCHOOL OF NURSING","C","Regional","Dutse 132 kV","Birnin Kudu","BIRNIN KUDU","","F11-094"],
+  ["Jigawa","Jigawa North","11 kV","SHAGARI","B","Regional","Hadejia 132 kV","Hadejia NIPP","HADEJIA","","F11-084"],
+  ["Jigawa","Jigawa South","11 kV","TAKUR","B","Regional","Dutse 132 kV","Dutse NIPP","DUTSE","","F11-092"]
+];
+
+
+</script>
+<script>
+'use strict';
+// Embedded register data is supplied by the page author. Keep raw rows immutable.
+const GENERATION_ROWS = RAW.filter(r => /\bhaske\s+solar\b/i.test(String(r[3])));
+const FEEDERS = RAW.filter(r => !/\bhaske\s+solar\b/i.test(String(r[3]))).map(r => Object.freeze({state:r[0],region:r[1],voltage:r[2],feeder:r[3],band:r[4],segment:r[5],source:r[6],injection:r[7],incoming:r[8],outgoing:r[9],feederId:r[10]}));
+const $=id=>document.getElementById(id);
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const countBy=(records,key)=>records.reduce((a,r)=>(a[String(r[key]||'Not recorded')]=(a[String(r[key]||'Not recorded')]||0)+1,a),{});
+const uniq=a=>[...new Set(a.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)));
+const fmt=n=>Number(n||0).toLocaleString('en-NG');
+const pct=(n,total)=>total?`${(100*n/total).toFixed(1)}%`:'0%';
+const attr=escapeHtml;
+const names={overview:'Executive Overview',register:'Feeder Register',network:'Network Topology',substations:'Substation Directory',analytics:'Distribution Analytics',favorites:'Saved Feeders',quality:'Data Quality Audit',reports:'Reports & Exports',settings:'Preferences'};
+const order=['state','region','voltage','band','segment','source','injection'];
+const filtersIds={state:'fState',region:'fRegion',voltage:'fVoltage',band:'fBand',segment:'fSegment',source:'fSource',injection:'fInjection'};
+const titles={state:'All states',region:'All regions',voltage:'All voltages',band:'All bands',segment:'All segments',source:'All sources',injection:'All injection stations'};
+const palette=['#1765c1','#0e9f8a','#ba8a34','#7156bd','#c55269','#517991','#ea9e58','#67b2a2','#234773','#8797a8'];
+const bandColors={A:'#0ca784',B:'#1772ca',C:'#7c60cb',D:'#daa135',E:'#d05d69',F:'#d98249'};
+const safeStore={get(k,fallback){try{return localStorage.getItem(k)??fallback}catch{return fallback}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
+let savedIds=[];
+try{const v=JSON.parse(safeStore.get('grid360_saved_feeders','[]'));savedIds=Array.isArray(v)?v.filter(id=>FEEDERS.some(f=>f.feederId===id)):[]}catch{}
+let theme=safeStore.get('grid360_theme','light')==='dark'?'dark':'light';
+let pageSize=Number(safeStore.get('grid360_page_size','15'));if(![15,25,50,100].includes(pageSize))pageSize=15;
+const exportSelectedIds = new Set();
+const state={view:'overview',filters:{state:'',region:'',voltage:'',band:'',segment:'',source:'',injection:'',search:''},sort:{key:'feeder',direction:1},page:1,pageSize,selected:null,comparison:[],sourceSelected:null};
+let toastTimeout;
+function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').hidden=true,3400)}
+function applyFilters(records=FEEDERS){const f=state.filters;const q=f.search.toLowerCase().trim();return records.filter(r=>{if(order.some(key=>f[key]&&r[key]!==f[key]))return false;return !q||[r.feeder,r.feederId,r.state,r.region,r.source,r.injection,r.incoming,r.outgoing,r.segment].some(v=>String(v||'').toLowerCase().includes(q))})}
+function setTheme(v){theme=v==='dark'?'dark':'light';document.documentElement.dataset.theme=theme;$('themeSelect').value=theme;safeStore.set('grid360_theme',theme)}
+function setPageSize(v){if(![15,25,50,100].includes(Number(v)))return;state.pageSize=Number(v);state.page=1;$('pageSizeRegister').value=String(v);$('pageSizeSettings').value=String(v);safeStore.set('grid360_page_size',String(v));renderRegister(applyFilters())}
+function getOptionsFor(key){const idx=order.indexOf(key);const base=FEEDERS.filter(r=>order.slice(0,idx).every(k=>!state.filters[k]||r[k]===state.filters[k]));return uniq(base.map(r=>r[key]));}
+function updateFilterOptions(){for(const key of order){const el=$(filtersIds[key]);const available=getOptionsFor(key);if(state.filters[key]&&!available.includes(state.filters[key]))state.filters[key]='';el.replaceChildren(new Option(titles[key],''),...available.map(v=>new Option(key==='band'?`Band ${v}`:v,v)));el.value=state.filters[key];} $('fSearch').value=state.filters.search;$('globalSearch').value=state.filters.search;renderQuickFilters();renderActiveChips()}
+function renderQuickFilters(){const states=uniq(FEEDERS.map(r=>r.state));$('stateQuickFilters').innerHTML=['',...states].map(v=>`<button class="quick-filter ${state.filters.state===v?'active':''}" data-state="${attr(v)}">${v||'All States'}</button>`).join('')}
+function renderActiveChips(){const selected=order.filter(k=>!!state.filters[k]).map(k=>`${k==='band'?'Band':k.charAt(0).toUpperCase()+k.slice(1)}: ${state.filters[k]}`);if(state.filters.search)selected.push(`Search: ${state.filters.search}`);$('activeChips').innerHTML=selected.length?selected.map(v=>`<span class="filter-chip"><strong>${escapeHtml(v)}</strong></span>`).join(''):'<span class="filter-chip">All feeder records · no filters applied</span>'}
+function changeFilter(key,value){state.filters[key]=value;if(key==='state'||order.includes(key)){const idx=order.indexOf(key);order.slice(idx+1).forEach(k=>state.filters[k]='')}state.page=1;updateFilterOptions();refresh()}
+function resetFilters(){Object.keys(state.filters).forEach(k=>state.filters[k]='');state.page=1;updateFilterOptions();refresh();toast('All filters cleared')}
+function toggleFilters(force){const open=typeof force==='boolean'?force:$('filtersExpanded').hidden;$('filtersExpanded').hidden=!open;$('toggleFilters').setAttribute('aria-expanded',String(open));$('toggleFilters').textContent=open?'Hide Filters ⌃':'Advanced Filters ⌄'}
+function changeView(view){if(!names[view])return;state.view=view;document.querySelectorAll('.view').forEach(section=>section.hidden=section.id!==`view-${view}`);document.querySelectorAll('.nav-link').forEach(btn=>{const on=btn.dataset.view===view;btn.classList.toggle('active',on);if(on)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current')});$('pageTitle').textContent=names[view];const hash=`#${view}`;if(location.hash!==hash)history.replaceState(null,'',hash);closeSidebar();window.scrollTo({top:0,behavior:'instant'});if(view==='reports')renderReportInfo();}
+function openSidebar(){$('sidebar').classList.add('is-open');$('sidebarBackdrop').classList.add('show');$('menuToggle').setAttribute('aria-expanded','true')}
+function closeSidebar(){$('sidebar').classList.remove('is-open');$('sidebarBackdrop').classList.remove('show');$('menuToggle').setAttribute('aria-expanded','false')}
+function kpiValue(label,num,sub,color,icon){return `<div class="kpi-card" style="--kpic:${color}"><div class="kpi-top"><div class="kpi-label">${label}</div><div class="kpi-icon">${icon}</div></div><div class="kpi-number">${fmt(num)}</div><div class="kpi-note">${sub}</div></div>`}
+function renderOverview(data){const total=data.length;const v33=data.filter(r=>r.voltage==='33 kV'||r.voltage==='33KV').length;const v11=data.filter(r=>r.voltage==='11 kV').length;const disputed=data.filter(r=>/disputed/i.test(r.voltage)).length;const src=uniq(data.map(r=>r.source)).length;const injections=uniq(data.flatMap(r=>r.injection?r.injection.split(';').map(s=>s.trim()):[])).length;const premium=data.filter(r=>r.band==='A').length;const mdi=data.filter(r=>['MDI','MDNI'].includes(r.segment)).length;$('heroTotal').textContent=fmt(total);$('heroStates').textContent=uniq(data.map(r=>r.state)).join(' · ')||'No matching states';$('navRegisterCount').textContent=fmt(FEEDERS.length);
+$('kpiGrid').innerHTML=kpiValue('Matching Feeders',total,`${uniq(data.map(r=>r.state)).length} states in selection`,'#1765c1','⚡')+kpiValue('33 kV Feeders',v33,`${pct(v33,total)} of current selection`,'#0a9c89','↗')+kpiValue('11 kV Feeders',v11,`${pct(v11,total)} of current selection`,'#7156bd','⌁')+kpiValue('Transmission Sources',src,`${injections} recorded injection names`,'#c18a32','🏭')+kpiValue('Band A',premium,`${pct(premium,total)} of feeder records`,'#109c77','◉')+kpiValue('MDI + MDNI',mdi,`${pct(mdi,total)} of current selection`,'#1765c1','▥')+kpiValue('Injection Substations',injections,'Distinct names in register','#7156bd','⌘')+kpiValue('Voltage Under Review',disputed,`${GENERATION_ROWS.length} generation-source record excluded`,'#c74b60','⚑');
+$('overviewStateChart').innerHTML=barsHtml(countBy(data,'state'),8);
+const noSource=data.filter(r=>!r.source).length,noInjection=data.filter(r=>!r.injection).length,unclassified=data.filter(r=>r.segment==='Unclassified').length;
+$('insightList').innerHTML=[['Register coverage',`${fmt(total)} feeder records in this view. The complete embedded register has ${fmt(FEEDERS.length)} feeder records.`],['Transmission mapping',`${fmt(total-noSource)} of ${fmt(total)} selected feeders have a recorded source substation.`],['Classification review',`${fmt(disputed)} disputed voltage, ${fmt(unclassified)} unclassified segments, ${fmt(noInjection)} without injection value.`],['Source separation',`${GENERATION_ROWS.length} Haske Solar generation record is retained for review but excluded from feeder counts.`]].map(([h,p])=>`<div class="insight-row"><span class="insight-bullet"></span><div><b>${escapeHtml(h)}</b><div class="muted tiny" style="margin-top:3px">${escapeHtml(p)}</div></div></div>`).join('')}
+function colorsEntries(entries){return entries.map((e,i)=>palette[i%palette.length])}
+function donutHtml(counts,labelsLimit=9){const arr=Object.entries(counts).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);if(!arr.length)return '<div class="empty-box">No matching data</div>';const visible=arr.slice(0,labelsLimit);if(arr.length>labelsLimit)visible.push(['Other',arr.slice(labelsLimit).reduce((sum,p)=>sum+p[1],0)]);const total=visible.reduce((s,p)=>s+p[1],0);let progress=0;const segments=visible.map(([,n],i)=>{const start=progress;progress+=n/total*100;return `${palette[i%palette.length]} ${start}% ${progress}%`});const legend=visible.map(([label,n],i)=>`<div class="legend-item"><i class="legend-dot" style="background:${palette[i%palette.length]}"></i><span>${escapeHtml(label)}</span><b>${fmt(n)}</b></div>`).join('');return `<div class="donut-block"><div class="donut" style="background:conic-gradient(${segments.join(',')})"><div class="donut-center">${fmt(total)}<small>FEEDERS</small></div></div><div class="legend">${legend}</div></div>`}
+function barsHtml(counts,limit=12){const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,limit);if(!entries.length)return '<div class="empty-box">No matching data</div>';const max=Math.max(...entries.map(([,v])=>v),1);return `<div class="bars">${entries.map(([label,value],i)=>`<div class="bar-line"><div class="bar-label" title="${attr(label)}">${escapeHtml(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${(value/max)*100}%;background:${palette[i%palette.length]}"></div></div><div class="bar-value">${fmt(value)}</div></div>`).join('')}</div>`}
+function renderCharts(data){const volt={'33 kV':0,'11 kV':0,'Disputed':0};for(const f of data){if(/disputed/i.test(f.voltage))volt.Disputed++;else if(f.voltage==='11 kV')volt['11 kV']++;else if(/33/i.test(f.voltage))volt['33 kV']++} $('chartVoltage').innerHTML=donutHtml(volt);$('chartBand').innerHTML=donutHtml(countBy(data,'band'));$('chartSegment').innerHTML=donutHtml(countBy(data,'segment'));$('chartState').innerHTML=barsHtml(countBy(data,'state'));$('chartRegion').innerHTML=barsHtml(countBy(data,'region'),13);$('chartSource').innerHTML=barsHtml(countBy(data.filter(r=>r.source),'source'),16);let html='<table class="matrix-table"><thead><tr><th>Voltage</th>'+['A','B','C','D','E','F'].map(b=>`<th>Band ${b}</th>`).join('')+'</tr></thead><tbody>';for(const voltage of ['33 kV','11 kV','Disputed']){const values=['A','B','C','D','E','F'].map(b=>data.filter(r=>(voltage==='Disputed'?/disputed/i.test(r.voltage):voltage==='33 kV'?r.voltage==='33 kV'||r.voltage==='33KV':r.voltage===voltage)&&r.band===b).length);const max=Math.max(1,...values);html+=`<tr><th>${voltage}</th>`+values.map((n,i)=>`<td style="background:${n?`color-mix(in srgb,${bandColors[['A','B','C','D','E','F'][i]]} ${Math.round(15+45*n/max)}%,var(--card))`:'var(--soft)'}">${fmt(n)}</td>`).join('')+'</tr>'}html+='</tbody></table>';$('chartMatrix').innerHTML=html}
+function renderRegister(data){const sorted=[...data].sort((a,b)=>state.sort.direction*String(a[state.sort.key]||'').localeCompare(String(b[state.sort.key]||''),undefined,{numeric:true,sensitivity:'base'}));const pages=Math.max(1,Math.ceil(sorted.length/state.pageSize));state.page=Math.max(1,Math.min(pages,state.page));const start=(state.page-1)*state.pageSize;const slice=sorted.slice(start,start+state.pageSize);$('tableCount').textContent=`${fmt(sorted.length)} matching feeder records · ${fmt(FEEDERS.length)} in the complete local register`;$('feederTbody').innerHTML=slice.length?slice.map(f=>`<tr><td><button class="mark-btn ${savedIds.includes(f.feederId)?'saved':''}" data-favorite="${attr(f.feederId)}" aria-label="${savedIds.includes(f.feederId)?'Remove saved feeder':'Save feeder'}">${savedIds.includes(f.feederId)?'★':'☆'}</button></td><td><input type="checkbox" aria-label="Select ${attr(f.feeder)} for export" data-export-select="${attr(f.feederId)}" ${exportSelectedIds.has(f.feederId)?'checked':''}></td><td><input type="checkbox" aria-label="Compare ${attr(f.feeder)}" data-compare="${attr(f.feederId)}" ${state.comparison.includes(f.feederId)?'checked':''}></td><td class="main-cell">${escapeHtml(f.feeder)}</td><td class="mono">${escapeHtml(f.feederId)}</td><td>${escapeHtml(f.state)}</td><td>${escapeHtml(f.region)}</td><td><span class="badge ${/disputed/i.test(f.voltage)?'warning':'blue'}">${escapeHtml(f.voltage)}</span></td><td><span class="badge ${attr(f.band.toLowerCase())}">Band ${escapeHtml(f.band)}</span></td><td>${escapeHtml(f.segment)}</td><td>${escapeHtml(f.source||'Not recorded')}</td><td>${escapeHtml(f.injection||'Not recorded')}</td><td><button class="btn" data-detail="${attr(f.feederId)}">Inspect</button></td></tr>`).join(''):'<tr><td colspan="13"><div class="empty-box">No feeders match your current filters. Clear filters to return to the full register.</div></td></tr>';
+$('pageInfo').textContent=`Showing ${sorted.length?fmt(start+1):0}–${fmt(Math.min(start+state.pageSize,sorted.length))} of ${fmt(sorted.length)} · Page ${state.page}/${pages}`;let b=`<button class="page-btn" data-page="prev" ${state.page===1?'disabled':''} aria-label="Previous page">‹</button>`;for(let p=Math.max(1,state.page-2);p<=Math.min(pages,Math.max(1,state.page-2)+4);p++)b+=`<button class="page-btn ${p===state.page?'active':''}" data-page="${p}">${p}</button>`;b+=`<button class="page-btn" data-page="next" ${state.page===pages?'disabled':''} aria-label="Next page">›</button>`;$('pageControls').innerHTML=b;$('compareBtn').textContent=`Compare (${state.comparison.length}/2)`;$('compareBtn').disabled=state.comparison.length!==2;document.querySelectorAll('[data-sort]').forEach(e=>{e.setAttribute('aria-label',`Sort by ${e.dataset.sort}${state.sort.key===e.dataset.sort?(state.sort.direction===1?', currently ascending':', currently descending'):''}`)});window.GRID360ExportCentre?.updateSelectionUI();}
+function toggleFavorite(id){if(!FEEDERS.some(f=>f.feederId===id))return;savedIds=savedIds.includes(id)?savedIds.filter(x=>x!==id):[...savedIds,id];safeStore.set('grid360_saved_feeders',JSON.stringify(savedIds));$('favoriteCount').textContent=fmt(savedIds.length);renderRegister(applyFilters());renderFavorites();if(state.selected?.feederId===id)updateDetailButtons();toast(savedIds.includes(id)?'Feeder saved to this browser':'Feeder removed from saved list')}
+function renderFavorites(){const a=FEEDERS.filter(f=>savedIds.includes(f.feederId));$('favoriteList').innerHTML=a.length?`<div class="micro-pills">${a.map(f=>`<div class="micro-pill"><button class="mark-btn saved" data-favorite="${attr(f.feederId)}" title="Remove saved feeder">★</button><button class="btn" data-detail="${attr(f.feederId)}">${escapeHtml(f.feeder)} · ${escapeHtml(f.feederId)}</button></div>`).join('')}</div>`:'<div class="empty-box">No feeders saved. Open the Feeder Register and select ☆ for your frequent reference feeders.</div>'}
+function updateCompare(id,checked){if(checked){if(state.comparison.includes(id))return;if(state.comparison.length===2){toast('Select a maximum of two feeders');renderRegister(applyFilters());return}state.comparison.push(id)}else state.comparison=state.comparison.filter(x=>x!==id);renderRegister(applyFilters());updateDetailButtons()}
+function renderComparison(){if(state.comparison.length!==2){toast('Select two feeders for comparison');return}const records=state.comparison.map(id=>FEEDERS.find(f=>f.feederId===id));const fields=[['Feeder ID','feederId'],['State','state'],['Operating Region','region'],['Voltage','voltage'],['Service Band','band'],['Customer Segment','segment'],['Transmission Source','source'],['Injection Station','injection'],['Incoming 33 kV Feeder','incoming'],['Outgoing/TITO','outgoing']];$('compareBody').innerHTML=`<table class="comparison-table"><thead><tr><th>Configuration</th><th>${escapeHtml(records[0].feeder)}</th><th>${escapeHtml(records[1].feeder)}</th></tr></thead><tbody>${fields.map(([label,key])=>`<tr><td>${label}</td><td>${escapeHtml(records[0][key]||'Not recorded')}</td><td>${escapeHtml(records[1][key]||'Not recorded')}</td></tr>`).join('')}</tbody></table><div class="modal-actions"><button class="btn" id="clearComparison">Clear Comparison</button></div>`;$('compareDialog').showModal()}
+function detailText(f){return [`Feeder: ${f.feeder}`,`Feeder ID: ${f.feederId}`,...['state','region','voltage','band','segment','source','injection','incoming','outgoing'].map(k=>`${k}: ${f[k]||'Not recorded'}`)].join('\n')}
+function openDetail(id){const f=FEEDERS.find(r=>r.feederId===id);if(!f)return;state.selected=f;$('detailName').textContent=f.feeder;$('detailId').textContent=`${f.feederId} · ${f.voltage}`;const pairs=[['Feeder ID',f.feederId],['State',f.state],['Operating Region',f.region],['Voltage Level',f.voltage],['Service Band',`Band ${f.band}`],['Customer Segment',f.segment],['Transmission Source',f.source],['Injection Substation',f.injection],['Incoming 33 kV Feeder',f.incoming],['Outgoing / TITO',f.outgoing]];$('detailBody').innerHTML=`<div class="notice"><b>Connectivity:</b> ${escapeHtml(f.source||'Source not recorded')} → ${escapeHtml(f.injection||'Injection not recorded')} → ${escapeHtml(f.feeder)}</div><div class="data-pairs">${pairs.map(([k,v])=>`<div class="data-pair"><div class="key">${k}</div><div class="val">${escapeHtml(v||'Not recorded')}</div></div>`).join('')}</div>`;updateDetailButtons();$('feederDialog').showModal()}
+function updateDetailButtons(){const f=state.selected;if(!f)return;$('detailFavorite').textContent=savedIds.includes(f.feederId)?'★ Remove from Saved':'☆ Save feeder';$('detailCompare').textContent=state.comparison.includes(f.feederId)?'Remove from Comparison':'Add to Comparison'}
+function sourceSummary(data){const sources=uniq(data.map(f=>f.source||'Source not recorded'));return sources.map(source=>{const items=data.filter(f=>(f.source||'Source not recorded')===source);const inj=uniq(items.flatMap(f=>f.injection?f.injection.split(';').map(v=>v.trim()):[]));return {source,items,count:items.length,voltage33:items.filter(r=>r.voltage==='33 kV'||r.voltage==='33KV').length,voltage11:items.filter(r=>r.voltage==='11 kV').length,injections:inj}}).sort((a,b)=>b.count-a.count||a.source.localeCompare(b.source))}
+function renderStations(data){const summaries=sourceSummary(data);$('stationSources').textContent=fmt(summaries.filter(s=>s.source!=='Source not recorded').length);$('stationInjections').textContent=fmt(uniq(data.flatMap(f=>f.injection?f.injection.split(';').map(v=>v.trim()):[])).length);$('stationUnlinked').textContent=fmt(data.filter(f=>!f.source).length);$('stationTbody').innerHTML=summaries.map(s=>`<tr><td class="main-cell">${escapeHtml(s.source)}</td><td>${fmt(s.count)}</td><td>${fmt(s.voltage33)}</td><td>${fmt(s.voltage11)}</td><td>${fmt(s.injections.length)}</td><td><button class="btn" data-station="${attr(s.source)}">Inspect</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">No matching stations</td></tr>';if(state.sourceSelected&&!summaries.some(s=>s.source===state.sourceSelected))state.sourceSelected=null;if(state.sourceSelected)renderStationDetail(state.sourceSelected);else $('stationDetails').innerHTML='<div class="empty-box">Select a source station above to inspect the attached feeders.</div>'}
+function renderStationDetail(source){state.sourceSelected=source;const s=sourceSummary(applyFilters()).find(x=>x.source===source);if(!s)return;$('stationDetailTitle').textContent=source;$('stationDetails').innerHTML=`<div class="micro-pills">${s.items.map(f=>`<button class="micro-pill" data-detail="${attr(f.feederId)}">${escapeHtml(f.feeder)} <b>${escapeHtml(f.voltage)}</b></button>`).join('')}</div>`}
+function renderNetwork(data){const sources=sourceSummary(data);if(!sources.length){$('sourceChooser').innerHTML='<div class="empty-box">No matching sources</div>';$('networkTree').innerHTML='<div class="empty-box">No matching network data</div>';return}if(!state.sourceSelected||!sources.some(s=>s.source===state.sourceSelected))state.sourceSelected=sources[0].source;$('sourceChooser').innerHTML=sources.map(s=>`<button class="source-option ${s.source===state.sourceSelected?'selected':''}" data-network-source="${attr(s.source)}"><span>${escapeHtml(s.source)}</span><b>${fmt(s.count)}</b></button>`).join('');const s=sources.find(x=>x.source===state.sourceSelected);$('networkSubtitle').textContent=`${fmt(s.count)} feeder records · ${fmt(s.injections.length)} distinct recorded injection names`;const groups={};for(const f of s.items){const injection=f.injection?f.injection.split(';')[0].trim():'Injection not recorded';(groups[injection]??=[]).push(f)}$('networkTree').innerHTML=`<div class="tree-source"><div class="tiny">TRANSMISSION SOURCE</div><div class="source-head"><strong style="font-size:17px">${escapeHtml(s.source)}</strong><span class="badge">${fmt(s.items.length)} feeder records</span></div></div><div class="injection-list">${Object.entries(groups).sort((a,b)=>b[1].length-a[1].length).map(([name,feeds])=>`<div class="injection-card"><div class="source-head"><span class="injection-name">${escapeHtml(name)}</span><span class="badge blue">${fmt(feeds.length)} feeders</span></div><div class="feeder-nodes">${feeds.map(f=>`<button class="feeder-node" data-detail="${attr(f.feederId)}"><strong>${escapeHtml(f.feeder)}</strong><span class="tag">${escapeHtml(f.voltage)}</span></button>`).join('')}</div></div>`).join('')}</div>`}
+function buildAudit(records=FEEDERS){const issues=[];const knownIds=new Set();for(const f of records){if(knownIds.has(f.feederId))issues.push({id:f.feederId,feeder:f.feeder,issue:'Duplicate feeder identifier',field:'feederId'});knownIds.add(f.feederId);if(!f.source)issues.push({id:f.feederId,feeder:f.feeder,issue:'Transmission source not recorded',field:'source'});if(!f.injection)issues.push({id:f.feederId,feeder:f.feeder,issue:'Injection station not recorded',field:'injection'});if(/disputed/i.test(f.voltage))issues.push({id:f.feederId,feeder:f.feeder,issue:'Voltage classification disputed',field:'voltage'});else if(!['33 kV','11 kV'].includes(f.voltage))issues.push({id:f.feederId,feeder:f.feeder,issue:'Non-standard voltage notation',field:'voltage'});if(f.segment==='Unclassified')issues.push({id:f.feederId,feeder:f.feeder,issue:'Customer segment unclassified',field:'segment'});if(f.region.includes('/')||!f.region.toLowerCase().startsWith(f.state.toLowerCase()))issues.push({id:f.feederId,feeder:f.feeder,issue:'Geography/region requires review',field:'region'});}return issues}
+function renderQuality(data){const issues=buildAudit(data);const flagged=uniq(issues.map(x=>x.id));const total=data.length;const noSource=data.filter(r=>!r.source).length,missingInj=data.filter(r=>!r.injection).length,disputed=data.filter(r=>/disputed/i.test(r.voltage)).length;$('auditMetrics').innerHTML=[['Feeders Reviewed',total,'good'],['Flagged Feeders',flagged.length,'problem'],['Missing Source',noSource,'problem'],['Missing Injection',missingInj,'problem'],['Disputed Voltage',disputed,'problem'],['Special Generation',GENERATION_ROWS.length,'good'],['Unique IDs',new Set(data.map(r=>r.feederId)).size,'good'],['Review Findings',issues.length,'problem']].map(([label,n,cls])=>`<div class="audit-metric ${cls}"><b>${fmt(n)}</b><span>${escapeHtml(label)}</span></div>`).join('');const groups=Object.entries(issues.reduce((a,i)=>(a[i.issue]=(a[i.issue]||0)+1,a),{})).sort((a,b)=>b[1]-a[1]);$('auditList').innerHTML=groups.map(([label,n])=>`<div class="audit-entry"><div><div class="issue">${escapeHtml(label)}</div><small>Flag for manual validation against the authoritative master register</small></div><span class="count">${fmt(n)}</span></div>`).join('')||'<div class="empty-box">No quality exceptions found in this selection.</div>';$('auditIssueCount').textContent=`${fmt(flagged.length)} feeder records with at least one flag`;const flaggedFeeds=data.filter(f=>flagged.includes(f.feederId));$('auditRecords').innerHTML=flaggedFeeds.length?`<div class="micro-pills">${flaggedFeeds.slice(0,80).map(f=>`<button class="micro-pill" data-detail="${attr(f.feederId)}">${escapeHtml(f.feeder)} <b>${escapeHtml(f.feederId)}</b></button>`).join('')}</div>${flaggedFeeds.length>80?`<p class="muted small">Showing first 80 of ${fmt(flaggedFeeds.length)} flagged feeders. Export the complete audit file for all findings.</p>`:''}`:'<div class="empty-box">No flagged feeder records in selection.</div>';$('generationDetails').innerHTML=GENERATION_ROWS.length?GENERATION_ROWS.map(r=>`<div class="notice"><b>${escapeHtml(r[3])}</b> · ID ${escapeHtml(r[10])} · ${escapeHtml(r[0])} — recorded in source data with a disputed voltage field. Classified as a generation source for this dashboard and excluded from feeder counts. Original values preserved in the full raw data. Validate details with the official engineering register.</div>`).join(''):'<div class="empty-box">No known generation-source entries</div>'}
+function renderReportInfo(){$('provenanceDetails').innerHTML=[['Dataset','Embedded register supplied with HTML source'],['All input rows',fmt(RAW.length)],['Feeder rows analysed',fmt(FEEDERS.length)],['Generation-source rows excluded',fmt(GENERATION_ROWS.length)],['Geographic scope','Kano · Katsina · Jigawa'],['Current data status','Local static snapshot · no live sync'],['Data modifications','Original fields preserved; Haske Solar treated as generation'],['Local preferences','Browser storage only; no remote API']].map(([k,v])=>`<div class="data-pair"><div class="key">${k}</div><div class="val">${escapeHtml(v)}</div></div>`).join('')}
+function refresh(){const data=applyFilters();renderActiveChips();renderOverview(data);renderCharts(data);renderRegister(data);renderNetwork(data);renderStations(data);renderQuality(data);renderFavorites();renderReportInfo();$('favoriteCount').textContent=fmt(savedIds.length)}
+// Export: prefix spreadsheet formula characters so CSV opened in Excel cannot execute spreadsheet formulas.
+function csvValue(v){let s=String(v??'');if(/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+function toCsv(headers,rows){return '\ufeff'+[headers,...rows].map(row=>row.map(csvValue).join(',')).join('\r\n')}
+function download(content,name,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast(`Prepared ${name}`)}
+function jsonText(obj){return JSON.stringify(obj,null,2)}
+function summaryData(data){return {generatedAt:new Date().toISOString(),source:'User-supplied embedded GRID360 feeder register',live:false,recordCount:data.length,fullFeederRegisterCount:FEEDERS.length,specialGenerationSourceRows:GENERATION_ROWS.length,filters:{...state.filters},byState:countBy(data,'state'),byRegion:countBy(data,'region'),byVoltage:countBy(data,'voltage'),byBand:countBy(data,'band'),bySegment:countBy(data,'segment'),byTransmissionSource:countBy(data,'source')}}
+function exportData(type){const d=applyFilters(),stamp=new Date().toISOString().slice(0,10);if(type==='csv'){const keys=['state','region','voltage','feeder','band','segment','source','injection','incoming','outgoing','feederId'];download(toCsv(keys,d.map(r=>keys.map(k=>r[k]))),`GRID360_Feeders_${stamp}.csv`,'text/csv;charset=utf-8');return}if(type==='json'){download(jsonText({metadata:{generatedAt:new Date().toISOString(),live:false,filters:{...state.filters},feederCount:d.length},feeders:d}),`GRID360_Feeders_${stamp}.json`,'application/json');return}if(type==='summary'){download(jsonText(summaryData(d)),`GRID360_Summary_${stamp}.json`,'application/json');return}if(type==='audit'){const issues=buildAudit(d);download(toCsv(['Feeder ID','Feeder','Issue','Field'],issues.map(i=>[i.id,i.feeder,i.issue,i.field])),`GRID360_Audit_${stamp}.csv`,'text/csv;charset=utf-8');return}if(type==='stations'){const rows=sourceSummary(d).map(s=>[s.source,s.count,s.voltage33,s.voltage11,s.injections.length,s.injections.join('; ')]);download(toCsv(['Source','Feeders','33 kV','11 kV','Injection names count','Injection names'],rows),`GRID360_Stations_${stamp}.csv`,'text/csv;charset=utf-8');return}if(type==='favorites'){const a=FEEDERS.filter(f=>savedIds.includes(f.feederId));const keys=['feederId','feeder','state','region','voltage','band','segment','source','injection'];download(toCsv(keys,a.map(f=>keys.map(k=>f[k]))),`GRID360_Saved_${stamp}.csv`,'text/csv;charset=utf-8')}}
+function printSummary(){changeView('overview');window.print()}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Feeder details copied')}catch{const ta=document.createElement('textarea');ta.value=t;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Feeder details copied')}}
+function init(){setTheme(theme);setPageSize(state.pageSize);$('footerYear').textContent=String(new Date().getFullYear());updateFilterOptions();refresh();const initial=decodeURIComponent(location.hash.slice(1));changeView(names[initial]?initial:'overview');
+ $('mainNav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)changeView(b.dataset.view)});$('auxNav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)changeView(b.dataset.view)});
+ $('menuToggle').addEventListener('click',()=> $('sidebar').classList.contains('is-open')?closeSidebar():openSidebar());$('sidebarBackdrop').addEventListener('click',closeSidebar);
+ $('toggleFilters').addEventListener('click',()=>toggleFilters());$('resetFilters').addEventListener('click',resetFilters);$('clearFavorites').addEventListener('click',()=>{if(!savedIds.length){toast('There are no saved feeders to clear');return}if(confirm(`Remove all ${savedIds.length} saved feeders from this browser?`)){savedIds=[];safeStore.set('grid360_saved_feeders','[]');refresh();toast('Saved feeder list cleared')}});
+ document.querySelectorAll('[data-filter]').forEach(el=>el.addEventListener('change',e=>changeFilter(e.target.dataset.filter,e.target.value)));
+ let searchTimeout;function onSearch(e){const value=e.target.value;state.filters.search=value;$('fSearch').value=value;$('globalSearch').value=value;state.page=1;clearTimeout(searchTimeout);searchTimeout=setTimeout(()=>{refresh();if(value)changeView('register')},130)}$('fSearch').addEventListener('input',onSearch);$('globalSearch').addEventListener('input',onSearch);
+ $('stateQuickFilters').addEventListener('click',e=>{const b=e.target.closest('[data-state]');if(b)changeFilter('state',b.dataset.state)});
+ $('themeToggle').addEventListener('click',()=>setTheme(theme==='light'?'dark':'light'));$('themeSelect').addEventListener('change',e=>setTheme(e.target.value));$('pageSizeRegister').addEventListener('change',e=>setPageSize(e.target.value));$('pageSizeSettings').addEventListener('change',e=>setPageSize(e.target.value));
+ document.body.addEventListener('click',e=>{const navigate=e.target.closest('[data-go]');if(navigate){changeView(navigate.dataset.go);return}const exportBtn=e.target.closest('[data-export]');if(exportBtn){exportData(exportBtn.dataset.export);return}const detail=e.target.closest('[data-detail]');if(detail){openDetail(detail.dataset.detail);return}const fave=e.target.closest('[data-favorite]');if(fave){toggleFavorite(fave.dataset.favorite);return}const page=e.target.closest('[data-page]');if(page){const p=page.dataset.page;state.page=p==='prev'?state.page-1:p==='next'?state.page+1:Number(p);renderRegister(applyFilters());$('feederTable').scrollIntoView({behavior:'smooth',block:'nearest'});return}const sort=e.target.closest('[data-sort]');if(sort){const k=sort.dataset.sort;if(state.sort.key===k)state.sort.direction*=-1;else {state.sort.key=k;state.sort.direction=1}state.page=1;renderRegister(applyFilters());return}const station=e.target.closest('[data-station]');if(station){renderStationDetail(station.dataset.station);return}const source=e.target.closest('[data-network-source]');if(source){state.sourceSelected=source.dataset.networkSource;renderNetwork(applyFilters());return}const close=e.target.closest('[data-close]');if(close){$(close.dataset.close).close();return}const clear=e.target.closest('[data-action="clear-filters"]');if(clear){resetFilters();return}});
+ document.body.addEventListener('change',e=>{const checkbox=e.target.closest('[data-compare]');if(checkbox)updateCompare(checkbox.dataset.compare,checkbox.checked)});
+ $('compareBtn').addEventListener('click',renderComparison);$('detailFavorite').addEventListener('click',()=>state.selected&&toggleFavorite(state.selected.feederId));$('detailCompare').addEventListener('click',()=>{if(!state.selected)return;updateCompare(state.selected.feederId,!state.comparison.includes(state.selected.feederId))});$('detailCopy').addEventListener('click',()=>state.selected&&copyText(detailText(state.selected)));
+ $('compareBody').addEventListener('click',e=>{if(e.target.id==='clearComparison'){state.comparison=[];$('compareDialog').close();renderRegister(applyFilters());toast('Comparison cleared')}});
+ $('printReport').addEventListener('click',printSummary);
+ for(const dialog of [$('feederDialog'),$('compareDialog')])dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSidebar();return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'||(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))){e.preventDefault();$('globalSearch').focus()}});
+ window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(names[h]&&h!==state.view)changeView(h)});
+}
+init();
+
+</script>
+<script>
+'use strict';
+/* GRID360 Professional Export Centre v2 — no CDN/server dependencies.
+ * XLSX is written as an uncompressed Open Packaging Conventions ZIP with styled OOXML.
+ * PDF is generated directly with PDF 1.4 vector commands, searchable text and repeated headers.
+ * Data is an embedded snapshot; this module never silently changes the register.
+ */
+(() => {
+  const KEYS = [
+    ['feederId', 'Feeder ID', 16], ['feeder', 'Feeder Name', 27],
+    ['state', 'State', 14], ['region', 'Operating Region', 25],
+    ['voltage', 'Voltage', 14], ['band', 'Service Band', 15],
+    ['segment', 'Market Segment', 17], ['source', 'Transmission Source', 34],
+    ['injection', 'Injection Station', 34], ['incoming', 'Incoming / Parent', 23],
+    ['outgoing', 'Outgoing / TITO', 26]
+  ];
+  const DEFAULT_KEYS = ['feederId', 'feeder', 'state', 'region', 'voltage', 'band', 'segment', 'source', 'injection'];
+  const $e = id => document.getElementById(id);
+  const REPORT_NAMES = {feeders:'Feeder Master Register', stations:'Source Substation Directory', audit:'Data Quality Findings', summary:'Executive Management Summary'};
+  const SCOPE_NAMES = {filtered:'Filtered feeder records',all:'Full feeder register',selected:'Checked feeder selection',saved:'Saved / bookmarked feeders'};
+  const xml = s => String(s ?? '').replace(/[&<>"']/g, v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[v]));
+  const localDate = () => new Date().toLocaleString('en-GB', {timeZone:'Africa/Lagos',year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const fileDate = () => new Date().toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'}).replace(/\//g,'-');
+  const safeName = s => String(s).replace(/[^a-zA-Z0-9_\-]/g,'_').replace(/_+/g,'_').slice(0,60);
+  const reportName = () => ($e('exportReportTitle').value.trim() || 'KEDCO GRID360 Feeder Intelligence Report').slice(0,115);
+  const chosenKeys = () => [...document.querySelectorAll('[data-export-field]:checked')].map(el=>el.value);
+  const cfg = () => ({type:$e('exportReportType').value,scope:$e('exportScope').value,keys:chosenKeys(),title:reportName(),
+    summary:$e('exportIncludeSummary').checked,audit:$e('exportIncludeAudit').checked,
+    stations:$e('exportIncludeStations').checked,generation:$e('exportIncludeGeneration').checked});
+  function getRows(scope) {
+    if (scope === 'all') return [...FEEDERS];
+    if (scope === 'selected') return FEEDERS.filter(f => exportSelectedIds.has(f.feederId));
+    if (scope === 'saved') return FEEDERS.filter(f => savedIds.includes(f.feederId));
+    return applyFilters();
+  }
+  function dataBundle(config) {
+    const rows = getRows(config.scope);
+    const sourceCounts = sourceSummary(rows);
+    const findings = buildAudit(rows);
+    const groups = [];
+    for (const [group,key] of [['State','state'],['Voltage Level','voltage'],['Service Band','band'],['Customer Segment','segment'],['Operating Region','region']]) {
+      for(const [val, count] of Object.entries(countBy(rows,key)).sort((a,b)=>b[1]-a[1])){
+        groups.push([group, val, count, rows.length ? +(count/rows.length*100).toFixed(1) : 0]);
+      }
+    }
+    return {rows,sourceCounts,findings,groups, date:localDate(), source:'Embedded GRID360 register (not live)', total:FEEDERS.length,
+      filterText:Object.entries(state.filters).filter(([,v])=>!!v).map(([key,v])=>`${key}: ${v}`).join(' | ') || 'No global filters applied'};
+  }
+  function columnSet(config,data) {
+    const feederColumns = config.keys.map(key => [KEYS.find(r=>r[0]===key)[1],key,KEYS.find(r=>r[0]===key)[2]]);
+    const feederRows = data.rows.map(r => config.keys.map(k => r[k] || ''));
+    const auditColumns = [['Feeder ID','id',17],['Feeder','feeder',28],['Issue / Finding','issue',44],['Field','field',19]];
+    const auditRows = data.findings.map(r=>[r.id,r.feeder,r.issue,r.field]);
+    const stationColumns = [['Source Substation','source',42],['Total Feeders','count',19],['33 kV','v33',14],['11 kV','v11',14],['Injection Points','inj',17],['Injection Names','names',50]];
+    const stationRows = data.sourceCounts.map(s=>[s.source,s.count,s.voltage33,s.voltage11,s.injections.length,s.injections.join('; ')]);
+    const summaryColumns = [['Classification Group','group',29],['Class / Category','category',42],['Feeder Count','count',18],['Share (%)','share',17]];
+    const summaryRows = data.groups;
+    return {
+      feeders:{title:'Feeder Master Register',columns:feederColumns,rows:feederRows},
+      audit:{title:'Data Quality Findings',columns:auditColumns,rows:auditRows},
+      stations:{title:'Source Substation Directory',columns:stationColumns,rows:stationRows},
+      summary:{title:'Management Classification Summary',columns:summaryColumns,rows:summaryRows}
+    };
+  }
+  function generationTable() {
+    return {title:'Special Generation Sources', columns: KEYS.map(([,label,width])=>[label,label,width]),
+      rows: GENERATION_ROWS.map(row=>[row[10],row[3],row[0],row[1],row[2],row[4],row[5],row[6],row[7],row[8],row[9]])};
+  }
+  function plannedTables(config,data) {
+    const c = columnSet(config,data); const list = [c[config.type]];
+    if(config.summary && config.type!=='summary')list.push(c.summary);
+    if(config.audit && config.type!=='audit')list.push(c.audit);
+    if(config.stations && config.type!=='stations')list.push(c.stations);
+    if(config.generation)list.push(generationTable());
+    return list;
+  }
+  function updateSelectionUI() {
+    const count = exportSelectedIds.size;
+    $e('exportSelectedBadge').textContent = `${count} selected for export`;
+    const cb=$e('selectVisibleExport');
+    if(cb){const visible=[...document.querySelectorAll('[data-export-select]')];cb.checked=visible.length>0&&visible.every(x=>x.checked);cb.indeterminate=visible.some(x=>x.checked)&&!cb.checked}
+    updatePreview();
+  }
+  function updatePreview() {
+    const dialog=$e('exportDialog');if(!dialog||!dialog.open)return;
+    const config=cfg();const rows=getRows(config.scope);
+    $e('exportPreviewCount').textContent=rows.length.toLocaleString('en-NG');
+    $e('exportPreviewCols').textContent=config.type==='feeders'?config.keys.length:columnSet(config,{rows,findings:[],sourceCounts:[],groups:[]})[config.type].columns.length;
+    $e('exportPreviewIssues').textContent=buildAudit(rows).length.toLocaleString('en-NG');
+    const selected=exportSelectedIds.size;
+    $e('exportPreviewScope').textContent=`${SCOPE_NAMES[config.scope]} · ${selected} checked · ${REPORT_NAMES[config.type]} · ${config.summary?'Summary included':'Summary excluded'}. Source is a local register snapshot; no live operational measurements.`;
+    $e('exportFieldBlock').hidden=config.type!=='feeders';
+    const valid=rows.length>0&&(config.type!=='feeders'||config.keys.length>0);
+    $e('exportExcelBtn').disabled=!valid;$e('exportPdfBtn').disabled=!valid;
+  }
+  function showDialog(scope='') {
+    if(scope==='selected')$e('exportScope').value='selected';
+    else if(scope==='reset')$e('exportScope').value='filtered';
+    updatePreview();$e('exportDialog').showModal();updatePreview();
+  }
+  function blobDownload(bytes,filename,mime){const blob=new Blob([bytes],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+  function validate(config,bundle){if(!bundle.rows.length)throw Error(`No feeder records under: ${SCOPE_NAMES[config.scope]}. Select a different scope or adjust filters.`);if(config.type==='feeders'&&!config.keys.length)throw Error('Select at least one required feeder column.');}
+
+  /* ------------------------------------------------------------------
+     True, styled Microsoft Excel (.xlsx) — ZIP file + Office Open XML
+     ------------------------------------------------------------------ */
+  const utf8 = s => new TextEncoder().encode(String(s));
+  const excelColumn = n => {let out='';for(let x=n;x;x=Math.floor((x-1)/26))out=String.fromCharCode(65+(x-1)%26)+out;return out};
+  function crc32(bytes){let c=~0;for(const b of bytes){c^=b;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0)}return (~c)>>>0}
+  function zipStore(files){
+    const chunks=[],central=[];let offset=0;
+    const u16=(buf,pos,n)=>{buf[pos]=n&255;buf[pos+1]=(n>>>8)&255};
+    const u32=(buf,pos,n)=>{u16(buf,pos,n);u16(buf,pos+2,n>>>16)};
+    for(const [path,contents] of files){
+      const name=utf8(path),data=typeof contents==='string'?utf8(contents):contents,crc=crc32(data);
+      const local=new Uint8Array(30+name.length);u32(local,0,0x04034b50);u16(local,4,20);u16(local,6,0x0800);u16(local,8,0);u32(local,14,crc);u32(local,18,data.length);u32(local,22,data.length);u16(local,26,name.length);local.set(name,30);
+      chunks.push(local,data);
+      const dir=new Uint8Array(46+name.length);u32(dir,0,0x02014b50);u16(dir,4,20);u16(dir,6,20);u16(dir,8,0x0800);u16(dir,10,0);u32(dir,16,crc);u32(dir,20,data.length);u32(dir,24,data.length);u16(dir,28,name.length);u32(dir,42,offset);dir.set(name,46);central.push(dir);
+      offset+=local.length+data.length;
+    }
+    const size=central.reduce((n,buf)=>n+buf.length,0);
+    const end=new Uint8Array(22);u32(end,0,0x06054b50);u16(end,8,files.length);u16(end,10,files.length);u32(end,12,size);u32(end,16,offset);
+    const result=new Uint8Array(offset+size+22);let i=0;for(const piece of [...chunks,...central,end]){result.set(piece,i);i+=piece.length}return result;
+  }
+  const EXCEL_STYLES = `<?xml version="1.0" encoding="utf-8"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="5">
+<font><sz val="10"/><color rgb="FF193A5B"/><name val="Aptos"/></font>
+<font><b/><sz val="20"/><color rgb="FFFFFFFF"/><name val="Aptos Display"/></font>
+<font><b/><sz val="11"/><color rgb="FF173655"/><name val="Aptos"/></font>
+<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Aptos"/></font>
+<font><b/><sz val="10"/><color rgb="FF9E6521"/><name val="Aptos"/></font>
+</fonts><fills count="6"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF122C4B"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFE4C38A"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFF0F6FB"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/></patternFill></fill></fills>
+<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style="thin"><color rgb="FFE1E8EF"/></bottom><diagonal/></border></borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="7"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>
+<xf numFmtId="0" fontId="2" fillId="4" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>
+<xf numFmtId="0" fontId="3" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0" fillId="5" borderId="1" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="center"/></xf>
+<xf numFmtId="0" fontId="4" fillId="4" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>
+</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  function excelCell(v,ref,style){
+    if(typeof v==='number'&&Number.isFinite(v))return `<c r="${ref}" s="${style}"><v>${v}</v></c>`;
+    const val=String(v??'');
+    // All input text is inlineStr, never a formula; user data cannot trigger spreadsheet formulas.
+    return `<c r="${ref}" s="${style}" t="inlineStr"><is><t xml:space="preserve">${xml(val)}</t></is></c>`;
+  }
+  function worksheetXml(table, config, data, name){
+    const n=Math.max(4,table.columns.length), last=excelColumn(n), title=config.title, meta=`${REPORT_NAMES[config.type]} | ${SCOPE_NAMES[config.scope]} | ${data.rows.length} feeder records`;
+    const headings=table.columns.map(c=>c[0]);const rows=[...table.rows];
+    const cellrow=(r,items,style,height)=>`<row r="${r}" ht="${height}" customHeight="1">${items.map((v,i)=>excelCell(v,excelColumn(i+1)+r,style)).join('')}</row>`;
+    const rowXml=[];
+    rowXml.push(cellrow(1,[title],1,40));rowXml.push(cellrow(2,[table.title],2,25));rowXml.push(cellrow(3,[meta],6,23));
+    rowXml.push(cellrow(4,[`Generated: ${data.date} (Africa/Lagos)`],6,23));
+    rowXml.push(cellrow(5,[`Filters: ${config.scope==='filtered'?data.filterText:'Scope controls the selected records (global filter only applies to filtered scope)'}`],6,23));
+    rowXml.push(cellrow(6,['LOCAL SNAPSHOT - Not independently verified; not live operational data'],6,23));
+    rowXml.push(cellrow(8,headings,3,32));
+    rows.forEach((r,i)=>rowXml.push(cellrow(i+9,r,i%2?4:5,Math.min(56,Math.max(23,Math.ceil(Math.max(...r.map(v=>String(v??'').length))/50)*15+9)))));
+    const widths=Array.from({length:n},(_,i)=>`<col min="${i+1}" max="${i+1}" width="${Math.max(14,Math.min(55,table.columns[i]?.[2]||20))}" customWidth="1"/>`).join('');
+    const merge=`<mergeCells count="6">${[1,2,3,4,5,6].map(r=>`<mergeCell ref="A${r}:${last}${r}"/>`).join('')}</mergeCells>`;
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="8" topLeftCell="A9" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="17"/><cols>${widths}</cols><sheetData>${rowXml.join('')}</sheetData>${merge}<autoFilter ref="A8:${excelColumn(Math.max(1,headings.length))}${Math.max(8,rows.length+8)}"/><pageMargins left="0.3" right="0.3" top="0.45" bottom="0.45" header="0.2" footer="0.2"/><pageSetup orientation="landscape" paperSize="8"/></worksheet>`;
+  }
+  function makeWorkbook(config,data,tables){
+    const files=[];
+    files.push(['[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${tables.map((t,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`]);
+    files.push(['_rels/.rels',`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`]);
+    files.push(['xl/workbook.xml',`<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets>${tables.map((t,i)=>`<sheet name="${xml(t.title.substring(0,31))}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets><calcPr calcId="171027"/></workbook>`]);
+    files.push(['xl/_rels/workbook.xml.rels',`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${tables.map((t,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${tables.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`]);
+    files.push(['xl/styles.xml',EXCEL_STYLES]);
+    tables.forEach((t,i)=>files.push([`xl/worksheets/sheet${i+1}.xml`,worksheetXml(t,config,data,t.title)]));
+    files.push(['docProps/core.xml',`<?xml version="1.0" encoding="UTF-8"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:creator>KEDCO GRID360 TEAMS</dc:creator><dc:title>${xml(config.title)}</dc:title><dc:description>Local feeder register reporting snapshot, not a live system</dc:description></cp:coreProperties>`]);
+    files.push(['docProps/app.xml',`<?xml version="1.0" encoding="UTF-8"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>KEDCO GRID360</Application></Properties>`]);
+    return zipStore(files);
+  }
+
+  /* ------------------------------------------------------------------
+     Professional direct PDF writer — fully paginated, no external scripts
+     ------------------------------------------------------------------ */
+  const pdfText = v => String(v??'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[–—]/g,'-').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[™]/g,'(TM)').replace(/[^\x20-\x7e\n]/g,'?');
+  const pdfLiteral = v => pdfText(v).replace(/[\\()]/g,'\\$&').replace(/[\r\n]/g,' ');
+  const color = hex => hex.match(/[a-f0-9]{2}/gi).map(h=>(parseInt(h,16)/255).toFixed(3)).join(' ');
+  class PdfPage {
+    constructor(w,h){this.w=w;this.h=h;this.ops=[]}
+    rect(x,y,w,h,fill,stroke){if(fill)this.ops.push(`${color(fill)} rg`);if(stroke)this.ops.push(`${color(stroke)} RG`);this.ops.push(`${x.toFixed(2)} ${(this.h-y-h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${fill&&stroke?'B':fill?'f':'S'}`)}
+    line(x1,y1,x2,y2,c='#e1e8ef',width=1){this.ops.push(`${color(c)} RG ${width.toFixed(2)} w ${x1.toFixed(2)} ${(this.h-y1).toFixed(2)} m ${x2.toFixed(2)} ${(this.h-y2).toFixed(2)} l S`)}
+    text(value,x,y,size=10,fill='#183958',bold=false){this.ops.push(`BT /F${bold?2:1} ${size} Tf ${color(fill)} rg 1 0 0 1 ${x.toFixed(2)} ${(this.h-y).toFixed(2)} Tm (${pdfLiteral(value)}) Tj ET`)}
+    commands(){return this.ops.join('\n')+'\n'}
+  }
+  function wrapPDF(v,maxChars,maxLines=4){
+    const lineSize=Math.max(5,Math.floor(maxChars)),words=pdfText(v).replace(/\s+/g,' ').trim().split(' ');let lines=[],cur='';
+    for(let word of words){
+      while(word.length>lineSize){if(cur){lines.push(cur);cur=''}lines.push(word.slice(0,lineSize));word=word.slice(lineSize)}
+      if(!word)continue;
+      if(cur && (cur.length+1+word.length)>lineSize){lines.push(cur);cur=word}else cur=cur?`${cur} ${word}`:word;
+    }
+    if(cur)lines.push(cur);if(!lines.length)lines=['-'];
+    if(lines.length>maxLines){lines=lines.slice(0,maxLines);lines[maxLines-1]=lines[maxLines-1].slice(0,Math.max(2,lineSize-3))+'...'}
+    return lines;
+  }
+  function getPDFBytes(pages){
+    const n=pages.length, font1=3+2*n,font2=font1+1;
+    const objects=[];
+    objects[1]=`<< /Type /Catalog /Pages 2 0 R >>`;
+    objects[2]=`<< /Type /Pages /Kids [${pages.map((_,i)=>`${3+2*i} 0 R`).join(' ')}] /Count ${n} >>`;
+    pages.forEach((p,i)=>{
+      const pageId=3+2*i, streamId=pageId+1,contents=p.commands();
+      objects[pageId]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${p.w} ${p.h}] /Resources << /Font << /F1 ${font1} 0 R /F2 ${font2} 0 R >> >> /Contents ${streamId} 0 R >>`;
+      objects[streamId]=`<< /Length ${utf8(contents).length} >>\nstream\n${contents}endstream`;
+    });
+    objects[font1]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+    objects[font2]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+    const parts=['%PDF-1.4\n%GRID360 REPORT\n'];let length=utf8(parts[0]).length;
+    const offsets=[0];for(let i=1;i<objects.length;i++){
+      offsets[i]=length;const entry=`${i} 0 obj\n${objects[i]}\nendobj\n`;parts.push(entry);length+=utf8(entry).length;
+    }
+    const start=length;
+    parts.push(`xref\n0 ${objects.length}\n0000000000 65535 f \n`);
+    for(let i=1;i<objects.length;i++)parts.push(`${String(offsets[i]).padStart(10,'0')} 00000 n \n`);
+    parts.push(`trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${start}\n%%EOF\n`);
+    return utf8(parts.join(''));
+  }
+  function pdfTables(config,data,tables){
+    const pages=[];let current=null;
+    for(const [tableIndex,table] of tables.entries()){
+      const w=table.columns.length>7?1191:842,h=table.columns.length>7?842:595;
+      const margin=35,availW=w-2*margin,footerY=h-32;
+      const rawW=table.columns.map(col=>Math.max(14,col[2]||20));const factor=availW/rawW.reduce((a,b)=>a+b,0);
+      const widths=rawW.map(v=>v*factor),xPos=widths.map((_,i)=>margin+widths.slice(0,i).reduce((a,b)=>a+b,0));
+      const fontSize=table.columns.length>9?7.0:table.columns.length>6?7.4:8.6;
+      let y,part=0;
+      function startPage(){
+        current=new PdfPage(w,h);pages.push(current);part++;
+        current.rect(0,0,w,100,'#132d4d');
+        current.rect(0,97,w,3,'#d4ac69');
+        current.text('KEDCO  /  GRID360  /  TEAMS',margin,26,10.5,'#e8c68b',true);
+        current.text(config.title.slice(0,130),margin,49,19,'#ffffff',true);
+        current.text(table.title.toUpperCase(),margin,69,9.5,'#d6e4f1',true);
+        current.text(`Generated ${data.date} (WAT)`,w-210,26,8.2,'#e3eaf3');
+        current.text('LOCAL REFERENCE SNAPSHOT',w-210,46,8.5,'#ecd1a5',true);
+        current.rect(margin,111,availW,49,'#edf4fa');
+        current.text(`RECORDS  ${data.rows.length}     SCOPE  ${SCOPE_NAMES[config.scope].toUpperCase()}     SECTION  ${tableIndex+1}/${tables.length}`,margin+14,129,9,'#183957',true);
+        current.text(`FILTERS: ${(config.scope==='filtered'?data.filterText:'Scope is independent of active filters').slice(0,w>1000?150:95)}`,margin+14,146,8,'#415b72');
+        y=173;drawHead();
+      }
+      function drawHead(){
+        const headH=33;current.rect(margin,y,availW,headH,'#244967');
+        table.columns.forEach((col,i)=>{
+          const lines=wrapPDF(col[0],Math.floor((widths[i]-9)/(fontSize*.55)),2);
+          lines.forEach((s,j)=>current.text(s,xPos[i]+5,y+12+j*10,fontSize,'#ffffff',true));
+        });y+=headH;
+      }
+      startPage();
+      if(!table.rows.length){current.text('No records in this appendix.',margin+12,y+25,11,'#536b80');continue}
+      table.rows.forEach((values,index)=>{
+        const lines=values.map((value,i)=>wrapPDF(value,Math.floor((widths[i]-10)/(fontSize*.52)),4));
+        const hrow=Math.max(23,Math.max(...lines.map(r=>r.length))*10+9);
+        if(y+hrow>footerY-10)startPage();
+        current.rect(margin,y,availW,hrow,index%2===0?'#f4f8fb':'#ffffff');
+        lines.forEach((l,i)=>l.forEach((t,j)=>current.text(t,xPos[i]+5,y+13+j*10,fontSize,'#24415a')));
+        current.line(margin,y+hrow,margin+availW,y+hrow,'#dbe5ef',.55);y+=hrow;
+      });
+    }
+    pages.forEach((p,i)=>{
+      const m=35;
+      p.line(m,p.h-43,p.w-m,p.h-43,'#d7e2ed',.8);
+      p.text('Source: user-supplied embedded register. Validate against official KEDCO engineering records before decisions.',m,p.h-26,7.5,'#71849b');
+      p.text(`Page ${i+1} / ${pages.length}`,p.w-94,p.h-26,8,'#24415a',true);
+    });
+    return getPDFBytes(pages);
+  }
+  function runExport(format){
+    const settings=cfg();const data=dataBundle(settings);
+    try{
+      validate(settings,data);const tables=plannedTables(settings,data);
+      if(format==='xlsx'){
+        const bytes=makeWorkbook(settings,data,tables);
+        blobDownload(bytes,`GRID360_${safeName(REPORT_NAMES[settings.type])}_${fileDate()}.xlsx`,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      }else{
+        const bytes=pdfTables(settings,data,tables);
+        blobDownload(bytes,`GRID360_${safeName(REPORT_NAMES[settings.type])}_${fileDate()}.pdf`,'application/pdf');
+      }
+      toast(`${format==='pdf'?'PDF report':'Excel workbook'} prepared · ${data.rows.length} feeder records · ${tables.length} section(s)`);
+    }catch(err){console.error('GRID360 export error',err);toast(`Export failed: ${err.message}`)}
+  }
+  function initExportCentre(){
+    const container=$e('exportFieldGrid');
+    container.innerHTML=KEYS.map(([key,label])=>`<label><input type="checkbox" data-export-field value="${key}" ${DEFAULT_KEYS.includes(key)?'checked':''}>${escapeHtml(label)}</label>`).join('');
+    $e('exportFieldsAll').addEventListener('click',()=>{document.querySelectorAll('[data-export-field]').forEach(el=>el.checked=true);updatePreview()});
+    $e('exportFieldsDefault').addEventListener('click',()=>{document.querySelectorAll('[data-export-field]').forEach(el=>el.checked=DEFAULT_KEYS.includes(el.value));updatePreview()});
+    for(const id of ['exportReportType','exportScope','exportReportTitle','exportIncludeSummary','exportIncludeAudit','exportIncludeStations','exportIncludeGeneration']){
+      $e(id).addEventListener('change',updatePreview);
+    }
+    container.addEventListener('change',updatePreview);
+    $e('exportPdfBtn').addEventListener('click',()=>runExport('pdf'));
+    $e('exportExcelBtn').addEventListener('click',()=>runExport('xlsx'));
+    $e('selectFilteredExport').addEventListener('click',()=>{
+      for(const f of applyFilters())exportSelectedIds.add(f.feederId);
+      renderRegister(applyFilters());updateSelectionUI();toast(`${exportSelectedIds.size} feeders selected for export`);
+    });
+    $e('clearExportSelection').addEventListener('click',()=>{
+      exportSelectedIds.clear();renderRegister(applyFilters());updateSelectionUI();toast('Export selection cleared');
+    });
+    $e('selectVisibleExport').addEventListener('change', e=>{
+      document.querySelectorAll('[data-export-select]').forEach(cb=>{
+        if(e.target.checked)exportSelectedIds.add(cb.dataset.exportSelect);
+        else exportSelectedIds.delete(cb.dataset.exportSelect);
+      });renderRegister(applyFilters());updateSelectionUI();
+    });
+    document.addEventListener('change', e=>{
+      const cb=e.target.closest('[data-export-select]');if(!cb)return;
+      if(cb.checked)exportSelectedIds.add(cb.dataset.exportSelect);else exportSelectedIds.delete(cb.dataset.exportSelect);
+      updateSelectionUI();
+    });
+    document.addEventListener('click', e=>{
+      const trigger=e.target.closest('[data-open-export]');if(trigger){showDialog(trigger.dataset.openExport);return}
+    });
+    $e('exportDialog').addEventListener('click',e=>{if(e.target===$e('exportDialog'))$e('exportDialog').close()});
+    // Suppress chosen-field no-data actions early. All other actions remain in app.js.
+    updateSelectionUI();
+  }
+  window.GRID360ExportCentre={updateSelectionUI,open:showDialog,export:runExport};
+  initExportCentre();
+})();
+
+</script>
+</body>
+</html>
